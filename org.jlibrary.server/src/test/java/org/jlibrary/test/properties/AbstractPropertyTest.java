@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import org.apache.commons.lang.math.RandomUtils;
+import org.apache.jackrabbit.name.QName;
 import org.jlibrary.core.properties.CustomPropertyDefinition;
 import org.jlibrary.core.properties.PropertyType;
 import org.jlibrary.test.AbstractRepositoryTest;
@@ -33,23 +34,41 @@ import org.jlibrary.test.AbstractRepositoryTest;
 public abstract class AbstractPropertyTest extends AbstractRepositoryTest {
 
 	public static CustomPropertyDefinition customProperty;
+	private volatile static int seed;
+	
+	protected String customPropertyName;
+	protected String customPropertyURI;
+	protected String cndPropertyName;
+	protected String cndPropertyURI;
 
 	@Override
 	protected void setUp() throws Exception {
 		
 		super.setUp();
 		
+		if (seed == 0) {
+			seed = RandomUtils.nextInt();
+		}
+		
 		InputStream is = getClass().getClassLoader().getResourceAsStream("test.properties");
 		Properties properties = new Properties();
 		properties.load(is);
-				
-		String customPropertyName = (String)properties.get("test.custom.property") + RandomUtils.nextInt();		
+
+		String customPropertyPrefix = (String)properties.get("test.custom.property.prefix");
+		
+		customPropertyName=(String)properties.get("test.custom.property") + seed;
 		
 		customProperty = new CustomPropertyDefinition();
-		customProperty.setName(customPropertyName);
+		customProperty.setName(customPropertyPrefix+":"+customPropertyName);
 		customProperty.setAutocreated(false);
 		customProperty.setDefaultValues(null);
 		customProperty.setType(PropertyType.STRING);
 		customProperty.setMultivalued(false);
+		
+		customPropertyURI = (String)properties.get("test.custom.property.uri");
+		customProperty.setQName(new QName(customPropertyURI,customPropertyName));
+		
+		cndPropertyName = (String)properties.get("test.cnd.property.name");
+		cndPropertyURI = (String)properties.get("test.cnd.property.uri");
 	}	
 }

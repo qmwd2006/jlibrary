@@ -28,9 +28,9 @@ public class CreateCustomPropertyTest extends AbstractPropertyTest {
 	public void testCreateCustomProperty() {
 
 		try {		
-			if (!repositoryService.isPropertyRegistered(testTicket,customProperty.getName())) {
+			if (!repositoryService.isPropertyRegistered(testTicket,customPropertyURI,customPropertyName)) {
 				repositoryService.registerCustomProperty(testTicket, customProperty);
-				assertTrue(repositoryService.isPropertyRegistered(testTicket,customProperty.getName()));
+				assertTrue(repositoryService.isPropertyRegistered(testTicket,customPropertyURI,customPropertyName));
 			} else {
 				fail("The custom property already exists!");
 			}
@@ -38,5 +38,17 @@ public class CreateCustomPropertyTest extends AbstractPropertyTest {
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
-	}	
+	}
+
+	public void testPropertiesCreatedFromCND() {
+
+		try {		
+			if (!repositoryService.isPropertyRegistered(testTicket,cndPropertyURI,cndPropertyName)) {
+				fail("The custom property defined in the CND file does not exist");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}		
 }
