@@ -1004,6 +1004,13 @@ public class AxisRepositoryService implements RepositoryService {
 		return service.isPropertyRegistered(ticket, propertyName);
 	}
 
+	public boolean isPropertyRegistered(Ticket ticket, String uri, String propertyName) throws RepositoryException {
+
+		org.jlibrary.core.repository.RepositoryService service = 
+			JLibraryServiceFactory.getInstance(localProfile).getRepositoryService();
+		return service.isPropertyRegistered(ticket, uri, propertyName);
+	}
+
 
 	public void registerCustomProperty(Ticket ticket, CustomPropertyDefinition property) throws RepositoryException {
 
