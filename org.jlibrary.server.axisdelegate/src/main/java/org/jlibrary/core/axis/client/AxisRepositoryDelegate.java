@@ -2220,8 +2220,8 @@ public class AxisRepositoryDelegate implements RepositoryService {
 		return null;
 	}
 
-
-	public boolean isPropertyRegistered(Ticket ticket, String propertyName) throws RepositoryException {
+	public boolean isPropertyRegistered(Ticket ticket, 
+										String propertyName) throws RepositoryException {
 
 
 		try {
@@ -2236,6 +2236,32 @@ public class AxisRepositoryDelegate implements RepositoryService {
 			call.setReturnType(XMLType.XSD_BOOLEAN);
 
 			Boolean b = (Boolean)call.invoke(new Object[] {ticket,propertyName});
+			return b.booleanValue();
+		} catch (Exception e) {
+			// I don't know if there is a better way to do this
+			AxisFault fault = (AxisFault) e;
+			throw new RepositoryException(fault.getFaultString());
+		}	
+	}
+
+	public boolean isPropertyRegistered(Ticket ticket, 
+										String uri, 
+										String propertyName) throws RepositoryException {
+
+
+		try {
+			call.removeAllParameters();
+
+			call.setTargetEndpointAddress(new java.net.URL(endpoint));
+			call.setOperationName("isPropertyRegistered");
+
+			call.addParameter("ticket", XMLType.XSD_ANY, ParameterMode.IN);
+			call.addParameter("uri", XMLType.XSD_STRING, ParameterMode.IN);
+			call.addParameter("propertyName", XMLType.XSD_STRING, ParameterMode.IN);
+
+			call.setReturnType(XMLType.XSD_BOOLEAN);
+
+			Boolean b = (Boolean)call.invoke(new Object[] {ticket,uri,propertyName});
 			return b.booleanValue();
 		} catch (Exception e) {
 			// I don't know if there is a better way to do this
