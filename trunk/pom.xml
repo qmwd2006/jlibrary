@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>jlibrary</groupId>
+	<artifactId>org.jlibrary</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<url>http://jlibrary.sourceforge.net/</url>
+	<modules>	  
+		<module>org.jlibrary.server</module>
+		<module>org.jlibrary.extractors</module>		
+		<module>org.jlibrary.war</module>
+		<module>org.jlibrary.server.httpdelegate</module>
+		<module>org.jlibrary.server.axis</module>
+		<module>org.jlibrary.server.axisdelegate</module>
+		<!-- 
+		     Uncomment this the following line to build jLibrary client, but remember
+		     to check jLibrary web site for finding last up-to-date build instructions. 
+		     
+		  <module>org.jlibrary.client</module>
+		-->
+  </modules>
+	<mailingLists>
+		<mailingList>
+			<name>jLibrary developers</name>
+			<post>jlibrary-developers@lists.sourceforge.net</post>
+		</mailingList>
+	</mailingLists>
+	<developers>
+		<!-- Active developers -->
+		<developer>
+		</developer>
+
+		<!-- Past developers -->
+		<developer>
+		</developer>		
+	</developers>	
+</project>
