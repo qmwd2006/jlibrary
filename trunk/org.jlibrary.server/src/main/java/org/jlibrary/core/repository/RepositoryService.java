@@ -1109,7 +1109,24 @@ public interface RepositoryService {
 	 * @return <code>true</code> if the property exists and <code>false</code> otherwise.
 	 * 
 	 * @throws RepositoryException If there is any error doing the checks
+	 * 
+	 * @deprecated Use {@link #isPropertyRegistered(Ticket, String, String)}
 	 */
 	public boolean isPropertyRegistered(Ticket ticket, String propertyName) throws RepositoryException;
+
+	/**
+	 * Checks if a property exists in the repository
+	 * 
+	 * @param ticket Session ticket
+	 * @param uri URI for that property
+	 * @param propertyName Name of the property to check
+	 * 
+	 * @return <code>true</code> if the property exists and <code>false</code> otherwise.
+	 * 
+	 * @throws RepositoryException If there is any error doing the checks
+	 */	
+	public boolean isPropertyRegistered(Ticket ticket, String uri, String propertyName) throws RepositoryException;
+
+		
 }
 
