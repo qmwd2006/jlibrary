@@ -1,0 +1,18 @@
+<beans xmlns="http://xfire.codehaus.org/config/1.0">
+
+  <!-- START SNIPPET: sig -->
+  <!--  ============= Signature  ============= -->
+  <service>
+    <name>XfRepositoryService</name>
+    <namespace>http://jlibrary.sourceforge.net</namespace>
+    <serviceClass>org.jlibrary.core.ws.xfire.repository.XfRepositoryService</serviceClass>
+  </service>
+	
+  <service>
+    <name>XfSecurityService</name>
+    <namespace>http://jlibrary.sourceforge.net</namespace>
+    <serviceClass>org.jlibrary.core.ws.xfire.security.XfSecurityService</serviceClass>
+  </service>
+  <!-- END SNIPPET: sig -->
+	
+</beans>
