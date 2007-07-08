@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<introContent>
+  <!-- 
+
+-->
+  <page alt-style="css/root_swt.properties" style="css/root.css" id="root" style-id="page">
+    <title style-id="intro-header">Benvenuto in jLibrary 1.0.2</title>
+    <group id="links-background">
+      <group id="page-links">
+        <link label="Introduzione" url="http://org.eclipse.ui.intro/showPage?id=overview" id="overview" style-id="left">
+          <img id="overview_img" style-id="content-img" src="css/graphics/icons/etool/overview72.gif" alt="Introduzione"></img>
+          <text>Scopri le basi di jLibrary.</text>
+        </link>
+        <link label="Guide" url="http://org.eclipse.ui.intro/showPage?id=tutorials" id="tutorials" style-id="left">
+	      <img id="tutorials_img" style-id="content-img" src="css/graphics/icons/etool/tutorials72.gif" alt="Guide"></img>
+          <text>Esplora le guide di jLibrary.</text>
+        </link>
+        <link label="Esempi" url="http://org.eclipse.ui.intro/showPage?id=samples" id="samples" style-id="right">
+          <img id="samples_img" style-id="content-img" src="css/graphics/icons/etool/samples72.gif" alt="Esempi"></img>
+          <text>Inizia a lavorare con gli esempi di jLibrary.</text>
+        </link>
+        <link label="Cosa c'� di nuovo?" url="http://org.eclipse.ui.intro/showPage?id=news" id="news" style-id="right">
+          <img id="whatsnew_img" style-id="content-img" src="css/graphics/icons/etool/whatsnew72.gif" alt="Cosa c'� di nuovo?"></img>
+          <text>Scopri le interessanti novit� di questa versione di jLibrary.</text>
+        </link>
+      </group>
+    </group>
+    <group id="action-links">
+        <link url="http://org.eclipse.ui.intro/switchToLaunchBar" label="jLibrary" id="workbench">
+            <img id="workbench_img" style-id="content-img" src="css/graphics/icons/etool/wb48.gif" alt="Inizia da qui">
+            </img>
+            <text>Il tuo banco di lavoro</text>
+        </link>
+    </group>    
+  </page>
+  <!-- 
+
+-->
+  <page alt-style="css/standby_swt.properties" style="css/standby_root.css" id="standby" style-id="page">
+    <title style-id="intro-header">Benvenuto in jLibrary 1.0.2</title>
+    <group id="links-background">
+      <group id="page-links">
+        <link label="Introduzione" url="http://org.eclipse.ui.intro/showPage?id=overview&amp;standby=false" id="overview" style-id="left">
+          <text>Scopri le basi di jLibrary.</text>
+        </link>
+        <link label="Guide" url="http://org.eclipse.ui.intro/showPage?id=tutorials&amp;standby=false" id="tutorials" style-id="left">
+          <text>Esplora le guide di jLibrary.</text>
+        </link>
+        <link label="Esempi" url="http://org.eclipse.ui.intro/showPage?id=samples&amp;standby=false" id="samples" style-id="right">
+          <text>Inizia a lavorare con gli esempi di jLibrary.</text>
+        </link>
+        <link label="Cosa c'� di nuovo?" url="http://org.eclipse.ui.intro/showPage?id=news&amp;standby=false" id="news" style-id="right">
+          <text>Scopri le interessanti novit� di questa versione di jLibrary.</text>
+        </link>
+      </group>
+    </group>
+  </page>
+  <!--
+
+-->
+  <page style="css/overview/overview.css" alt-style="css/overview/swt.properties" id="overview" style-id="page">
+    <title style-id="intro-header">Benvenuto in jLibrary 1.0.2</title>
+    <group id="background-image" filteredFrom="swt"/>
+    <group id="curve-image" filteredFrom="swt"/>
+    <group id="navigation-links" filteredFrom="swt">
+      <group id="page-links">
+        <link label="Introduzione" url="http://org.eclipse.ui.intro/showPage?id=overview" id="overview" style-id="left">
+          <text>Learn the basics about jLibrary.</text>
+        </link>
+        <link label="Guide" url="http://org.eclipse.ui.intro/showPage?id=tutorials" id="tutorials" style-id="left">
+          <text>Explore the different jLibrary tutorials.</text>
+        </link>
+        <link label="Esempi" url="http://org.eclipse.ui.intro/showPage?id=samples" id="samples" style-id="right">
+          <text>CStart working with the jLibrary samples.</text>
+        </link>
+        <link label="Cosa c'� di nuovo?" url="http://org.eclipse.ui.intro/showPage?id=news" id="news" style-id="right">
+          <text>Scopri le interessanti novit� di questa versione di jLibrary.</text>
+        </link>
+      </group>
+      <group id="action-links">
+      	<link url="http://org.eclipse.ui.intro/close" label="jLibrary" id="workbench">
+        	<text>Usare jLibrary</text>
+      	</link>
+      </group>
+    </group>
+    <!-- -->
+    
+    <group id="page-content">
+      <group id="content-header" label="Introduzione" filteredFrom="swt"></group>
+      <text style-id="page-title" id="page-title" filteredFrom="html">Introduzione</text>
+      <text style-id="page-description" id="page-description">jLibrary � un sistema Open Source di gestione dei contenuti che si adatta alle esigenze personali come a quelle di un'impresa. Con jLibrary puoi gestire in modo semplice ed efficiente sia i tuoi documenti che quelli della tua impresa.</text>
+      <text style-id="page-description" id="page-description2">Con jLibrary puoi archiviare i tuoi documenti PDF, DOC, SXW e molti altri formati; puoi ricercare al loro interno</text>
+      <text style-id="page-description" id="page-description2">With jLibrary you can store your PDF, DOC, SXW, and many more different documents; you can search within them; you can categorize your documents; you can export the information very easly; you can generate entire web portals with all your information and publish it in an intranet or extranet; In summary, jLibrary is a powerful Open Source alternative for your documentation management, with all the free software advantages.</text>
+      <group id="overview-links">
+	<anchor id="beginAnchor"/>
+        <link label="Vuoi saperne di pi�?" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/4/index.html" id="basics">
+          <text>Scopri di pi� su jLibrary</text>
+        </link>
+        <link label="Aiutaci" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/4/about.html" id="team">
+          <text>Vuoi collaborare?</text>
+        </link>
+        <anchor id="jdtAnchor"/>
+        <anchor id="pdeAnchor"/>
+		<anchor id="endAnchor"/>
+      </group>
+    </group>
+  </page>
+  <!-- 
+
+-->
+  <page style="css/tutorials/tutorials.css" alt-style="css/samples/swt.properties" id="tutorials" style-id="page">
+    <title style-id="intro-header">Benvenuto in jLibrary 1.0.2</title>
+    <group id="background-image" filteredFrom="swt"/>
+    <group id="curve-image" filteredFrom="swt"/>
+    <include path="overview/navigation-links"/>
+    <group id="page-content">
+      <group id="content-header" label="Guide" filteredFrom="swt"></group>
+      <text style-id="page-title" id="page-title" filteredFrom="html">Guide</text>
+      <text style-id="page-description" id="page-description">Vuoi sapere come incrementare la tua produttivit� con jLibrary? Le seguenti guide ti aiuteranno a vincere con jLibrary</text>
+      <anchor id="beginAnchor"/>
+      <group label="Guide" id="workbench" style-id="samples-group">
+        <link label="Creare un archivio" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/1/tut1.html" id="multi-page-editor" style-id="sample-link">
+          <text>Questa guida mostra come creare il tuo primo archivio.</text>
+        </link>
+        <link label="Aprire un archivio" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/1/tut2.html" id="property-sheet" style-id="sample-link">
+          <text>Questa guida mostra come aprire archivi.</text>
+        </link>
+        <link label="Creare un documento" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/1/tut3.html" id="readmetool" style-id="sample-link">
+          <text>In questa guida imparerai come creare il tuo primo documento.</text>
+        </link>
+        <link label="Aggiungere documenti multipli" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/1/tut4.html" id="multi-page-editor" style-id="sample-link">
+          <text>Questa guida mostra come aggiungere molti documenti ad un archivio in una sola volta.</text>
+        </link>
+        <link label="Aggiornare documenti" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/1/tut5.html" id="property-sheet" style-id="sample-link">
+          <text>In questa guida imparerai come modificare le propriet� ed il contenuto dei tuoi documenti.</text>
+        </link>
+        <link label="Gestire la sicurezza" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/1/tut6.html" id="readmetool" style-id="sample-link">
+          <text>Questa guida mostra come comportarsi circa la sicurezza dei server e degli archivi.</text>
+        </link>
+        <link label="Gestire le versioni" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/1/tut7.html" id="multi-page-editor" style-id="sample-link">
+          <text>In questa guida imparerai come creare e ripristinare versioni di documenti.</text>
+        </link>
+        <link label="Ricercare" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/1/tut8.html" id="property-sheet" style-id="sample-link">
+          <text>Questa guida mostra come cercare qualcosa in un archivio.</text>
+        </link>
+        <link label="Lavorare con i documenti" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/1/tut9.html" id="readmetool" style-id="sample-link">
+          <text>In questa guida imparerai come svolgere mansioni utili quali la gestione dei lock, l'aggiornamento dei dati, ecc.</text>
+        </link>
+        <link label="Gestire le categorie" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/1/tut10.html" id="multi-page-editor" style-id="sample-link">
+          <text>Questa guida mostra come organizzare i tuoi documenti in categorie.</text>
+        </link>
+        <anchor id="jdtAnchor"/>
+        <anchor id="workbenchGroupAnchor"/>
+      </group>
+      <anchor id="endAnchor"/>
+    </group>
+  </page>
+  <!-- 
+
+-->
+  <page style="css/samples/samples.css" alt-style="css/samples/swt.properties" id="samples" style-id="page">
+    <title style-id="intro-header">Benvenuto in jLibrary 1.0.2</title>
+    <group id="background-image" filteredFrom="swt"/>
+    <group id="curve-image" filteredFrom="swt"/>
+    <include path="overview/navigation-links"/>
+    <group id="page-content">
+      <group id="content-header" label="Esempi" filteredFrom="swt"></group>
+      <text style-id="page-title" id="page-title" filteredFrom="html">Esempi</text>
+      <text style-id="page-description" id="page-description">Esplora le principali caratteristiche di jLibrary usando gli archivi predisposti (richiede una connessione Internet).</text>
+      <anchor id="beginAnchor"/>
+      <group label="Archivi" id="swt" style-id="samples-group">
+        <text style-id="group-description">Gli archivi di esempio dove puoi provare senza sforzo tutte le funzioni di jLibrary con un minimo sforzo.</text>
+        <link label="Archivio jLibrary" url="http://org.eclipse.ui.intro/runAction?pluginId=org.jlibrary.client&amp;class=org.jlibrary.client.intro.ImportSampleAction&amp;id=org.jlibrary.client" id="swt-examples" style-id="sample-link">
+          <text>La pagina web iniziale di jLibrary viene memorizzata in un archivio jLibrary. Per eseguire questo esempio devi prima scaricarel'archivio esportato di jLibrary da quest'URL: http://jlibrary.sourceforge.net/samples/jlibrary-repository.jlib Successivamente premi il bottone sinistro del mouse per mostrare la maschera di importazione. Importa l'archivio appena scaricato. Una volta importato l'archivio vai all'interfaccia principale di jLibrary per vederlo e lavorare con i suoi contenuti</text>
+        </link>
+        
+        <anchor id="swtGroupAnchor"/>
+      </group>
+      <anchor id="endAnchor"/>
+    </group>
+  </page>
+  <!-- 
+
+-->
+  <page style="css/whatsnew/whatsnew.css" alt-style="css/whatsnew/swt.properties" id="news" style-id="page">
+    <title style-id="intro-header">Benvenuto in jLibrary 1.0.2</title>
+    <group id="background-image" filteredFrom="swt"/>
+    <group id="curve-image" filteredFrom="swt"/>
+    <include path="overview/navigation-links"/>
+    <group id="page-content">
+      <group id="content-header" label="What's New?" filteredFrom="swt"></group>
+      <text style-id="page-title" id="page-title" filteredFrom="html">Cosa c'� di nuovo?</text>
+      <anchor id="beginAnchor"/>
+      <group id="noteworthy-links" label="Principali novit�">
+        <link label="jLibrary 1.0.2" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/4/whatsnew_final.html" id="platform-noteworthy" style-id="noteworthy-link">
+          <text>Scopri le principali novit� di questa versione di jLibrary.</text>
+        </link>
+        <anchor id="jdtAnchor"/>
+        <anchor id="pdeAnchor"/>
+        <anchor id="generalAnchor"/>
+      </group>
+      <group id="news-links" label="General">
+        <link label="Il progetto" url="http://www.sourceforge.net/projects/jlibrary" id="eclipse">
+          <text>Visita la home page del progetto. Troverai le mailing lists dove ottenere aiuto, istruzioni per l'accesso CVS, ecc.</text>
+        </link>
+	<anchor id="linksAnchor"/>
+      </group>
+      <anchor id="endAnchor"/>
+    </group>
+  </page>
+</introContent>
+
+
+
+
+
+
+
+
+
