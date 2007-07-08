@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="org.jlibrary.client.win32" default="build.jars" basedir=".">
+
+	<property name="basews" value="${ws}"/>
+	<property name="baseos" value="${os}"/>
+	<property name="basearch" value="${arch}"/>
+	<property name="basenl" value="${nl}"/>
+
+	<!-- Compiler settings. -->
+	<property name="javacFailOnError" value="false"/>
+	<property name="javacDebugInfo" value="on"/>
+	<property name="javacVerbose" value="false"/>
+	<property name="logExtension" value=".log"/>
+	<property name="compilerArg" value=""/>
+	<property name="javacSource" value="1.3"/>
+	<property name="javacTarget" value="1.2"/>
+	<path id="path_bootclasspath">
+		<fileset dir="${java.home}/lib">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+	<property name="bootclasspath" refid="path_bootclasspath"/>
+	<property name="bundleJavacSource" value="${javacSource}"/>
+	<property name="bundleJavacTarget" value="${javacTarget}"/>
+	<property name="bundleBootClasspath" value="${bootclasspath}"/>
+
+	<target name="init" depends="properties">
+		<condition property="pluginTemp" value="${buildTempFolder}/plugins">
+			<isset property="buildTempFolder"/>
+		</condition>
+		<property name="pluginTemp" value="${basedir}"/>
+		<condition property="build.result.folder" value="${pluginTemp}/org.jlibrary.client.win32">
+			<isset property="buildTempFolder"/>
+		</condition>
+		<property name="build.result.folder" value="${basedir}"/>
+		<property name="temp.folder" value="${basedir}/temp.folder"/>
+		<property name="plugin.destination" value="${basedir}"/>
+	</target>
+
+	<target name="properties" if="eclipse.running">
+		<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+
+	</target>
+
+	<target name="build.update.jar" depends="init" description="Build the plug-in: org.jlibrary.client.win32 for an update site.">
+		<delete dir="${temp.folder}"/>
+		<mkdir dir="${temp.folder}"/>
+		<antcall target="build.jars"/>
+		<antcall target="gather.bin.parts">
+			<param name="destination.temp.folder" value="${temp.folder}/"/>
+		</antcall>
+		<zip destfile="${plugin.destination}/org.jlibrary.client.win32_1.1.0.jar" basedir="${temp.folder}/org.jlibrary.client.win32_1.1.0" filesonly="false" whenempty="skip" update="false"/>
+		<delete dir="${temp.folder}"/>
+	</target>
+
+	<target name="@dot" depends="init" unless="@dot" description="Create jar: org.jlibrary.client.win32 @dot.">
+		<delete dir="${temp.folder}/@dot.bin"/>
+		<mkdir dir="${temp.folder}/@dot.bin"/>
+		<path id="@dot.classpath">
+			<pathelement path="../org.jlibrary.client/lib/commons-codec-1.2.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/commons-codec-1.2.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/commons-collections-3.2.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/commons-collections-3.2.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/commons-httpclient-3.0.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/commons-httpclient-3.0.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/commons-io-1.2.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/commons-io-1.2.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/commons-lang-2.2.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/commons-lang-2.2.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/commons-logging-1.0.4.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/commons-logging-1.0.4.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/concurrent-1.3.4.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/concurrent-1.3.4.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/derby-10.2.1.6.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/derby-10.2.1.6.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/freemarker-2.3.8.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/freemarker-2.3.8.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/geronimo-jta_1.0.1B_spec-1.0.1.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/geronimo-jta_1.0.1B_spec-1.0.1.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/jackrabbit-api-1.2.1.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/jackrabbit-api-1.2.1.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/jackrabbit-core-1.2.1.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/jackrabbit-core-1.2.1.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/jackrabbit-index-filters-1.2.1.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/jackrabbit-index-filters-1.2.1.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/jackrabbit-jcr-commons-1.2.1.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/jackrabbit-jcr-commons-1.2.1.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/jackrabbit-jcr-server-1.2.1.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/jackrabbit-jcr-server-1.2.1.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/jackrabbit-webdav-1.2.1.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/jackrabbit-webdav-1.2.1.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/jcl104-over-slf4j-1.0.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/jcl104-over-slf4j-1.0.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/jcr-1.0.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/jcr-1.0.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/log4j-1.2.8.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/log4j-1.2.8.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/lucene-core-2.0.0.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/lucene-core-2.0.0.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/nekohtml-0.9.4.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/nekohtml-0.9.4.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/org.jlibrary.server.httpdelegate-1.0-SNAPSHOT.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/org.jlibrary.server.httpdelegate-1.0-SNAPSHOT.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/org.jlibrary.server-1.0-SNAPSHOT.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/org.jlibrary.server-1.0-SNAPSHOT.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/org.jlibrary.server-1.0-SNAPSHOT-tests.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/org.jlibrary.server-1.0-SNAPSHOT-tests.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/pdfbox-0.6.4.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/pdfbox-0.6.4.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/poi-2.5.1-final-20040804.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/poi-2.5.1-final-20040804.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/servlet-api-2.4.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/servlet-api-2.4.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/slf4j-api-1.1.0.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/slf4j-api-1.1.0.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/slf4j-log4j12-1.1.0.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/slf4j-log4j12-1.1.0.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/tm-extractors-0.4.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/tm-extractors-0.4.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/xercesImpl-2.6.2.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/xercesImpl-2.6.2.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/xmlParserAPIs-2.0.2.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/xmlParserAPIs-2.0.2.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/xstream-1.1.3.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/xstream-1.1.3.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/bin/"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/@dot"/>
+			<pathelement path="../org.jlibrary.client/lib/org.jlibrary.extractors-1.0-SNAPSHOT.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/org.jlibrary.extractors-1.0-SNAPSHOT.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/pdfbox-0.7.1.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/pdfbox-0.7.1.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/htmlparser-1.6.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/htmlparser-1.6.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/derby-10.2.2.0.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/derby-10.2.2.0.jar"/>
+			<pathelement path="../org.jlibrary.client/lib/xpp3-1.1.3.4.O.jar"/>
+			<pathelement path="${build.result.folder}/../org.jlibrary.client/lib/xpp3-1.1.3.4.O.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/@dot"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/commons-codec-1.2.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/commons-collections-3.2.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/commons-httpclient-3.0.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/commons-io-1.2.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/commons-lang-2.2.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/commons-logging-1.0.4.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/concurrent-1.3.4.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/derby-10.2.1.6.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/freemarker-2.3.8.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/geronimo-jta_1.0.1B_spec-1.0.1.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/jackrabbit-api-1.2.1.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/jackrabbit-core-1.2.1.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/jackrabbit-index-filters-1.2.1.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/jackrabbit-jcr-commons-1.2.1.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/jackrabbit-jcr-server-1.2.1.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/jackrabbit-webdav-1.2.1.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/jcl104-over-slf4j-1.0.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/jcr-1.0.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/log4j-1.2.8.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/lucene-core-2.0.0.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/nekohtml-0.9.4.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/org.jlibrary.server.httpdelegate-1.0-SNAPSHOT.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/org.jlibrary.server-1.0-SNAPSHOT.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/org.jlibrary.server-1.0-SNAPSHOT-tests.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/pdfbox-0.6.4.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/poi-2.5.1-final-20040804.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/servlet-api-2.4.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/slf4j-api-1.1.0.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/slf4j-log4j12-1.1.0.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/tm-extractors-0.4.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/xercesImpl-2.6.2.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/xmlParserAPIs-2.0.2.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/xstream-1.1.3.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/org.jlibrary.extractors-1.0-SNAPSHOT.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/pdfbox-0.7.1.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/htmlparser-1.6.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/derby-10.2.2.0.jar"/>
+			<pathelement path="../org.jlibrary.client.nl1/lib/xpp3-1.1.3.4.O.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/@dot"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/commons-codec-1.2.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/commons-collections-3.2.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/commons-httpclient-3.0.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/commons-io-1.2.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/commons-lang-2.2.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/commons-logging-1.0.4.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/concurrent-1.3.4.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/derby-10.2.1.6.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/freemarker-2.3.8.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/geronimo-jta_1.0.1B_spec-1.0.1.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/jackrabbit-api-1.2.1.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/jackrabbit-core-1.2.1.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/jackrabbit-index-filters-1.2.1.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/jackrabbit-jcr-commons-1.2.1.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/jackrabbit-jcr-server-1.2.1.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/jackrabbit-webdav-1.2.1.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/jcl104-over-slf4j-1.0.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/jcr-1.0.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/log4j-1.2.8.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/lucene-core-2.0.0.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/nekohtml-0.9.4.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/org.jlibrary.server.httpdelegate-1.0-SNAPSHOT.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/org.jlibrary.server-1.0-SNAPSHOT.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/org.jlibrary.server-1.0-SNAPSHOT-tests.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/pdfbox-0.6.4.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/poi-2.5.1-final-20040804.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/servlet-api-2.4.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/slf4j-api-1.1.0.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/slf4j-log4j12-1.1.0.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/tm-extractors-0.4.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/xercesImpl-2.6.2.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/xmlParserAPIs-2.0.2.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/xstream-1.1.3.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/org.jlibrary.extractors-1.0-SNAPSHOT.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/pdfbox-0.7.1.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/htmlparser-1.6.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/derby-10.2.2.0.jar"/>
+			<pathelement path="../org.jlibrary.client.nl2/lib/xpp3-1.1.3.4.O.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.ui_3.2.1.M20061108.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.core.runtime_3.2.0.v20060603.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.osgi_3.2.2.R32x_v20070118.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.equinox.common_3.2.0.v20060603.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.core.jobs_3.2.0.v20060603.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.core.runtime.compatibility.registry_3.2.1.R32x_v20060907/runtime_registry_compatibility.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.core.runtime.compatibility.registry_3.2.1.R32x_v20060907/@dot"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.equinox.registry_3.2.1.R32x_v20060814.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.equinox.preferences_3.2.1.R32x_v20060717.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.core.contenttype_3.2.0.v20060603.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.core.runtime.compatibility.auth_3.2.0.v20060601.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.swt_3.2.2.v3236b.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.swt.win32.win32.x86_3.2.2.v3236.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.jface_3.2.2.M20061214-1200.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.core.commands_3.2.0.I20060605-1400.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.ui.workbench_3.2.2.M20070119-0800.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/com.ibm.icu_3.4.5.20061213.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.help_3.2.2.R322_v20061213.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.core.expressions_3.2.2.r322_v20070109a.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.core.resources_3.2.2.R32x_v20061218.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.core.resources.compatibility_3.2.0.v20060603.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.core.resources.win32_3.2.0.v20060603.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.core.runtime.compatibility_3.1.100.v20060603.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.update.configurator_3.2.2.R32x_v20070111.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.core.filesystem_1.0.0.v20060603.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.core.filesystem.win32.x86_1.0.0.v20060603.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.ui.views_3.2.1.M20060906-0800.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.update.ui_3.2.2.R32x_v20070111.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.update.core_3.2.3.R32x_v20070118.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.update.core.win32_3.2.2.R32x_v20061214.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.ui.forms_3.2.0.v20060602.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.jface.text_3.2.2.r322_v20070104.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.text_3.2.0.v20060605-1400.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.draw2d_3.2.2.v20070208.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.gef_3.2.2.v20070208.jar"/>
+			<pathelement path="../../../target/eclipse/plugins/org.eclipse.ui.workbench.texteditor_3.2.0.v20060605-1400.jar"/>
+		</path>
+		<!-- compile the source code -->
+		<javac destdir="${temp.folder}/@dot.bin" failonerror="${javacFailOnError}" verbose="${javacVerbose}" debug="${javacDebugInfo}" includeAntRuntime="no" bootclasspath="${bundleBootClasspath}" source="${bundleJavacSource}" target="${bundleJavacTarget}"		>
+			<compilerarg line="${compilerArg}" compiler="${build.compiler}"/>
+			<classpath refid="@dot.classpath" />
+			<src path="src/main/java"			/>
+			<compilerarg value="@${basedir}/javaCompiler...args" compiler="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+			<compilerarg line="-log '${temp.folder}/@dot.bin${logExtension}'" compiler="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+		</javac>
+		<!-- Copy necessary resources -->
+		<copy todir="${temp.folder}/@dot.bin" failonerror="true" overwrite="false">
+			<fileset dir="src/main/java" excludes="**/*.java, **/package.htm*"			/>
+		</copy>
+		<mkdir dir="${build.result.folder}"/>
+		<copy todir="${build.result.folder}/@dot" failonerror="true" overwrite="false">
+			<fileset dir="${temp.folder}/@dot.bin"			/>
+		</copy>
+		<delete dir="${temp.folder}/@dot.bin"/>
+	</target>
+
+	<target name="src.zip" depends="init" unless="src.zip">
+		<mkdir dir="${build.result.folder}"/>
+		<zip destfile="${build.result.folder}/src.zip" filesonly="false" whenempty="skip" update="false">
+			<fileset dir="src/main/java" includes="**/*.java"			/>
+		</zip>
+	</target>
+
+	<target name="build.jars" depends="init" description="Build all the jars for the plug-in: org.jlibrary.client.win32.">
+		<available property="@dot" file="${build.result.folder}/@dot"/>
+		<antcall target="@dot"/>
+	</target>
+
+	<target name="build.sources" depends="init">
+		<available property="src.zip" file="${build.result.folder}/src.zip"/>
+		<antcall target="src.zip"/>
+	</target>
+
+	<target name="gather.bin.parts" depends="init" if="destination.temp.folder">
+		<mkdir dir="${destination.temp.folder}/org.jlibrary.client.win32_1.1.0"/>
+		<copy todir="${destination.temp.folder}/org.jlibrary.client.win32_1.1.0" failonerror="true" overwrite="false">
+			<fileset dir="${build.result.folder}/@dot" includes="**"			/>
+		</copy>
+		<copy todir="${destination.temp.folder}/org.jlibrary.client.win32_1.1.0" failonerror="true" overwrite="false">
+			<fileset dir="${basedir}" includes="fragment.xml,META-INF/"			/>
+		</copy>
+		<eclipse.versionReplacer path="${destination.temp.folder}/org.jlibrary.client.win32_1.1.0" version="1.1.0"/>
+	</target>
+
+	<target name="build.zips" depends="init">
+	</target>
+
+	<target name="gather.sources" depends="init" if="destination.temp.folder">
+		<mkdir dir="${destination.temp.folder}/org.jlibrary.client.win32_1.1.0"/>
+		<copy file="${build.result.folder}/src.zip" todir="${destination.temp.folder}/org.jlibrary.client.win32_1.1.0" failonerror="false" overwrite="false"/>
+	</target>
+
+	<target name="gather.logs" depends="init" if="destination.temp.folder">
+		<mkdir dir="${destination.temp.folder}/org.jlibrary.client.win32_1.1.0"/>
+		<copy file="${temp.folder}/@dot.bin${logExtension}" todir="${destination.temp.folder}/org.jlibrary.client.win32_1.1.0" failonerror="false" overwrite="false"/>
+	</target>
+
+	<target name="clean" depends="init" description="Clean the plug-in: org.jlibrary.client.win32 of all the zips, jars and logs created.">
+		<delete dir="${build.result.folder}/@dot"/>
+		<delete file="${build.result.folder}/src.zip"/>
+		<delete file="${plugin.destination}/org.jlibrary.client.win32_1.1.0.jar"/>
+		<delete file="${plugin.destination}/org.jlibrary.client.win32_1.1.0.zip"/>
+		<delete dir="${temp.folder}"/>
+	</target>
+
+	<target name="refresh" depends="init" if="eclipse.running" description="Refresh this folder.">
+		<eclipse.convertPath fileSystemPath="E:/eclipse-final/workspace/plugins/org.jlibrary.client.win32" property="resourcePath"/>
+		<eclipse.refreshLocal resource="${resourcePath}" depth="infinite"/>
+	</target>
+
+	<target name="zip.plugin" depends="init" description="Create a zip containing all the elements for the plug-in: org.jlibrary.client.win32.">
+		<delete dir="${temp.folder}"/>
+		<mkdir dir="${temp.folder}"/>
+		<antcall target="build.jars"/>
+		<antcall target="build.sources"/>
+		<antcall target="gather.bin.parts">
+			<param name="destination.temp.folder" value="${temp.folder}/"/>
+		</antcall>
+		<antcall target="gather.sources">
+			<param name="destination.temp.folder" value="${temp.folder}/"/>
+		</antcall>
+		<delete>
+			<fileset dir="${temp.folder}" includes="**/*.bin${logExtension}"			/>
+		</delete>
+		<zip destfile="${plugin.destination}/org.jlibrary.client.win32_1.1.0.zip" basedir="${temp.folder}" filesonly="true" whenempty="skip" update="false"/>
+		<delete dir="${temp.folder}"/>
+	</target>
+
+</project>

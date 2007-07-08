@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<fragment>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.jlibrary.client.ui.editor.impl.GenericActiveXEditor"
+            default="true"
+            extensions="ppt,doc,rtf,xls,pps"
+            icon="resources/icons/edit.gif"
+            id="org.jlibrary.client.ui.editor.impl.GenericActiveXEditor"
+            name="ActiveX Editor">            
+      </editor>
+   </extension>
+
+</fragment>
