@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployment xmlns="http://xml.apache.org/axis/wsdd/" xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+ <globalConfiguration>
+  <parameter name="sendMultiRefs" value="true"/>
+  <parameter name="disablePrettyXML" value="true"/>
+  <parameter name="adminPassword" value="admin"/>
+  <parameter name="attachments.Directory" value="/temp/attachments"/>
+  <parameter name="axis.sendMinimizedElements" value="true"/>
+  <parameter name="enableNamespacePrefixOptimization" value="true"/>
+  <parameter name="sendXMLDeclaration" value="true"/>
+  <parameter name="attachments.implementation" value="org.apache.axis.attachments.AttachmentsImpl"/>
+  <parameter name="sendXsiTypes" value="true"/>
+  <requestFlow>
+   <handler type="java:org.apache.axis.handlers.JWSHandler">
+    <parameter name="scope" value="session"/>
+   </handler>
+   <handler type="java:org.apache.axis.handlers.JWSHandler">
+    <parameter name="scope" value="request"/>
+    <parameter name="extension" value=".jwr"/>
+   </handler>
+  </requestFlow>
+ </globalConfiguration>
+ <handler name="LocalResponder" type="java:org.apache.axis.transport.local.LocalResponder"/>
+ <handler name="URLMapper" type="java:org.apache.axis.handlers.http.URLMapper"/>
+ <handler name="Authenticate" type="java:org.apache.axis.handlers.SimpleAuthenticationHandler"/>
+ <service name="AxisSecurityService" provider="java:RPC">
+  <parameter name="allowedMethods" value="*"/>
+  <parameter name="className" value="org.jlibrary.core.security.axis.AxisSecurityService"/>
+  <parameter name="scope" value="request"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Repository" qname="ns1:Repository" xmlns:ns1="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Node" qname="ns2:Node" xmlns:ns2="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Document" qname="ns3:Document" xmlns:ns3="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Directory" qname="ns4:Directory" xmlns:ns4="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.User" qname="ns5:User" xmlns:ns5="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Category" qname="ns6:Category" xmlns:ns6="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Note" qname="ns7:Note" xmlns:ns7="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Author" qname="ns8:Author" xmlns:ns8="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Bookmark" qname="ns9:Bookmark" xmlns:ns9="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.DocumentMetaData" qname="ns10:DocumentMetaData" xmlns:ns10="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Member" qname="ns11:Member" xmlns:ns11="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Group" qname="ns12:Group" xmlns:ns12="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Favorite" qname="ns13:Favorite" xmlns:ns13="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Rol" qname="ns14:Rol" xmlns:ns14="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.properties.DocumentProperties" qname="ns15:DocumentProperties" xmlns:ns15="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.properties.PropertyDef" qname="ns16:PropertyDef" xmlns:ns16="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Credentials" qname="ns17:Credentials" xmlns:ns17="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Ticket" qname="ns18:Ticket" xmlns:ns18="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.properties.UserProperties" qname="ns19:UserProperties" xmlns:ns19="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.properties.GroupProperties" qname="ns20:GroupProperties" xmlns:ns20="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.properties.RolProperties" qname="ns21:RolProperties" xmlns:ns21="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.CategoryNode" qname="ns22:CategoryNode" xmlns:ns22="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Restriction" qname="ns23:Restriction" xmlns:ns23="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.DocumentVersion" qname="ns24:DocumentVersion" xmlns:ns24="urn:BeanService"/>
+ </service>
+ <service name="AxisRepositoryService" provider="java:RPC">
+  <parameter name="allowedMethods" value="*"/>
+  <parameter name="className" value="org.jlibrary.core.repository.axis.AxisRepositoryService"/>
+  <parameter name="scope" value="request"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Repository" qname="ns25:Repository" xmlns:ns25="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Node" qname="ns26:Node" xmlns:ns26="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Document" qname="ns27:Document" xmlns:ns27="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Directory" qname="ns28:Directory" xmlns:ns28="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.User" qname="ns29:User" xmlns:ns29="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Category" qname="ns30:Category" xmlns:ns30="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Note" qname="ns31:Note" xmlns:ns31="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Author" qname="ns32:Author" xmlns:ns32="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Bookmark" qname="ns33:Bookmark" xmlns:ns33="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.DocumentMetaData" qname="ns34:DocumentMetaData" xmlns:ns34="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Member" qname="ns35:Member" xmlns:ns35="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Group" qname="ns36:Group" xmlns:ns36="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Favorite" qname="ns37:Favorite" xmlns:ns37="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Rol" qname="ns38:Rol" xmlns:ns38="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.properties.DocumentProperties" qname="ns39:DocumentProperties" xmlns:ns39="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.properties.PropertyDef" qname="ns40:PropertyDef" xmlns:ns40="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Credentials" qname="ns41:Credentials" xmlns:ns41="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Ticket" qname="ns42:Ticket" xmlns:ns42="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.RepositoryInfo" qname="ns43:RepositoryInfo" xmlns:ns43="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.CategoryNode" qname="ns44:CategoryNode" xmlns:ns44="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.DocumentVersion" qname="ns45:DocumentVersion" xmlns:ns45="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Relation" qname="ns46:Relation" xmlns:ns46="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.properties.CategoryProperties" qname="ns47:CategoryProperties" xmlns:ns47="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Lock" qname="ns48:Lock" xmlns:ns48="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Restriction" qname="ns49:Restriction" xmlns:ns49="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.ResourceNode" qname="ns50:ResourceNode" xmlns:ns50="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.properties.ResourceNodeProperties" qname="ns51:ResourceNodeProperties" xmlns:ns51="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.properties.DirectoryProperties" qname="ns52:DirectoryProperties" xmlns:ns52="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.properties.RepositoryProperties" qname="ns53:RepositoryProperties" xmlns:ns53="urn:BeanService"/>
+ </service>
+ <service name="AdminService" provider="java:MSG">
+  <parameter name="allowedMethods" value="AdminService"/>
+  <parameter name="enableRemoteAdmin" value="false"/>
+  <parameter name="className" value="org.apache.axis.utils.Admin"/>
+  <namespace>http://xml.apache.org/axis/wsdd/</namespace>
+ </service>
+ <service name="Version" provider="java:RPC">
+  <parameter name="allowedMethods" value="getVersion"/>
+  <parameter name="className" value="org.apache.axis.Version"/>
+ </service>
+ <service name="AxisSearchService" provider="java:RPC">
+  <parameter name="allowedMethods" value="*"/>
+  <parameter name="className" value="org.jlibrary.core.search.axis.AxisSearchService"/>
+  <parameter name="scope" value="request"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.search.SearchHit" qname="ns54:SearchHit" xmlns:ns54="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Repository" qname="ns55:Repository" xmlns:ns55="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Node" qname="ns56:Node" xmlns:ns56="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Document" qname="ns57:Document" xmlns:ns57="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Directory" qname="ns58:Directory" xmlns:ns58="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.User" qname="ns59:User" xmlns:ns59="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Category" qname="ns60:Category" xmlns:ns60="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Note" qname="ns61:Note" xmlns:ns61="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Author" qname="ns62:Author" xmlns:ns62="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Bookmark" qname="ns63:Bookmark" xmlns:ns63="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.DocumentMetaData" qname="ns64:DocumentMetaData" xmlns:ns64="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Member" qname="ns65:Member" xmlns:ns65="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Group" qname="ns66:Group" xmlns:ns66="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Favorite" qname="ns67:Favorite" xmlns:ns67="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Rol" qname="ns68:Rol" xmlns:ns68="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.properties.DocumentProperties" qname="ns69:DocumentProperties" xmlns:ns69="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.properties.PropertyDef" qname="ns70:PropertyDef" xmlns:ns70="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Credentials" qname="ns71:Credentials" xmlns:ns71="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Ticket" qname="ns72:Ticket" xmlns:ns72="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.RepositoryInfo" qname="ns73:RepositoryInfo" xmlns:ns73="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.CategoryNode" qname="ns74:CategoryNode" xmlns:ns74="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.DocumentVersion" qname="ns75:DocumentVersion" xmlns:ns75="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Relation" qname="ns76:Relation" xmlns:ns76="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.properties.CategoryProperties" qname="ns77:CategoryProperties" xmlns:ns77="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Lock" qname="ns78:Lock" xmlns:ns78="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.Restriction" qname="ns79:Restriction" xmlns:ns79="urn:BeanService"/>
+  <beanMapping languageSpecificType="java:org.jlibrary.core.entities.ResourceNode" qname="ns80:ResourceNode" xmlns:ns80="urn:BeanService"/>
+ </service>
+ <transport name="http">
+  <requestFlow>
+   <handler type="URLMapper"/>
+   <handler type="java:org.apache.axis.handlers.http.HTTPAuthHandler"/>
+  </requestFlow>
+  <parameter name="qs.list" value="org.apache.axis.transport.http.QSListHandler"/>
+  <parameter name="qs.method" value="org.apache.axis.transport.http.QSMethodHandler"/>
+  <parameter name="qs.wsdl" value="org.apache.axis.transport.http.QSWSDLHandler"/>
+ </transport>
+ <transport name="local">
+  <responseFlow>
+   <handler type="LocalResponder"/>
+  </responseFlow>
+ </transport>
+</deployment>

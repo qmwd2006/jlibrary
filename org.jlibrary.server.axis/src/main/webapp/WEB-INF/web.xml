@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/j2ee/dtds/web-app_2_2.dtd">
+<web-app>
+    <display-name>jLibrary Server (Axis support)</display-name>
+
+    <listener>
+        <listener-class>org.apache.axis.transport.http.AxisHTTPSessionListener</listener-class>
+    </listener>
+    
+    <!-- ====================================================================== -->
+    <!-- L O G G I N G   S E R V L E T                                          -->
+    <!-- ====================================================================== -->
+    <servlet>
+        <servlet-name>Logging</servlet-name>
+        <!--The logging servlet configures the Log4J logging facility.-->
+        <servlet-class>org.apache.jackrabbit.j2ee.LoggingServlet</servlet-class>
+
+        <init-param>
+            <param-name>log4j-config</param-name>
+            <param-value>/WEB-INF/log4j.xml</param-value>
+            <!--initial log4j configuration-->
+        </init-param>
+
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+
+    <!-- ====================================================================== -->
+    <!-- R E P O S I T O R Y   S T A R T U P  S E R V L E T                     -->
+    <!-- ====================================================================== -->
+    <servlet>
+        <servlet-name>RepositoryStartup</servlet-name>
+        <!--
+            Repository servlet that starts the repository and registers it to JNDI ans RMI.
+            If you already have the repository registered in this appservers JNDI context,
+            or if its accessible via RMI, you do not need to use this servlet.
+        -->
+        <servlet-class>org.apache.jackrabbit.j2ee.RepositoryStartupServlet</servlet-class>
+
+        <init-param>
+            <param-name>repository-config</param-name>
+            <param-value>/WEB-INF/repository/repository.xml</param-value>
+            <!--the repository config location-->
+        </init-param>
+
+        <init-param>
+            <param-name>repository-home</param-name>
+            <param-value>jackrabbit/repository</param-value>
+            <!--the repository home-->
+        </init-param>
+
+        <init-param>
+            <param-name>repository-name</param-name>
+            <param-value>jackrabbit.repository</param-value>
+            <!--Repository Name under which the repository is registered via JNDI/RMI-->
+        </init-param>
+
+        <!--
+            the following 3 parameters deal with registering the repository to
+            a RMI registry. if all parameters are omitted, the repository will
+            not be registered.
+        -->
+        <!--
+                The RMI port for registering the repository in the RMI Registry.
+                If equals 0, the default port is used.
+                
+        <init-param>
+            <param-name>rmi-port</param-name>
+            <param-value>0</param-value>
+        </init-param>
+
+                The RMI host for registering the repository in the RMI Registry.
+                If equals "" or missing, the default host is used.
+
+        <init-param>
+            <param-name>rmi-host</param-name>
+            <param-value>localhost</param-value>
+        </init-param>
+
+                The RMI uri for registering the repository in the RMI Registry.
+                If missing, the uri is composed using the other rmi parameters
+                and will have the format: //{rmi-host}:{rmi-port}/{repository-name}
+
+        <init-param>
+            <param-name>rmi-uri</param-name>
+            <param-value></param-value>
+        </init-param>
+        -->
+        <!--
+            JNDI environment variables for creating the initial context
+            (all init parameters starting with java.naming.* will be added to the initial context environment).
+        -->
+        <init-param>
+            <param-name>java.naming.provider.url</param-name>
+            <param-value>http://www.apache.org/jackrabbit</param-value>
+        </init-param>
+        <init-param>
+            <param-name>java.naming.factory.initial</param-name>
+            <param-value>org.apache.jackrabbit.core.jndi.provider.DummyInitialContextFactory</param-value>
+        </init-param>
+
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <!-- ====================================================================== -->
+    <!-- J L I B R A R Y  W E B D A V  S E R V L E T                            -->
+    <!-- ====================================================================== -->
+    <servlet>
+        <servlet-name>Webdav</servlet-name>
+        <!--
+            The webdav servlet that connects HTTP request to the repository.
+        -->
+        <servlet-class>org.apache.jackrabbit.j2ee.SimpleWebdavServlet</servlet-class>
+
+        <init-param>
+            <param-name>resource-path-prefix</param-name>
+            <param-value>/repository</param-value>
+            <!--
+                defines the prefix for spooling resources out of the repository.
+            -->
+        </init-param>
+        <!--
+            Optional parameter to define the value of the 'WWW-Authenticate' header
+        -->
+        <!--
+
+                Defines the value of the 'WWW-Authenticate' header.
+
+        <init-param>
+            <param-name>authenticate-header</param-name>
+            <param-value>Basic Realm=Jackrabbit Webdav Server</param-value>
+        </init-param>
+        -->
+        <!--
+            Parameter used to configure behaviour of webdav resources such as:
+            - destinction between collections and non-collections
+            - resource filtering
+        -->
+        <init-param>
+            <param-name>resource-config</param-name>
+            <param-value>/WEB-INF/config.xml</param-value>
+            <!--
+                Defines various dav-resource configuration parameters.
+            -->
+        </init-param>
+        <load-on-startup>3</load-on-startup>
+    </servlet>
+
+    <!-- ====================================================================== -->
+    <!-- W E B D A V  S E R V E R  S E R V L E T                                -->
+    <!--                                                                        -->
+    <!-- Uncomment this server to get WebDAV support on jLibrary. You can       -->
+    <!-- this Servlet definition if you do not plan to use WebDAV               -->
+    <!-- ====================================================================== -->
+    <!--
+    <servlet>
+        <servlet-name>JCRWebdavServer</servlet-name>
+    UNNCOMMENT THIS ONE TO GET WEBDAV SUPPORT ON JLIBRARY-->
+        <!--
+            The webdav servlet that connects HTTP request to the repository.
+        -->
+    <!--
+        <servlet-class>org.apache.jackrabbit.j2ee.JCRWebdavServerServlet</servlet-class>
+      
+        <init-param>
+            <param-name>resource-path-prefix</param-name>
+            <param-value>/server</param-value>
+    UNNCOMMENT THIS ONE TO GET WEBDAV SUPPORT ON JLIBRARY-->            
+            <!--
+                defines the prefix for spooling resources out of the repository.
+            -->
+    <!--
+        </init-param>
+        <load-on-startup>4</load-on-startup>
+    </servlet>
+    UNNCOMMENT THIS ONE TO GET WEBDAV SUPPORT ON JLIBRARY-->
+
+    <!-- ====================================================================== -->
+    <!-- J L I B R A R Y  S E R V L E T                                           -->
+    <!-- ====================================================================== -->
+  <servlet>
+    <servlet-name>JLibraryStartupServlet</servlet-name>
+    <display-name>JLibrary startup servlet</display-name>
+    <servlet-class>
+        org.jlibrary.servlet.JLibraryStartupServlet
+    </servlet-class>    
+        <init-param>
+            <param-name>java.naming.provider.url</param-name>
+            <param-value>http://www.apache.org/jackrabbit</param-value>
+        </init-param>
+        <init-param>
+            <param-name>java.naming.factory.initial</param-name>
+            <param-value>org.apache.jackrabbit.core.jndi.provider.DummyInitialContextFactory</param-value>
+        </init-param>    
+        <init-param>
+            <param-name>jlibrary.home</param-name>
+            <param-value>WEB-INF/repository</param-value>
+            <!--config home-->
+        </init-param>        
+    <load-on-startup>5</load-on-startup>       
+  </servlet>
+
+    <!-- ====================================================================== -->
+    <!-- J L I B R A R Y    A X I S   S E R V L E T                             -->
+    <!-- ====================================================================== -->
+  <servlet>
+    <servlet-name>JLibraryStartupAxisServlet</servlet-name>
+    <display-name>JLibrary startup servlet</display-name>
+    <servlet-class>
+        org.jlibrary.servlet.JLibraryStartupAxisServlet
+    </servlet-class>           
+    <load-on-startup>10</load-on-startup>       
+  </servlet>
+
+  <servlet>
+    <servlet-name>HTTPRepositoryService</servlet-name>
+    <display-name>JLibrary Repository Service</display-name>
+    <servlet-class>
+        org.jlibrary.servlet.service.HTTPRepositoryService
+    </servlet-class>         
+  </servlet>
+  
+  <servlet>
+    <servlet-name>HTTPSecurityService</servlet-name>
+    <display-name>JLibrary Security Service</display-name>
+    <servlet-class>
+        org.jlibrary.servlet.service.HTTPSecurityService
+    </servlet-class>         
+  </servlet>
+  
+  <servlet>
+    <servlet-name>HTTPSearchService</servlet-name>
+    <display-name>JLibrary Search Service</display-name>
+    <servlet-class>
+        org.jlibrary.servlet.service.HTTPSearchService
+    </servlet-class>         
+  </servlet>   
+
+    <!-- ====================================================================== -->
+    <!-- T E S T I N G   S E R V L E T                                          -->
+    <!-- ====================================================================== -->
+
+    <!--
+    <servlet>
+        <servlet-name>TestLoginServlet</servlet-name>
+        <servlet-class>org.jlibrary.core.servlet.TestLoginServlet</servlet-class>
+
+    </servlet>
+    -->
+
+    <!-- ====================================================================== -->
+    <!-- S E R V L E T   M A P P I N G                                          -->
+    <!-- ====================================================================== -->
+   
+    <!-- 
+    <servlet-mapping>
+        <servlet-name>TestLoginServlet</servlet-name>
+        <url-pattern>/TestLoginServlet</url-pattern>
+    </servlet-mapping>    
+    -->
+    <!--
+    <servlet-mapping>
+        <servlet-name>Webdav</servlet-name>
+        <url-pattern>/repository/*</url-pattern>
+    </servlet-mapping>
+     UNNCOMMENT THIS ONE TO GET WEBDAV SUPPORT ON JLIBRARY-->
+    
+    <!--
+    <servlet-mapping>
+        <servlet-name>JCRWebdavServer</servlet-name>
+        <url-pattern>/server/*</url-pattern>
+    </servlet-mapping>
+     UNNCOMMENT THIS ONE TO GET A BASIC WEBDAV BROWSER ON JLIBRARY-->
+ 
+  <servlet-mapping>
+    <servlet-name>JLibraryStartupAxisServlet</servlet-name>
+    <url-pattern>/servlet/JLibraryStartupServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>JLibraryStartupAxisServlet</servlet-name>
+    <url-pattern>/servlet/JLibraryStartupAxisServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>JLibraryStartupAxisServlet</servlet-name>
+    <url-pattern>*.jws</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>JLibraryStartupAxisServlet</servlet-name>
+    <url-pattern>/services/*</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>HTTPRepositoryService</servlet-name>
+    <url-pattern>/HTTPRepositoryService</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>HTTPSecurityService</servlet-name>
+    <url-pattern>/HTTPSecurityService</url-pattern>
+  </servlet-mapping>
+  
+    <servlet-mapping>
+    <servlet-name>HTTPSearchService</servlet-name>
+    <url-pattern>/HTTPSearchService</url-pattern>
+  </servlet-mapping>
+
+    <session-config>
+        <!-- Default to 15 minute session timeouts -->
+        <session-timeout>15</session-timeout>
+    </session-config>
+
+    <!-- currently the W3C havent settled on a media type for WSDL;
+    http://www.w3.org/TR/2003/WD-wsdl12-20030303/#ietf-draft
+    for now we go with the basic 'it's XML' response -->
+  <mime-mapping>
+    <extension>wsdl</extension>
+     <mime-type>text/xml</mime-type>
+  </mime-mapping>
+  
+
+  <mime-mapping>
+    <extension>xsd</extension>
+    <mime-type>text/xml</mime-type>
+  </mime-mapping>
+    
+</web-app>
