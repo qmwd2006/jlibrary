@@ -1370,7 +1370,17 @@ public class HTTPRepositoryDelegate extends HTTPDelegate implements RepositorySe
 		return b;
 	}
 
+	public boolean isPropertyRegistered(Ticket ticket, 
+										String uri, 
+										String propertyName) throws RepositoryException {
 
+		Boolean b = (Boolean)doRepositoryRequest(
+				"isPropertyRegistered",
+				new Object [] {ticket,uri,propertyName}, 
+				Boolean.class);
+		return b;
+	}
+	
 	public void registerCustomProperty(Ticket ticket, CustomPropertyDefinition property) throws RepositoryException {
 
 		doVoidRepositoryRequest(
