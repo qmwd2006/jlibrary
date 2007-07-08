@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin
+   id="org.jlibrary.intro"
+   name="Intro Plug-in"
+   version="3.0.0"
+   provider-name="">
+
+   <runtime>
+      <library name="jlibrary-intro.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.ui.intro"/>
+      <import plugin="org.eclipse.ui.forms"/>
+	  <import plugin="org.eclipse.ui.cheatsheets"/>	
+   </requires>
+
+   <extension  
+         point="org.eclipse.ui.intro">
+      <intro
+            class="org.eclipse.ui.intro.config.CustomizableIntroPart"
+            id="org.jlibrary.intro"
+            icon="intro.gif">
+      </intro>
+      <introProductBinding
+            introId="org.jlibrary.intro"
+            productId="org.jlibrary.client.product">
+      </introProductBinding>
+   </extension>
+   
+   <extension   
+         id="intro"
+         point="org.eclipse.ui.intro.config">
+      <config
+            introId="org.jlibrary.intro"
+            id="org.eclipse.jlibrary.intro.introConfig"
+            content="$nl$/introContent.xml">
+         <presentation
+               home-page-id="root" standby-page-id="standby">
+            <implementation
+                  ws="win32"
+                  style="css/shared.css"
+                  kind="html"
+                  os="win32">
+            </implementation>
+            <implementation
+                  kind="swt">
+            </implementation>
+            <launchBar 	
+            	location="right" 
+            	bg="#c6c3e8" 
+            	>
+               <handle
+                     close="true"
+                     image="css/graphics/contentpage/handle.gif"/>
+               <shortcut
+                     icon="css/graphics/icons/etool/overview.gif"
+                     tooltip="%overview.tooltip"
+                     url="http://org.eclipse.ui.intro/showPage?id=overview"/>
+               <shortcut
+                     tooltip="%tutorials.tooltip"
+                     icon="css/graphics/icons/etool/tutorials.gif"
+                     url="http://org.eclipse.ui.intro/showPage?id=tutorials"/>
+               <shortcut
+                     tooltip="%samples.tooltip"
+                     icon="css/graphics/icons/etool/samples.gif"
+                     url="http://org.eclipse.ui.intro/showPage?id=samples"/>
+               <shortcut
+                     tooltip="%whatsnew.tooltip"
+                     icon="css/graphics/icons/etool/whatsnew.gif"
+                     url="http://org.eclipse.ui.intro/showPage?id=news"/>                                             
+            </launchBar>
+         </presentation>
+      </config>
+   </extension> 
+
+</plugin>
