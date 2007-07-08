@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/j2ee/dtds/web-app_2_2.dtd">
+<web-app>
+    <display-name>jLibrary Server</display-name>
+
+    <!-- ====================================================================== -->
+    <!-- W E B D A V  S E R V E R  S E R V L E T                                -->
+    <!--                                                                        -->
+    <!-- Uncomment this server to get WebDAV support on jLibrary. You can       -->
+    <!-- this Servlet definition if you do not plan to use WebDAV               -->
+    <!-- ====================================================================== -->
+    <!--
+    <servlet>
+        <servlet-name>JCRWebdavServer</servlet-name>
+    UNNCOMMENT THIS ONE TO GET WEBDAV SUPPORT ON JLIBRARY-->
+        <!--
+            The webdav servlet that connects HTTP request to the repository.
+        -->
+    <!--
+        <servlet-class>org.apache.jackrabbit.j2ee.JCRWebdavServerServlet</servlet-class>
+      
+        <init-param>
+            <param-name>resource-path-prefix</param-name>
+            <param-value>/server</param-value>
+    UNNCOMMENT THIS ONE TO GET WEBDAV SUPPORT ON JLIBRARY-->            
+            <!--
+                defines the prefix for spooling resources out of the repository.
+            -->
+    <!--
+        </init-param>
+        <load-on-startup>4</load-on-startup>
+    </servlet>
+    UNNCOMMENT THIS ONE TO GET WEBDAV SUPPORT ON JLIBRARY-->
+
+    <!-- ====================================================================== -->
+    <!-- J L I B R A R Y  S E R V L E T                                           -->
+    <!-- ====================================================================== -->
+  <servlet>
+    <servlet-name>JLibraryStartupServlet</servlet-name>
+    <display-name>JLibrary startup servlet</display-name>
+    <servlet-class>
+        org.jlibrary.servlet.JLibraryStartupServlet
+    </servlet-class>    
+        <init-param>
+            <param-name>java.naming.provider.url</param-name>
+            <param-value>http://www.apache.org/jackrabbit</param-value>
+        </init-param>
+        <init-param>
+            <param-name>java.naming.factory.initial</param-name>
+            <param-value>org.apache.jackrabbit.core.jndi.provider.DummyInitialContextFactory</param-value>
+        </init-param>    
+        <init-param>
+            <param-name>jlibrary.home</param-name>
+            <param-value>WEB-INF/repository</param-value>
+            <!--config home-->
+        </init-param>        
+    <load-on-startup>5</load-on-startup>       
+  </servlet>
+
+  <servlet>
+    <servlet-name>HTTPRepositoryService</servlet-name>
+    <display-name>JLibrary Repository Service</display-name>
+    <servlet-class>
+        org.jlibrary.servlet.service.HTTPRepositoryService
+    </servlet-class>  
+    <load-on-startup>7</load-on-startup>        
+  </servlet>
+  
+  <servlet>
+    <servlet-name>HTTPSecurityService</servlet-name>
+    <display-name>JLibrary Security Service</display-name>
+    <servlet-class>
+        org.jlibrary.servlet.service.HTTPSecurityService
+    </servlet-class> 
+    <load-on-startup>6</load-on-startup>         
+  </servlet>
+  
+  <servlet>
+    <servlet-name>HTTPSearchService</servlet-name>
+    <display-name>JLibrary Search Service</display-name>
+    <servlet-class>
+        org.jlibrary.servlet.service.HTTPSearchService
+    </servlet-class>
+    <load-on-startup>8</load-on-startup>          
+  </servlet>   
+
+    <!-- ====================================================================== -->
+    <!-- T E S T I N G   S E R V L E T                                          -->
+    <!-- ====================================================================== -->
+
+    <!--
+    <servlet>
+        <servlet-name>TestLoginServlet</servlet-name>
+        <servlet-class>org.jlibrary.core.servlet.TestLoginServlet</servlet-class>
+
+    </servlet>
+    -->
+
+    <!-- ====================================================================== -->
+    <!-- S E R V L E T   M A P P I N G                                          -->
+    <!-- ====================================================================== -->
+    
+  <servlet-mapping>
+    <servlet-name>JLibraryStartupServlet</servlet-name>
+    <url-pattern>/servlet/JLibraryStartupServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>HTTPRepositoryService</servlet-name>
+    <url-pattern>/HTTPRepositoryService</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>HTTPSecurityService</servlet-name>
+    <url-pattern>/HTTPSecurityService</url-pattern>
+  </servlet-mapping>
+  
+    <servlet-mapping>
+    <servlet-name>HTTPSearchService</servlet-name>
+    <url-pattern>/HTTPSearchService</url-pattern>
+  </servlet-mapping>
+
+  <session-config>
+      <!-- Default to 15 minute session timeouts -->
+      <session-timeout>15</session-timeout>
+  </session-config>
+</web-app>
