@@ -1,0 +1,18 @@
+jLibrary, Copyright (c) 2003-2006, Martín Pérez Mariñán, and individual 
+contributors, and is licensed under the New BSD. A summary of the individual
+contributors in alphabetical order is given below. Any omission should be 
+sent to mpermar@gmail.com.
+
+CVS Login(s)            Name
+-------------------------------------------------------------------------------
+perez_martin,martin		Martín Pérez Mariñán
+nicolasjouanin			Nicolas Jouanin
+jkarthaus				Joern Karthaus
+molpe,al				Alberto Molpeceres
+antoniotoma				Antonio Toma
+turgayz				 	Turgay Zengin
+all-x					Alexey Demakov
+-------------------------------------------------------------------------------
+
+Some of the jLibrary icons were created by Mark James and are released under a 
+Creative Commons Attribution 2.5 License.
