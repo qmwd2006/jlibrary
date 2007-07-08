@@ -607,7 +607,8 @@ public class JCRAdapter {
 		PropertyIterator it = node.getProperties();
 		while (it.hasNext()) {
 			Property property = it.nextProperty();
-			if (property.getName().startsWith(JLibraryConstants.JLIBRARY_EXTENDED_PREFIX)) {
+			if (!property.getName().startsWith(JLibraryConstants.JLIBRARY_PREFIX) &&
+				!property.getName().startsWith(JLibraryConstants.JCR_PREFIX)) {
 				if (!property.getDefinition().isMultiple()) {
 					document.putProperty(property.getName(), JCRUtils.getObject(property.getValue()));
 				} else {

@@ -304,7 +304,7 @@ public class JCRSecurityService implements SecurityService {
             	((WorkspaceImpl)systemSession.getWorkspace()).createWorkspace("system");
     			logger.info("jLibrary system workspace created successfully.");
     			logger.info("Trying to register node types...");
-                new org.jlibrary.core.jcr.NodeTypeManager().registerNodeTypes(systemSession);
+                new org.jlibrary.core.jcr.nodetypes.NodeTypeManager().registerNodeTypes(systemSession);
     			logger.info("Node type hierarchy successfully registered.");
     			logger.info("Trying to login again on jLibrary system workspace...");    			
             	systemSession = repository.login(creds,"system");

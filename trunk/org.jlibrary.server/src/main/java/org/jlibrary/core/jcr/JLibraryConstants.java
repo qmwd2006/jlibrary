@@ -35,7 +35,9 @@ public class JLibraryConstants {
      * types.
      */
     public static final String JLIBRARY_PREFIX = "jlib";
-
+    
+    public static final String JCR_PREFIX = "jcr";
+    
     /**
      * Prefix reserved for custom properties
      */
