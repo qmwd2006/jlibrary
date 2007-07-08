@@ -40,6 +40,7 @@ import javax.jcr.version.VersionException;
 import org.apache.jackrabbit.core.WorkspaceImpl;
 import org.apache.jackrabbit.core.config.ConfigurationException;
 import org.apache.jackrabbit.core.nodetype.InvalidNodeTypeDefException;
+import org.apache.jackrabbit.name.QName;
 import org.jlibrary.core.entities.Author;
 import org.jlibrary.core.entities.Category;
 import org.jlibrary.core.entities.Node;
@@ -48,6 +49,7 @@ import org.jlibrary.core.entities.Ticket;
 import org.jlibrary.core.entities.Types;
 import org.jlibrary.core.entities.User;
 import org.jlibrary.core.jcr.modules.JCRImportExportModule;
+import org.jlibrary.core.jcr.nodetypes.NodeTypeManager;
 import org.jlibrary.core.properties.CustomPropertyDefinition;
 import org.jlibrary.core.properties.InvalidPropertyTypeException;
 import org.jlibrary.core.properties.PropertyNotFoundException;
@@ -330,7 +332,11 @@ public class JCRRepositoryBuilder {
 			repositoryManager.getRepositoryState(ticket);
 		javax.jcr.Session session = state.getSession(ticket.getRepositoryId());
 		try {
-			nodetypeManager.unregisterCustomProperty(session, property.getName());
+			if (property.getQName() != null) {
+				nodetypeManager.unregisterCustomProperty(session, property.getQName());
+			} else {
+				nodetypeManager.unregisterCustomProperty(session, property.getName());				
+			}
 			removePropertyFromRepository(session, property.getName());
 		} catch (javax.jcr.RepositoryException e) {
 			logger.error(e.getMessage(),e);
@@ -361,13 +367,19 @@ public class JCRRepositoryBuilder {
 		propertyNode.remove();
 	}	
 	
-	public boolean isPropertyRegistered(Ticket ticket, String propertyName) throws RepositoryException {
+	public boolean isPropertyRegistered(Ticket ticket, 
+										String uri, 
+										String propertyName) throws RepositoryException {
 
 		RepositoryManager repositoryManager = RepositoryManager.getInstance();
 		RepositorySessionState state = 
 			repositoryManager.getRepositoryState(ticket);
 		javax.jcr.Session session = state.getSession(ticket.getRepositoryId());
 		try {
+			if (uri != null) {
+				QName qName = new QName(uri,propertyName);
+				return nodetypeManager.isCustomPropertyRegistered(session, qName);
+			}
 			return nodetypeManager.isCustomPropertyRegistered(session, propertyName);
 		} catch (javax.jcr.RepositoryException e) {
 			logger.error(e.getMessage(),e);

@@ -31,7 +31,7 @@ import org.jlibrary.core.entities.User;
 import org.jlibrary.core.jcr.JCRSecurityService;
 import org.jlibrary.core.jcr.JCRUtils;
 import org.jlibrary.core.jcr.JLibraryConstants;
-import org.jlibrary.core.jcr.NodeTypeManager;
+import org.jlibrary.core.jcr.nodetypes.NodeTypeManager;
 import org.jlibrary.core.properties.RepositoryProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

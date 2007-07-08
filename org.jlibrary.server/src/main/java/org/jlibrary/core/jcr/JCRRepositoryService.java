@@ -54,6 +54,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.JcrConstants;
 import org.apache.jackrabbit.core.WorkspaceImpl;
+import org.apache.jackrabbit.name.QName;
 import org.apache.jackrabbit.util.Text;
 import org.jlibrary.core.entities.Author;
 import org.jlibrary.core.entities.Bookmark;
@@ -2287,9 +2288,16 @@ public class JCRRepositoryService implements RepositoryService {
 	
 	public boolean isPropertyRegistered(Ticket ticket, String propertyName) throws RepositoryException {
 
-		return builder.isPropertyRegistered(ticket, propertyName);
+		return builder.isPropertyRegistered(ticket, null, propertyName);
 	}
 
+	public boolean isPropertyRegistered(Ticket ticket,
+										String uri,
+										String propertyName) throws RepositoryException {
+		
+		return builder.isPropertyRegistered(ticket, uri, propertyName);
+	}
+	
 	public void importRepository(Ticket ticket, 
 								 String name, 
 								 InputStream stream) throws RepositoryAlreadyExistsException, 
