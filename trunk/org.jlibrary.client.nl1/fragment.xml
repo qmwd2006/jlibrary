@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<fragment
+   id="org.jlibrary.client.nl1"
+   name="Nl1 Fragment"
+   version="1.1.0"
+   provider-name="jLibrary"
+   plugin-id="org.jlibrary.client"
+   plugin-version="1.1.0">
+
+</fragment>
