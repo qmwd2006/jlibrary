@@ -46,7 +46,6 @@ multiple
 -jlib:categories (reference) mandatory multiple
 -jlib:resources (reference) mandatory multiple
 -jlib:relations (reference) mandatory multiple
--jcg:wikiEntry
 
 [jlib:resource] > jlib:node mixin orderable
 
