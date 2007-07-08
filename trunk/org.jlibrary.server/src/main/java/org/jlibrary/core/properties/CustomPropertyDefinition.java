@@ -24,9 +24,13 @@ package org.jlibrary.core.properties;
 
 import java.io.Serializable;
 
+import org.apache.jackrabbit.name.QName;
+
 public class CustomPropertyDefinition implements Serializable {
 
 	private static final long serialVersionUID = 1668088359345704027L;
+	
+	private QName qName = null;
 	
 	private String name;
 	private int type;
@@ -83,5 +87,12 @@ public class CustomPropertyDefinition implements Serializable {
 		buffer.append(defaultValues);
 		buffer.append("]");
 		return buffer.toString();
+	}
+	public QName getQName() {
+		return qName;
+	}
+	
+	public void setQName(QName namespace) {
+		this.qName = namespace;
 	}
 }
