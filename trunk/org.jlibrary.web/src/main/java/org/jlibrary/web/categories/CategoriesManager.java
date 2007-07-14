@@ -37,6 +37,7 @@ public class CategoriesManager extends AbstractManager {
 			cats=getRepository().getCategories();
 		}
 		List categories=new ArrayList(cats);
+		log.debug(categories.size());
 		list=new ListDataModel(categories);
 		return list;
 	}
@@ -87,8 +88,6 @@ public class CategoriesManager extends AbstractManager {
 			}				
 			try {
 				Category nuevaCat=conf.getRepositoryService().createCategory(getTicket(),properties);
-				List tmpList=(List)list.getWrappedData();
-				tmpList.add(nuevaCat);
 			} catch (CategoryAlreadyExistsException e) {
 				e.printStackTrace();
 			} catch (RepositoryException e) {
@@ -97,21 +96,21 @@ public class CategoriesManager extends AbstractManager {
 				e.printStackTrace();
 			}
 		}
+		category=null;
+		log.debug("categoria guardada");
 		return "categories$saved";
 	}
 	
 	public String delete(){
 		log.debug("eliminar");
-		List tmpList=(List)list.getWrappedData();
-		category=(Category)tmpList.get(list.getRowIndex());
 		try {
 			conf.getRepositoryService().deleteCategory(getTicket(),category.getId());
-			tmpList.remove(category);
 		} catch (RepositoryException e) {
 			e.printStackTrace();
 		} catch (SecurityException e) {
 			e.printStackTrace();
 		}
+		category=null;
 		return "categories$deleted";
 	}
 
@@ -129,7 +128,6 @@ public class CategoriesManager extends AbstractManager {
 
 	public void setId(String id) {
 		try {
-			log.debug("bla");
 			category=conf.getRepositoryService().findCategoryById(getTicket(),id);
 		} catch (CategoryNotFoundException e) {
 			e.printStackTrace();
