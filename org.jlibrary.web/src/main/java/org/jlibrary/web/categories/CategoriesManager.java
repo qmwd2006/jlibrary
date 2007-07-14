@@ -26,12 +26,13 @@ public class CategoriesManager extends AbstractManager {
 	private Category category=null;
 	private Logger log=Logger.getLogger(CategoriesManager.class);
 	private String id;
+	private String parentId;
 	public CategoriesManager(){}
 	
 	public ListDataModel getList(){
 		Set cats;
 		log.debug("Listando las categorias");
-		if(category!=null){
+		if(parentId!=null){
 			cats=category.getCategories();
 		}else{
 			cats=getRepository().getCategories();
@@ -39,10 +40,12 @@ public class CategoriesManager extends AbstractManager {
 		List categories=new ArrayList(cats);
 		log.debug(categories.size());
 		list=new ListDataModel(categories);
+		category=new Category();
 		return list;
 	}
 	
 	public String subcategories(){
+		parentId=category.getId();
 		return "categories$list";
 	}
 	
@@ -53,7 +56,7 @@ public class CategoriesManager extends AbstractManager {
 	}
 	
 	public String details(){
-		log.debug("detalle de:"+getId());
+		log.debug("detalle de:"+category.getId());
 		return "categories$form";
 	}
 	
@@ -96,7 +99,6 @@ public class CategoriesManager extends AbstractManager {
 				e.printStackTrace();
 			}
 		}
-		category=null;
 		log.debug("categoria guardada");
 		return "categories$saved";
 	}
@@ -110,7 +112,6 @@ public class CategoriesManager extends AbstractManager {
 		} catch (SecurityException e) {
 			e.printStackTrace();
 		}
-		category=null;
 		return "categories$deleted";
 	}
 
@@ -127,6 +128,7 @@ public class CategoriesManager extends AbstractManager {
 	}
 
 	public void setId(String id) {
+		log.debug(id);
 		try {
 			category=conf.getRepositoryService().findCategoryById(getTicket(),id);
 		} catch (CategoryNotFoundException e) {

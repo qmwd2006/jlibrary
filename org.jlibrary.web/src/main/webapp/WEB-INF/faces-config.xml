@@ -55,5 +55,9 @@
 			<from-outcome>categories$saved</from-outcome>
 			<to-view-id>/admin/categories/list.jsp</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>categories$back</from-outcome>
+			<to-view-id>/admin/categories/list.jsp</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 </faces-config>

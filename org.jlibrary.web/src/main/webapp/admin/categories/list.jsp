@@ -3,7 +3,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:t="http://java.sun.com/jsf/tomahawk">
+      xmlns:t="http://myfaces.apache.org/tomahawk">
 <body>
 <ui:composition template="/template1.jsp">
 		<ui:define name="title">
@@ -20,21 +20,21 @@
 			         <h:outputText value="#{item.description}" />
 			     </h:column>
 			     <h:column>     
-			         <h:commandLink action="#{categoriesManager.details}">
+			         <h:commandLink id="det" action="#{categoriesManager.details}">
 				         <h:outputText value="detalles"/>
-				         <f:setPropertyActionListener target="#{categoriesManager.id}" value="#{item.id}"/>
+				         <t:updateActionListener property="#{categoriesManager.id}" value="#{item.id}"/>
 					</h:commandLink>
 			     </h:column>
 			     <h:column>     
-			         <h:commandLink action="#{categoriesManager.delete}">
+			         <h:commandLink id="del" action="#{categoriesManager.delete}">
 			         	<h:outputText value="eliminar"/>
-			         	<f:setPropertyActionListener target="#{categoriesManager.id}" value="#{item.id}"/>
+			         	<t:updateActionListener property="#{categoriesManager.id}" value="#{item.id}"/>
 			         </h:commandLink>
 			     </h:column>
 			     <h:column>     
-			         <h:commandLink action="#{categoriesManager.subcategories}">
+			         <h:commandLink id="sub" action="#{categoriesManager.subcategories}">
 			         	<h:outputText value="subcategorias"/>
-			         	<f:setPropertyActionListener target="#{categoriesManager.id}" value="#{item.id}"/>
+			         	<t:updateActionListener property="#{categoriesManager.id}" value="#{item.id}"/>
 			         </h:commandLink>
 			     </h:column>
 			  </h:dataTable>
