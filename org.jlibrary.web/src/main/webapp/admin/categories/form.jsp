@@ -3,7 +3,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:t="http://java.sun.com/jsf/tomahawk">
+      xmlns:t="http://myfaces.apache.org/tomahawk">
 <body>
 <t:saveState value="#{categoriesManager.category}"/>
 <ui:composition template="/template1.jsp">
@@ -12,6 +12,7 @@
 			<h:outputText value="#{labels.categories}"/>
 		</ui:define>
 		<ui:define name="body">
+			<t:saveState value="#{categoriesManager.category}" id="cat"/>
 			<h:form id="form">
 				<h:outputLabel value="nombre:" for="name"/>
 				<h:inputText id="name" required="true" value="#{categoriesManager.category.name}"/>
