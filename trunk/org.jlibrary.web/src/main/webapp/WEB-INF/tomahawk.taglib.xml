@@ -400,6 +400,10 @@ Requires "<input type="hidden" name="jscook_action" />" to be manually added to 
             <component-type>org.apache.myfaces.HtmlTreeColumn</component-type>
         </component>
     </tag>
+    <tag>
+        <tag-name>updateActionListener</tag-name>
+        <handler-class>net.sf.jsfcomp.facelets.taghandlers.tomahawk.UpdateActionListenerHandler</handler-class>
+	</tag>
     <!--
         <tag-name>updateActionListener</tag-name> requires a Facelets TagHandler.   Use the functionality-equivalent JSF 1.2 f:setPropertyActionListener instead.  f:setPropertyActionListener has been backported as of facelets 1.1.11.  Note that the jsf-comp updateActionListener does not handle setting values on ui:include parameters while setPropertyActionListener will correctly propagate these values.
     -->

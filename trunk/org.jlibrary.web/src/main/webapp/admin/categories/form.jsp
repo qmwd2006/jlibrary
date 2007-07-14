@@ -23,6 +23,7 @@
 				<h:message for="description"/>
 				<br/>
 				<h:commandButton action="#{categoriesManager.save}"><h:outputText value="Guardar"/></h:commandButton>
+				<h:commandLink action="categories$back" immediate="true"><h:outputText value="Atras"/></h:commandLink>
 			</h:form>
 		</ui:define>
 	</ui:composition>
