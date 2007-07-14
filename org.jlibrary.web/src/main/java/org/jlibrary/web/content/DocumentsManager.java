@@ -16,7 +16,6 @@ public class DocumentsManager extends AbstractManager {
 	private ListDataModel list;
 	private Document document;
 	private Logger log=Logger.getLogger(DocumentsManager.class);
-	private String parentId=repository.getRoot().getId();
 	
 	public ListDataModel getList(){
 		List documents=new ArrayList();
