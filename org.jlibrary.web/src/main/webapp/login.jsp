@@ -4,7 +4,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core">
 <body>
-	<ui:composition template="/template1.html">
+	<ui:composition template="/template1.jsp">
 		<ui:define name="title">
 			<f:loadBundle basename="org.jlibrary.web.labels" var="labels"/>
 			<h:outputText value="#{labels.title}"/>
