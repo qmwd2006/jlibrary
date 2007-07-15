@@ -11,7 +11,23 @@
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
   <url>http://maven.apache.org</url>
-    <dependencies>
+  <repositories>
+    <repository>
+      <id>ibiblio</id>
+      <name>IBiblio repository</name>
+      <url>http://mirrors.ibiblio.org/pub/mirrors/maven2/</url>
+    </repository>
+    <repository>
+      <id>local-repository</id>
+      <url>file://${basedir}/../repository</url>
+    </repository>   
+    <repository>
+      <id>codehaus</id>
+      <name>Codehaus maven repository</name>
+      <url>http://repository.codehaus.org/</url>
+    </repository>     
+  </repositories>  
+  <dependencies>
     <dependency>
       <groupId>jlibrary</groupId>
       <artifactId>org.jlibrary.server</artifactId>
@@ -22,7 +38,7 @@
       <groupId>servletapi</groupId>
       <artifactId>servletapi</artifactId>
       <version>2.4</version>
-      <scope>compile</scope>     
+      <scope>provided</scope>     
     </dependency>    
     <dependency>
 	    <groupId>org.apache.myfaces.core</groupId>
@@ -41,12 +57,22 @@
 	    <version>1.1.5</version>
 	    <scope>compile</scope>
 	</dependency>
-    <dependency>
+  <dependency>
 	  <groupId>com.sun.facelets</groupId>
 	  <artifactId>jsf-facelets</artifactId>
 	  <version>1.1.11</version>
 	</dependency>
-	
+	<dependency>
+	  <groupId>jsf-comp</groupId>
+	  <artifactId>taghandlers</artifactId>
+	  <version>0.9</version>	  
+	</dependency>
+  <dependency>
+	  <groupId>javax.el</groupId>
+	  <artifactId>el-ri</artifactId>
+	  <version>1.0</version>	  
+	</dependency>
+		
     <!--  Maven 2 WAR overlay -->
     <dependency>
       <groupId>jlibrary</groupId>
