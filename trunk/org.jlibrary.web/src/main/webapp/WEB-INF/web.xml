@@ -2,6 +2,26 @@
 <!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app id="WebApp_ID">
 	<display-name>jlibrary</display-name>
+
+	<context-param>
+	    <param-name>javax.faces.DEFAULT_SUFFIX</param-name>
+	    <param-value>.jsp</param-value>
+	</context-param>
+  
+	  <!-- Special Debug Output for Development -->
+	<context-param>
+	    <param-name>facelets.DEVELOPMENT</param-name>
+	    <param-value>true</param-value>
+	</context-param>
+	<context-param>
+        <param-name>facelets.LIBRARIES</param-name>
+        <param-value>/WEB-INF/tomahawk.taglib.xml</param-value>
+    </context-param>
+	
+	<listener>
+		<listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>
+	</listener>
+	
 	<servlet>
 		<servlet-name>Faces Servlet</servlet-name>
 		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
@@ -77,29 +97,12 @@
     <url-pattern>/HTTPSecurityService</url-pattern>
   </servlet-mapping>
   
-    <servlet-mapping>
+  <servlet-mapping>
     <servlet-name>HTTPSearchService</servlet-name>
     <url-pattern>/HTTPSearchService</url-pattern>
   </servlet-mapping>
-	
-	<listener>
-		<listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>
-	</listener>
-	<welcome-file-list>
-		<welcome-file>/index.jsp</welcome-file>
-	</welcome-file-list>
-	<context-param>
-	    <param-name>javax.faces.DEFAULT_SUFFIX</param-name>
-	    <param-value>.jsp</param-value>
-	</context-param>
   
-	  <!-- Special Debug Output for Development -->
-	<context-param>
-	    <param-name>facelets.DEVELOPMENT</param-name>
-	    <param-value>true</param-value>
-	</context-param>
-	<context-param>
-        <param-name>facelets.LIBRARIES</param-name>
-        <param-value>/WEB-INF/tomahawk.taglib.xml</param-value>
-    </context-param>
+  <welcome-file-list>
+    <welcome-file>/index.jsp</welcome-file>
+  </welcome-file-list>  
 </web-app>
