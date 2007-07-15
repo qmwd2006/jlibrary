@@ -7,10 +7,81 @@
 		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
+	
+	<servlet>
+    <servlet-name>JLibraryStartupServlet</servlet-name>
+    <display-name>JLibrary startup servlet</display-name>
+    <servlet-class>
+        org.jlibrary.servlet.JLibraryStartupServlet
+    </servlet-class>    
+        <init-param>
+            <param-name>java.naming.provider.url</param-name>
+            <param-value>http://www.apache.org/jackrabbit</param-value>
+        </init-param>
+        <init-param>
+            <param-name>java.naming.factory.initial</param-name>
+            <param-value>org.apache.jackrabbit.core.jndi.provider.DummyInitialContextFactory</param-value>
+        </init-param>    
+        <init-param>
+            <param-name>jlibrary.home</param-name>
+            <param-value>WEB-INF/repository</param-value>
+            <!--config home-->
+        </init-param>        
+    <load-on-startup>5</load-on-startup>       
+  </servlet>
+	
+  <servlet>
+    <servlet-name>HTTPRepositoryService</servlet-name>
+    <display-name>JLibrary Repository Service</display-name>
+    <servlet-class>
+        org.jlibrary.servlet.service.HTTPRepositoryService
+    </servlet-class>  
+    <load-on-startup>7</load-on-startup>        
+  </servlet>
+  
+  <servlet>
+    <servlet-name>HTTPSecurityService</servlet-name>
+    <display-name>JLibrary Security Service</display-name>
+    <servlet-class>
+        org.jlibrary.servlet.service.HTTPSecurityService
+    </servlet-class> 
+    <load-on-startup>6</load-on-startup>         
+  </servlet>
+  
+  <servlet>
+    <servlet-name>HTTPSearchService</servlet-name>
+    <display-name>JLibrary Search Service</display-name>
+    <servlet-class>
+        org.jlibrary.servlet.service.HTTPSearchService
+    </servlet-class>
+    <load-on-startup>8</load-on-startup>          
+  </servlet>  	
+	
 	<servlet-mapping>
 		<servlet-name>Faces Servlet</servlet-name>
 		<url-pattern>*.jsf</url-pattern>
 	</servlet-mapping>
+	
+  <servlet-mapping>
+    <servlet-name>JLibraryStartupServlet</servlet-name>
+    <url-pattern>/servlet/JLibraryStartupServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>HTTPRepositoryService</servlet-name>
+    <url-pattern>/HTTPRepositoryService</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>HTTPSecurityService</servlet-name>
+    <url-pattern>/HTTPSecurityService</url-pattern>
+  </servlet-mapping>
+  
+    <servlet-mapping>
+    <servlet-name>HTTPSearchService</servlet-name>
+    <url-pattern>/HTTPSearchService</url-pattern>
+  </servlet-mapping>
+	
 	<listener>
 		<listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>
 	</listener>
