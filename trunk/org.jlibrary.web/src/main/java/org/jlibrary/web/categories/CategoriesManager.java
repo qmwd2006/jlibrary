@@ -14,6 +14,7 @@ import org.jlibrary.core.properties.PropertyNotFoundException;
 import org.jlibrary.core.repository.exception.CategoryAlreadyExistsException;
 import org.jlibrary.core.repository.exception.CategoryNotFoundException;
 import org.jlibrary.core.repository.exception.RepositoryException;
+import org.jlibrary.core.repository.exception.RepositoryNotFoundException;
 import org.jlibrary.core.security.SecurityException;
 import org.jlibrary.web.AbstractManager;
 /**
@@ -31,21 +32,34 @@ public class CategoriesManager extends AbstractManager {
 	
 	public ListDataModel getList(){
 		Set cats;
-		log.debug("Listando las categorias");
-		if(parentId!=null){
-			cats=category.getCategories();
-		}else{
-			cats=getRepository().getCategories();
+		try {
+			log.debug("Listando las categorias");
+			if(parentId!=null){
+				cats=category.getCategories();
+			}else{
+				cats=getRepository().getCategories();
+			}
+			List categories=new ArrayList(cats);
+			log.debug(categories.size());
+			list=new ListDataModel(categories);
+			category=new Category();
+		} catch (RepositoryNotFoundException e) {
+			e.printStackTrace();
+		} catch (RepositoryException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
 		}
-		List categories=new ArrayList(cats);
-		log.debug(categories.size());
-		list=new ListDataModel(categories);
-		category=new Category();
 		return list;
 	}
 	
 	public String subcategories(){
 		parentId=category.getId();
+		return "categories$list";
+	}
+	
+	public String parentCategory(){
+		parentId=category.getParent().getId();
 		return "categories$list";
 	}
 	
@@ -66,7 +80,7 @@ public class CategoriesManager extends AbstractManager {
 			log.debug("modifica");
 			properties=category.dumpProperties();
 			try {
-				conf.getRepositoryService().updateCategory(getTicket(),category.getId(),properties);
+				jlibrary.getRepositoryService().updateCategory(getTicket(),category.getId(),properties);
 			} catch (CategoryAlreadyExistsException e) {
 				e.printStackTrace();
 			} catch (RepositoryException e) {
@@ -82,7 +96,7 @@ public class CategoriesManager extends AbstractManager {
 				properties.addProperty(CategoryProperties.CATEGORY_DESCRIPTION, category.getDescription());
 				properties.addProperty(CategoryProperties.CATEGORY_REPOSITORY, getTicket().getRepositoryId());
 				if (category.getParent() != null) {
-					properties.addProperty(CategoryProperties.CATEGORY_PARENT, category.getParent().getId());				
+					properties.addProperty(CategoryProperties.CATEGORY_PARENT, parentId);				
 				}
 			} catch (PropertyNotFoundException e) {
 				e.printStackTrace();
@@ -90,7 +104,7 @@ public class CategoriesManager extends AbstractManager {
 				e.printStackTrace();
 			}				
 			try {
-				Category nuevaCat=conf.getRepositoryService().createCategory(getTicket(),properties);
+				Category nuevaCat=jlibrary.getRepositoryService().createCategory(getTicket(),properties);
 			} catch (CategoryAlreadyExistsException e) {
 				e.printStackTrace();
 			} catch (RepositoryException e) {
@@ -106,7 +120,7 @@ public class CategoriesManager extends AbstractManager {
 	public String delete(){
 		log.debug("eliminar");
 		try {
-			conf.getRepositoryService().deleteCategory(getTicket(),category.getId());
+			jlibrary.getRepositoryService().deleteCategory(getTicket(),category.getId());
 		} catch (RepositoryException e) {
 			e.printStackTrace();
 		} catch (SecurityException e) {
@@ -130,7 +144,7 @@ public class CategoriesManager extends AbstractManager {
 	public void setId(String id) {
 		log.debug(id);
 		try {
-			category=conf.getRepositoryService().findCategoryById(getTicket(),id);
+			category=jlibrary.getRepositoryService().findCategoryById(getTicket(),id);
 		} catch (CategoryNotFoundException e) {
 			e.printStackTrace();
 		} catch (RepositoryException e) {

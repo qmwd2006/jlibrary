@@ -32,11 +32,10 @@ public class LoginManager extends AbstractManager {
 	public String login(){
 		log.debug("Entra al login");
 		String ret=LOGIN_KO;
-		SecurityService securityService=conf.getSecurityService();
+		SecurityService securityService=jlibrary.getSecurityService();
 		Ticket ticket=null;
 		try {
-			ticket=securityService.login(credentials,conf.getRepositoryName());
-			setRepository(conf.getRepositoryService().findRepository(conf.getRepositoryName(),ticket));
+			ticket=securityService.login(credentials,jlibrary.getRepositoryName());
 			if(ticket!=null){
 				setTicket(ticket);
 				ret=LOGIN_OK;
@@ -49,12 +48,9 @@ public class LoginManager extends AbstractManager {
 		} catch (AuthenticationException e) {
 			e.printStackTrace();
 		} catch (RepositoryNotFoundException e) {
-			conf.createRepository(conf.getRepositoryName());
+			jlibrary.createRepository(jlibrary.getRepositoryName());
 			login();
 		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (RepositoryException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		HttpServletRequest request = (HttpServletRequest)FacesContext.

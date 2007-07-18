@@ -2,20 +2,21 @@ package org.jlibrary.web;
 
 import org.jlibrary.core.entities.Repository;
 import org.jlibrary.core.entities.Ticket;
+import org.jlibrary.core.repository.exception.RepositoryException;
+import org.jlibrary.core.repository.exception.RepositoryNotFoundException;
+import org.jlibrary.core.security.SecurityException;
 import org.jlibrary.web.conf.JLibraryConfiguration;
 
 public abstract class AbstractManager {
-	protected static final JLibraryConfiguration conf=JLibraryConfiguration.newInstance();
+	protected static final JLibraryConfiguration jlibrary=JLibraryConfiguration.newInstance();
 	public Ticket getTicket() {
-		return conf.getTicket();
+		return jlibrary.getTicket();
 	}
 	public void setTicket(Ticket ticket) {
-		conf.setTicket(ticket);
+		jlibrary.setTicket(ticket);
 	}
-	public void setRepository(Repository rep) {
-		conf.setRepository(rep);
-	}
-	public Repository getRepository() {
-		return conf.getRepository();
+	
+	public Repository getRepository() throws RepositoryNotFoundException, RepositoryException, SecurityException {
+		return jlibrary.getRepositoryService().findRepository(jlibrary.getRepositoryName(),getTicket());
 	}
 }
