@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//Spring//DTD Bean//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+    
+<beans>
+
+  <bean id="categoryListRestlet" class="org.jlibrary.web.rest.restlet.CategoryListRestlet" />
+  <bean id="categoryRestlet" class="org.jlibrary.web.rest.restlet.CategoryRestlet" />
+  <bean id="documentRestlet" class="org.jlibrary.web.rest.restlet.CategoryRestlet" />
+  <bean id="folderRestlet" class="org.jlibrary.web.rest.restlet.CategoryRestlet" />
+  <bean id="defaultPageRestlet" class="org.jlibrary.web.rest.restlet.CategoryRestlet" />
+  
+  <bean id="manager" class="org.jlibrary.web.rest.RestManager">
+    <property name="resourceMappings">
+         <bean class="java.util.HashMap">
+              <constructor-arg>
+                <map>
+<!--
+                  <entry key="/user/{user}"><ref local="userRestlet" /></entry>
+		  <entry key="/user"><ref local="usersRestlet" /></entry>
+-->
+                  <entry key="/cat/{cat}"><ref local="categoryRestlet" /></entry>
+                  <entry key="/doc/{doc}"><ref local="documentRestlet" /></entry>
+                  <entry key="/folder/{folder}"><ref local="folderRestlet" /></entry>
+                  <entry key="/index"><ref local="categoryListRestlet" /></entry>
+  		</map>
+              </constructor-arg>
+            </bean>
+        </property>  
+    </bean>
+
+<!--
+  <bean id="profile" class="org.jlibrary.core.profiles.RemoteServerProfile">
+    <property name="location" value="http://jlibrary.javaconganas.com"/> 
+    <property name="name" value="demo"/> 
+  </bean>
+  
+  <bean id="credentials" class="org.jlibrary.core.entities.Credentials">
+    <property name="user" value="admin"/> 
+    <property name="password" value="changeme"/> 
+  </bean>
+  -->
+</beans>
