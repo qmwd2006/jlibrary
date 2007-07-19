@@ -1,8 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/j2ee/dtds/web-app_2_2.dtd">
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
     <display-name>jLibrary Server</display-name>
+    
+	  <context-param>
+	     <param-name>java.naming.provider.url</param-name>
+	     <param-value>http://www.apache.org/jackrabbit</param-value>
+	  </context-param>
+	
+	  <context-param>
+	     <param-name>java.naming.factory.initial</param-name>
+	     <param-value>org.apache.jackrabbit.core.jndi.provider.DummyInitialContextFactory</param-value>
+	  </context-param>
+	
+	  <context-param>
+	     <param-name>jlibrary.home</param-name>
+	     <param-value>WEB-INF/repository</param-value>
+	  </context-param>  
+	  
+      <listener>
+         <listener-class>org.jlibrary.servlet.JLibraryStartupContextListener</listener-class>
+      </listener> 	    
+
 
     <!-- ====================================================================== -->
     <!-- W E B D A V  S E R V E R  S E R V L E T                                -->
@@ -36,28 +56,6 @@
     <!-- ====================================================================== -->
     <!-- J L I B R A R Y  S E R V L E T                                           -->
     <!-- ====================================================================== -->
-  <servlet>
-    <servlet-name>JLibraryStartupServlet</servlet-name>
-    <display-name>JLibrary startup servlet</display-name>
-    <servlet-class>
-        org.jlibrary.servlet.JLibraryStartupServlet
-    </servlet-class>    
-        <init-param>
-            <param-name>java.naming.provider.url</param-name>
-            <param-value>http://www.apache.org/jackrabbit</param-value>
-        </init-param>
-        <init-param>
-            <param-name>java.naming.factory.initial</param-name>
-            <param-value>org.apache.jackrabbit.core.jndi.provider.DummyInitialContextFactory</param-value>
-        </init-param>    
-        <init-param>
-            <param-name>jlibrary.home</param-name>
-            <param-value>WEB-INF/repository</param-value>
-            <!--config home-->
-        </init-param>        
-    <load-on-startup>5</load-on-startup>       
-  </servlet>
-
   <servlet>
     <servlet-name>HTTPRepositoryService</servlet-name>
     <display-name>JLibrary Repository Service</display-name>
@@ -100,12 +98,6 @@
     <!-- ====================================================================== -->
     <!-- S E R V L E T   M A P P I N G                                          -->
     <!-- ====================================================================== -->
-    
-  <servlet-mapping>
-    <servlet-name>JLibraryStartupServlet</servlet-name>
-    <url-pattern>/servlet/JLibraryStartupServlet</url-pattern>
-  </servlet-mapping>
-
   <servlet-mapping>
     <servlet-name>HTTPRepositoryService</servlet-name>
     <url-pattern>/HTTPRepositoryService</url-pattern>
@@ -125,4 +117,6 @@
       <!-- Default to 15 minute session timeouts -->
       <session-timeout>15</session-timeout>
   </session-config>
+  
+ 
 </web-app>

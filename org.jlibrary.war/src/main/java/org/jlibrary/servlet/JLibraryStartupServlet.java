@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
  * This servlet is started at jlibrary server startup time
  * 
  * @author martin
+ * @deprecated use JLibraryStartupContextListener instead
  *
  */ 
 public class JLibraryStartupServlet extends HttpServlet {
