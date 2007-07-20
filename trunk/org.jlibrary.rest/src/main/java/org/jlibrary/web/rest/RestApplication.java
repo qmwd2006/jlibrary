@@ -1,7 +1,5 @@
 package org.jlibrary.web.rest;
 
-import javax.servlet.ServletContext;
-
 import org.jlibrary.core.entities.Credentials;
 import org.jlibrary.core.entities.ServerProfile;
 import org.jlibrary.core.entities.Ticket;
@@ -46,9 +44,11 @@ public class RestApplication extends Application {
 	public void start() throws Exception{
 		super.start();
 		logger.info("Starting REST navigator connection...");
-		startJlibrary();
-		createDemoRepo();
-		ticket = connectToJlibraryServer();
+		startJlibrary();		
+		createDemoRepo();		
+		if (ticket == null) {
+			ticket = connectToJlibraryServer();
+		}
 		logger.info("Configuration done!.");	
 	}
 	
@@ -92,6 +92,7 @@ public class RestApplication extends Application {
 		PrepareExampleRepo per = new PrepareExampleRepo();
 		try {
 			per.createWwwRepoIfNeeded(repoName, securityService, repositoryService);
+			ticket = connectToJlibraryServer();
 			per.createTestCategoriesIfNeeded(repositoryService, ticket);
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
