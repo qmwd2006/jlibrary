@@ -15,8 +15,11 @@
 	</context-param>
 	<context-param>
         <param-name>facelets.LIBRARIES</param-name>
-        <param-value>/WEB-INF/tomahawk.taglib.xml</param-value>
-    </context-param>
+        <param-value>
+        	/WEB-INF/tomahawk.taglib.xml;
+        	/WEB-INF/jlibrary.taglib.xml
+        </param-value>
+    </context-param>  
 	
 	<listener>
 		<listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>
@@ -76,11 +79,22 @@
     </servlet-class>
     <load-on-startup>8</load-on-startup>          
   </servlet>  	
-	
-	<servlet-mapping>
-		<servlet-name>Faces Servlet</servlet-name>
-		<url-pattern>*.jsf</url-pattern>
-	</servlet-mapping>
+  
+  <servlet>
+    <servlet-name>JLibraryContentLoaderServlet</servlet-name>
+    <display-name>JLibraryContentLoaderServlet</display-name>
+    <servlet-class>org.jlibrary.web.servlet.JLibraryContentLoaderServlet</servlet-class>    
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>JLibraryContentLoaderServlet</servlet-name>
+    <url-pattern>/repositories/*</url-pattern>
+  </servlet-mapping>
+  	
+  <servlet-mapping>
+	<servlet-name>Faces Servlet</servlet-name>
+	<url-pattern>*.jsf</url-pattern>
+  </servlet-mapping>
 	
   <servlet-mapping>
     <servlet-name>JLibraryStartupServlet</servlet-name>
