@@ -11,11 +11,14 @@ import org.jlibrary.core.properties.DocumentProperties;
 import org.jlibrary.core.repository.exception.RepositoryException;
 import org.jlibrary.core.security.SecurityException;
 import org.jlibrary.web.AbstractManager;
+import org.jlibrary.web.conf.JLibraryConfiguration;
 
 public class DocumentsManager extends AbstractManager {
 	private ListDataModel list;
 	private Document document;
 	private Logger log=Logger.getLogger(DocumentsManager.class);
+	
+	JLibraryConfiguration conf = JLibraryConfiguration.newInstance();
 	
 	public ListDataModel getList(){
 		List documents=new ArrayList();
