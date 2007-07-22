@@ -22,6 +22,7 @@
 */
 package org.jlibrary.core.search.lucene;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 
@@ -61,12 +62,25 @@ public class EnglishAnalyzer extends Analyzer {
 	private static void initStopWords() {
 		
 		if (ENGLISH_STOP_WORDS == null) {
+			InputStream is = null;
 			try {
-				InputStream is = ResourceLoader.getResourceAsStream("org/jlibrary/core/search/lucene/indexers/english.stop");
-				StringBuffer words = new StringBuffer(IOUtils.toString(is,"iso_8859_1"));
-				ENGLISH_STOP_WORDS = words.toString().split("\r\n");
+				is = ResourceLoader.getResourceAsStream("org/jlibrary/core/search/lucene/indexers/english.stop");
+				if (is != null) {
+					StringBuffer words = new StringBuffer(IOUtils.toString(is,"iso_8859_1"));
+					ENGLISH_STOP_WORDS = words.toString().split("\r\n");
+				} else {
+					ENGLISH_STOP_WORDS = new String[]{};
+				}
 			} catch (Exception e) {
 				logger.error(e.getMessage(),e);
+			} finally {
+				if (is != null) {
+					try {
+						is.close();
+					} catch (IOException e) {
+						logger.error(e.getMessage(),e);
+					}
+				}
 			}
 		}
 	}
