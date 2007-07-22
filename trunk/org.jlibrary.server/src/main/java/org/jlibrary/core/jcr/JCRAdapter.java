@@ -39,6 +39,7 @@ import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.version.Version;
 
+import org.apache.commons.lang.StringUtils;
 import org.jlibrary.core.entities.Author;
 import org.jlibrary.core.entities.Bookmark;
 import org.jlibrary.core.entities.Category;
@@ -243,9 +244,16 @@ public class JCRAdapter {
 		}
 		
 		if (node.hasProperty(JLibraryConstants.JLIBRARY_PATH)) {
+			/*
 			directory.setPath(node.getProperty(
 					JLibraryConstants.JLIBRARY_PATH).
 					getString());
+					*/
+			String path = StringUtils.difference("/"+JLibraryConstants.JLIBRARY_ROOT,node.getPath());
+			if (path.equals("")) {
+				path = "/"; 
+			}
+			directory.setPath(path);			
 		}
 		
 		directory.setJCRPath(node.getPath());
@@ -470,9 +478,13 @@ public class JCRAdapter {
 		}
 	
 		if (node.hasProperty(JLibraryConstants.JLIBRARY_PATH)) {
+			/*
 			document.setPath(node.getProperty(
 					JLibraryConstants.JLIBRARY_PATH).
-					getString());			
+					getString());
+			*/
+			String path = StringUtils.difference("/"+JLibraryConstants.JLIBRARY_ROOT, node.getPath());
+			document.setPath(path);
 		}
 	
 		if (node.hasProperty(JLibraryConstants.JLIBRARY_POSITION)) {

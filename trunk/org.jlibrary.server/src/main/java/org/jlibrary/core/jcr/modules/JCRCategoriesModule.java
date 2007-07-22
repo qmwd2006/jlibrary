@@ -39,7 +39,6 @@ import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 
 import org.jlibrary.core.entities.Category;
-import org.jlibrary.core.entities.Node;
 import org.jlibrary.core.entities.Ticket;
 import org.jlibrary.core.jcr.JCRAdapter;
 import org.jlibrary.core.jcr.JCRConstants;
@@ -47,6 +46,7 @@ import org.jlibrary.core.jcr.JCRSecurityService;
 import org.jlibrary.core.jcr.JCRUtils;
 import org.jlibrary.core.jcr.JLibraryConstants;
 import org.jlibrary.core.jcr.RepositoryManager;
+import org.jlibrary.core.jcr.SessionManager;
 import org.jlibrary.core.properties.CategoryProperties;
 import org.jlibrary.core.properties.PropertyDef;
 import org.jlibrary.core.repository.exception.CategoryAlreadyExistsException;
@@ -83,6 +83,9 @@ public class JCRCategoriesModule {
 										throws CategoryNotFoundException,
 											   RepositoryException,
 							   				   SecurityException {
+		
+		// TODO: Check name updates with new web app
+		
 		try {
 			Session session = RepositoryManager.getInstance().
 				getRepositoryState(ticket).getSession(ticket.getRepositoryId());
@@ -420,6 +423,14 @@ public class JCRCategoriesModule {
 				}
 			} catch (CategoryNotFoundException e) {}
 			
+			/*
+			//TODO: jLibrary 1.1 stores categories with a generic name. Add code to migrate 
+			// old repositories replacing this categories generic name with the concrete name 
+			// of the category. Having categories named by its real name makes easier to look 
+			// categories by path
+			String escapedName = 
+				JCRUtils.buildValidChildNodeName(parentNode,null,name);
+			*/
 			javax.jcr.Node categoryNode = 
 				parentNode.addNode(JLibraryConstants.JLIBRARY_CATEGORY,
 								   JLibraryConstants.CATEGORY_MIXIN);
@@ -662,4 +673,44 @@ public class JCRCategoriesModule {
 			node.getProperty(JLibraryConstants.JLIBRARY_CATEGORIES).getValues();
 		return values.length;
 	}
+	
+	/**
+	 * Loads a category by path
+	 * 
+	 * @param ticket Ticket with user session information
+	 * @param path Category's path
+	 * 
+	 * @return Category Category 
+	 * 
+	 * @throws RepositoryException If there is any problem loading the category
+	 * @throws CategoryNotFoundException If the category does not exist
+	 * @throws SecurityException If the user does not have enough rights to load the category
+	 */
+	public Category findCategoryByPath(Ticket ticket, 
+			 			 	   		   String path) throws RepositoryException, 
+			 				   			   		   		   CategoryNotFoundException, 
+			 				   			   		   		   SecurityException {
+
+		//TODO: Add security check on this method
+		
+		SessionManager manager = SessionManager.getInstance();
+		Session session = manager.getSession(ticket);
+		if (!path.startsWith(JLibraryConstants.JLIBRARY_SYSTEM)) {
+			if (path.charAt(0) == '/') {
+				path = path.substring(1,path.length());
+			}
+			path = JLibraryConstants.JLIBRARY_SYSTEM + "/" + 
+				   JLibraryConstants.JLIBRARY_CATEGORIES + "/" + path;
+		}
+		try {
+			javax.jcr.Node node = session.getRootNode().getNode(path);
+			return JCRAdapter.createCategory(node);
+		} catch (ItemNotFoundException infe) {
+			logger.error(infe.getMessage(),infe);
+			throw new CategoryNotFoundException();
+		} catch (javax.jcr.RepositoryException e) {
+			logger.error(e.getMessage(),e);
+			throw new RepositoryException(e);
+		}		
+	}	
 }
