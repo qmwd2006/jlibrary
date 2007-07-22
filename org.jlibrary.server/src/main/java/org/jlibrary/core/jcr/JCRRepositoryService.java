@@ -845,6 +845,63 @@ public class JCRRepositoryService implements RepositoryService {
 		}			
 	}
 
+	public Category findCategoryByPath(Ticket ticket, 
+			 			 	   		   String path) throws RepositoryException, 
+			 				   			   		   		   CategoryNotFoundException, 
+			 				   			   		   		   SecurityException {
+
+		return categoriesModule.findCategoryByPath(ticket, path);
+	}
+	
+	public Node findNodeByPath(Ticket ticket, 
+			 			 	   String path) throws RepositoryException, 
+			 				   			   		   NodeNotFoundException, 
+			 				   			   		   SecurityException {
+
+		SessionManager manager = SessionManager.getInstance();
+		Session session = manager.getSession(ticket);
+		if (!path.startsWith(JLibraryConstants.JLIBRARY_ROOT)) {
+			if (path.charAt(0) == '/') {
+				path = path.substring(1,path.length());
+			}
+			path = JLibraryConstants.JLIBRARY_ROOT + "/" + path;
+		}
+		try {
+			javax.jcr.Node node = session.getRootNode().getNode(path);
+			javax.jcr.Node parent = node.getParent();
+			String uuid = null;
+			if (parent.isNodeType(JCRConstants.JCR_REFERENCEABLE))
+				uuid = parent.getUUID();
+
+			if (!JCRSecurityService.canRead(node, ticket.getUser().getId())) {
+				throw new SecurityException(SecurityException.NOT_ENOUGH_PERMISSIONS);
+			}
+			javax.jcr.Node root = JCRUtils.getRootNode(session); 
+			
+			if (node.isNodeType(JLibraryConstants.DOCUMENT_MIXIN)) {
+				return JCRAdapter.createDocument(node,
+						 						 uuid,
+						 						 root.getUUID());
+			} else if (node.isNodeType(JLibraryConstants.DIRECTORY_MIXIN)) {
+				return JCRAdapter.createDirectory(node,
+												  uuid,
+						 						  root.getUUID(),
+						 						  ticket.getUser().getId());
+			} else if (node.isNodeType(JLibraryConstants.RESOURCE_MIXIN)) {
+				return JCRAdapter.createResource(node,
+						 						 uuid,
+						 						 root.getUUID());
+			}
+			throw new NodeNotFoundException();
+		} catch (ItemNotFoundException infe) {
+			logger.error(infe.getMessage(),infe);
+			throw new NodeNotFoundException(infe);
+		} catch (javax.jcr.RepositoryException e) {
+			logger.error(e.getMessage(),e);
+			throw new RepositoryException(e);
+		}		
+	}
+	
 	public Node findNode(Ticket ticket, 
 			 			 String id) throws RepositoryException, 
 			 				   			   NodeNotFoundException, 
@@ -997,6 +1054,8 @@ public class JCRRepositoryService implements RepositoryService {
 										throws RepositoryException, 
 											   SecurityException, 
 											   ResourceLockedException {
+		
+		// TODO: Check name updates with new code
 		
 		ByteArrayInputStream bais = null;
 		try {
