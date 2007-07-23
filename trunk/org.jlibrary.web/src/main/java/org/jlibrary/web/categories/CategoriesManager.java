@@ -35,12 +35,12 @@ public class CategoriesManager extends AbstractManager {
 		try {
 			log.debug("Listando las categorias");
 			if(parentId!=null){
+				log.debug("categoria padre: "+parentId);
 				cats=category.getCategories();
 			}else{
 				cats=getRepository().getCategories();
 			}
 			List categories=new ArrayList(cats);
-			log.debug(categories.size());
 			list=new ListDataModel(categories);
 			category=new Category();
 		} catch (RepositoryNotFoundException e) {
@@ -53,19 +53,21 @@ public class CategoriesManager extends AbstractManager {
 		return list;
 	}
 	
-	public String subcategories(){
+	public String subCategories(){
 		parentId=category.getId();
 		return "categories$list";
 	}
 	
 	public String parentCategory(){
-		parentId=category.getParent().getId();
+		if(category!=null){
+			parentId=category.getParent().getId();
+		}
 		return "categories$list";
 	}
 	
 	public String create(){
 		category=new Category();
-		log.debug("categoria instanciada");
+		log.debug("categoria instanciada, parentId:"+parentId);
 		return "categories$form";
 	}
 	
@@ -95,7 +97,7 @@ public class CategoriesManager extends AbstractManager {
 				properties.addProperty(CategoryProperties.CATEGORY_NAME, category.getName());
 				properties.addProperty(CategoryProperties.CATEGORY_DESCRIPTION, category.getDescription());
 				properties.addProperty(CategoryProperties.CATEGORY_REPOSITORY, getTicket().getRepositoryId());
-				if (category.getParent() != null) {
+				if (parentId != null) {
 					properties.addProperty(CategoryProperties.CATEGORY_PARENT, parentId);				
 				}
 			} catch (PropertyNotFoundException e) {
@@ -134,6 +136,7 @@ public class CategoriesManager extends AbstractManager {
 	}
 
 	public void setCategory(Category category) {
+		log.debug("seteando categoria");
 		this.category = category;
 	}
 
@@ -142,14 +145,26 @@ public class CategoriesManager extends AbstractManager {
 	}
 
 	public void setId(String id) {
-		log.debug(id);
-		try {
-			category=jlibrary.getRepositoryService().findCategoryById(getTicket(),id);
-		} catch (CategoryNotFoundException e) {
-			e.printStackTrace();
-		} catch (RepositoryException e) {
-			e.printStackTrace();
+		if(id!=null){
+			try {
+				category=jlibrary.getRepositoryService().findCategoryById(getTicket(),id);
+			} catch (CategoryNotFoundException e) {
+				e.printStackTrace();
+			} catch (RepositoryException e) {
+				e.printStackTrace();
+			}
+		}else{
+			category=null;
 		}
 		this.id = id;
+	}
+
+	public String getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(String parentId) {
+		log.debug("seteando padre"+parentId);
+		this.parentId = parentId;
 	}
 }
