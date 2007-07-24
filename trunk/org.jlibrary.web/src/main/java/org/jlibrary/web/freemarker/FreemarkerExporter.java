@@ -25,6 +25,7 @@ package org.jlibrary.web.freemarker;
 import java.io.File;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.util.Text;
 import org.jlibrary.core.entities.Category;
 import org.jlibrary.core.entities.Directory;
 import org.jlibrary.core.entities.Document;
@@ -294,14 +295,16 @@ public class FreemarkerExporter extends BaseExporter {
 	 */
 	public String getLocationURL(Category category) {
 		
-		StringBuffer path = new StringBuffer("<A href=\"./index.html\">" + 
+		String escapedCategoryName = Text.escape(category.getName());
+		StringBuffer path = new StringBuffer("<A href=\"" + escapedCategoryName + "\">" + 
 											 category.getName()+
 											 "</A>");
 		String href = "./";
 		while(category.getParent() != null) {
 			category = category.getParent();
+			escapedCategoryName = Text.escape(category.getName());
 			path.insert(0,"<A href=\" " + 
-						  href+"/index.html\">" + 
+						  href+"/" + escapedCategoryName + "\">" + 
 						  category.getName()+
 						  "</A>/"); 
 			href = href + "../";

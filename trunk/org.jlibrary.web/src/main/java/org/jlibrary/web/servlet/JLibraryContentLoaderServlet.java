@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.util.Text;
 import org.apache.log4j.Logger;
 import org.jlibrary.core.entities.Category;
 import org.jlibrary.core.entities.Credentials;
@@ -20,6 +21,7 @@ import org.jlibrary.core.entities.Repository;
 import org.jlibrary.core.entities.Ticket;
 import org.jlibrary.core.factory.JLibraryServiceFactory;
 import org.jlibrary.core.jcr.JCRRepositoryService;
+import org.jlibrary.core.jcr.JCRUtils;
 import org.jlibrary.core.profiles.LocalServerProfile;
 import org.jlibrary.core.repository.RepositoryService;
 import org.jlibrary.core.security.SecurityService;
@@ -146,7 +148,8 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 			Iterator it = categoriesSet.iterator();
 			while (it.hasNext()) {
 				Category child = (Category)it.next();
-				if (child.getName().equals(pathElements[i])) {
+				String childEscapedName = Text.escape(child.getName());
+				if (childEscapedName.equals(pathElements[i])) {
 					category = child;
 					break;
 				}
