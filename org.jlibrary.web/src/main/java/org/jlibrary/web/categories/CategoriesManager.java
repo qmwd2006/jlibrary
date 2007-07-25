@@ -17,6 +17,7 @@ import org.jlibrary.core.repository.exception.RepositoryException;
 import org.jlibrary.core.repository.exception.RepositoryNotFoundException;
 import org.jlibrary.core.security.SecurityException;
 import org.jlibrary.web.AbstractManager;
+import org.jlibrary.web.Messages;
 /**
  * 
  * @author Dani
@@ -44,10 +45,13 @@ public class CategoriesManager extends AbstractManager {
 			list=new ListDataModel(categories);
 			category=new Category();
 		} catch (RepositoryNotFoundException e) {
+			Messages.setMessageError(e);
 			e.printStackTrace();
 		} catch (RepositoryException e) {
+			Messages.setMessageError(e);
 			e.printStackTrace();
 		} catch (SecurityException e) {
+			Messages.setMessageError(e);
 			e.printStackTrace();
 		}
 		return list;
@@ -84,10 +88,13 @@ public class CategoriesManager extends AbstractManager {
 			try {
 				jlibrary.getRepositoryService().updateCategory(getTicket(),category.getId(),properties);
 			} catch (CategoryAlreadyExistsException e) {
+				Messages.setMessageError(e);
 				e.printStackTrace();
 			} catch (RepositoryException e) {
+				Messages.setMessageError(e);
 				e.printStackTrace();
 			} catch (SecurityException e) {
+				Messages.setMessageError(e);
 				e.printStackTrace();
 			}
 		}else{
@@ -101,17 +108,22 @@ public class CategoriesManager extends AbstractManager {
 					properties.addProperty(CategoryProperties.CATEGORY_PARENT, parentId);				
 				}
 			} catch (PropertyNotFoundException e) {
+				Messages.setMessageError(e);
 				e.printStackTrace();
 			} catch (InvalidPropertyTypeException e) {
+				Messages.setMessageError(e);
 				e.printStackTrace();
 			}				
 			try {
 				Category nuevaCat=jlibrary.getRepositoryService().createCategory(getTicket(),properties);
 			} catch (CategoryAlreadyExistsException e) {
+				Messages.setMessageError(e);
 				e.printStackTrace();
 			} catch (RepositoryException e) {
+				Messages.setMessageError(e);
 				e.printStackTrace();
 			} catch (SecurityException e) {
+				Messages.setMessageError(e);
 				e.printStackTrace();
 			}
 		}
@@ -124,8 +136,10 @@ public class CategoriesManager extends AbstractManager {
 		try {
 			jlibrary.getRepositoryService().deleteCategory(getTicket(),category.getId());
 		} catch (RepositoryException e) {
+			Messages.setMessageError(e);
 			e.printStackTrace();
 		} catch (SecurityException e) {
+			Messages.setMessageError(e);
 			e.printStackTrace();
 		}
 		return "categories$deleted";
@@ -149,8 +163,10 @@ public class CategoriesManager extends AbstractManager {
 			try {
 				category=jlibrary.getRepositoryService().findCategoryById(getTicket(),id);
 			} catch (CategoryNotFoundException e) {
+				Messages.setMessageError(e);
 				e.printStackTrace();
 			} catch (RepositoryException e) {
+				Messages.setMessageError(e);
 				e.printStackTrace();
 			}
 		}else{
