@@ -16,6 +16,7 @@ import org.jlibrary.core.security.SecurityService;
 import org.jlibrary.core.security.exception.AuthenticationException;
 import org.jlibrary.core.security.exception.UserNotFoundException;
 import org.jlibrary.web.AbstractManager;
+import org.jlibrary.web.Messages;
 
 public class LoginManager extends AbstractManager {
 	private Credentials credentials;
@@ -42,15 +43,19 @@ public class LoginManager extends AbstractManager {
 				log.debug("login OK");
 			}
 		} catch (ConnectException e) {
+			Messages.setMessageError(e);
 			e.printStackTrace();
 		} catch (UserNotFoundException e) {
+			Messages.setMessageError(e);
 			e.printStackTrace();
 		} catch (AuthenticationException e) {
+			Messages.setMessageError(e);
 			e.printStackTrace();
 		} catch (RepositoryNotFoundException e) {
 			jlibrary.createRepository(jlibrary.getRepositoryName());
 			login();
 		} catch (SecurityException e) {
+			Messages.setMessageError(e);
 			e.printStackTrace();
 		}
 		HttpServletRequest request = (HttpServletRequest)FacesContext.
