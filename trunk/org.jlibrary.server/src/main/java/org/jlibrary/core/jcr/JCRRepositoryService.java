@@ -893,6 +893,9 @@ public class JCRRepositoryService implements RepositoryService {
 						 						 root.getUUID());
 			}
 			throw new NodeNotFoundException();
+		} catch (PathNotFoundException pnfe) {
+			logger.error("Node with path [" + path + "] not found");
+			throw new NodeNotFoundException();
 		} catch (ItemNotFoundException infe) {
 			logger.error(infe.getMessage(),infe);
 			throw new NodeNotFoundException(infe);
