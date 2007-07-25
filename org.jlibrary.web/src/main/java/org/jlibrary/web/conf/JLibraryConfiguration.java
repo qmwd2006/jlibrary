@@ -23,7 +23,7 @@ import org.jlibrary.core.security.SecurityService;
 public class JLibraryConfiguration {
 	private static JLibraryConfiguration instance= new JLibraryConfiguration();
 	private String repositoryServer="localhost";
-	private String repositoryName="personal";
+	private String repositoryName="www";
 	private SecurityService securityService;
 	private RepositoryService repositoryService;
 	private RepositoryManager repositoryManager;
