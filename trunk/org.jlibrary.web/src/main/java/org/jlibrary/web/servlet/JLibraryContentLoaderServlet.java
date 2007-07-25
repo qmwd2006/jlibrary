@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.jcr.PathNotFoundException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +25,7 @@ import org.jlibrary.core.jcr.JCRRepositoryService;
 import org.jlibrary.core.jcr.JCRUtils;
 import org.jlibrary.core.profiles.LocalServerProfile;
 import org.jlibrary.core.repository.RepositoryService;
+import org.jlibrary.core.repository.exception.NodeNotFoundException;
 import org.jlibrary.core.security.SecurityService;
 import org.jlibrary.web.freemarker.FreemarkerExporter;
 import org.jlibrary.web.freemarker.RepositoryContext;
@@ -97,9 +99,14 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 					String categoryPath = 
 						StringUtils.difference(appURL+"/repositories/"+repositoryName+"/categories",uri);
 					Category category = findCategory(repository,pathElements);
-					String output = exportCategory(req,category);
-					resp.getOutputStream().write(output.getBytes());
-					resp.flushBuffer();
+					if (category == null) {
+						resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+						resp.flushBuffer();
+					} else {
+						String output = exportCategory(req,category);
+						resp.getOutputStream().write(output.getBytes());
+						resp.flushBuffer();
+					}
 					return;
 				}
 			}
@@ -110,7 +117,7 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 				node = repository.getRoot();
 			} else {
 				String nodePath = StringUtils.difference(appURL+"/repositories/"+repositoryName,uri);
-				//node = repositoryService.findNode(ticket, nodeId);
+				//node = repositoryService.findNode(ticket, nodeId);				
 				node = ((JCRRepositoryService)repositoryService).findNodeByPath(ticket,nodePath);
 			}
 			if (node == null) {
@@ -129,6 +136,8 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 					resp.flushBuffer();
 				}
 			}			
+		} catch (NodeNotFoundException nnfe) {
+			resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 		}
