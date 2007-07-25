@@ -29,6 +29,7 @@ import java.util.List;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.Session;
@@ -51,6 +52,7 @@ import org.jlibrary.core.properties.CategoryProperties;
 import org.jlibrary.core.properties.PropertyDef;
 import org.jlibrary.core.repository.exception.CategoryAlreadyExistsException;
 import org.jlibrary.core.repository.exception.CategoryNotFoundException;
+import org.jlibrary.core.repository.exception.NodeNotFoundException;
 import org.jlibrary.core.repository.exception.RepositoryException;
 import org.jlibrary.core.security.SecurityException;
 import org.slf4j.Logger;
@@ -705,6 +707,9 @@ public class JCRCategoriesModule {
 		try {
 			javax.jcr.Node node = session.getRootNode().getNode(path);
 			return JCRAdapter.createCategory(node);
+		} catch (PathNotFoundException pnfe) {
+			logger.error("Category with path [" + path + "] not found");
+			throw new CategoryNotFoundException();
 		} catch (ItemNotFoundException infe) {
 			logger.error(infe.getMessage(),infe);
 			throw new CategoryNotFoundException();
