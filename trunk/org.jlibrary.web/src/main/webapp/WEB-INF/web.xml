@@ -116,6 +116,26 @@
     <url-pattern>/HTTPSearchService</url-pattern>
   </servlet-mapping>
   
+  <filter>
+        <filter-name>ExtensionsFilter</filter-name>
+        <filter-class>
+            org.apache.myfaces.component.html.util.ExtensionsFilter
+        </filter-class>
+        <init-param>
+            <param-name>uploadMaxFileSize</param-name>
+            <param-value>10m</param-value>
+        </init-param>
+        <init-param>
+            <param-name>uploadThresholdSize</param-name>
+            <param-value>100k</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>ExtensionsFilter</filter-name>
+        <servlet-name>FacesServlet</servlet-name>
+    </filter-mapping>
+  
   <welcome-file-list>
     <welcome-file>/index.jsp</welcome-file>
   </welcome-file-list>  
