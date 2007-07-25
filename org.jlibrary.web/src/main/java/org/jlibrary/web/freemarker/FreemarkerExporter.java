@@ -31,10 +31,7 @@ import org.jlibrary.core.entities.Directory;
 import org.jlibrary.core.entities.Document;
 import org.jlibrary.core.entities.Node;
 import org.jlibrary.core.entities.ResourceNode;
-import org.jlibrary.core.entities.Types;
-import org.jlibrary.core.repository.exception.RepositoryException;
 import org.jlibrary.core.util.FileUtils;
-import org.jlibrary.web.EntityRegistry;
 
 /**
  * @author martin
@@ -217,9 +214,20 @@ public class FreemarkerExporter extends BaseExporter {
 	 */
 	public String getLocationURL(Node node) {
 		
-		boolean isDirectory = node.isDirectory();
 		String location = node.getPath();
-		return location;
+
+		StringBuffer buffer = new StringBuffer();
+		String[] pathParts = StringUtils.split(location,"/");
+		String href="./";
+		for (int i=pathParts.length-1;i>=0;i--) {
+			buffer.insert(0,"<A href=\"" + href + Text.escape(pathParts[i]) + "\">" + 
+					 pathParts[i] + "</A>/");
+			href = href + "../";
+		}
+		buffer.insert(0,"/");
+		buffer.delete(buffer.length()-1, buffer.length());
+
+		return buffer.toString();
 		/*
 		StringBuffer buffer = new StringBuffer();
 		String[] parts = StringUtils.split(location,"/");
