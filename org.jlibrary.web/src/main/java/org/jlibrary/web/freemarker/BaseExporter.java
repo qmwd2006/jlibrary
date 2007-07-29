@@ -103,6 +103,11 @@ public class BaseExporter {
 		return length;
 	}
 
+	public void setRepositoryContext(RepositoryContext context) {
+		
+		this.context = context;
+	}
+	
 	public RepositoryContext getContext() {
 		return context;
 	}	
