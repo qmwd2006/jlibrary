@@ -25,11 +25,16 @@ package org.jlibrary.web.freemarker.methods;
 import java.util.List;
 
 import org.jlibrary.core.entities.Node;
-import org.jlibrary.web.EntityRegistry;
+import org.jlibrary.core.entities.ServerProfile;
+import org.jlibrary.core.entities.Ticket;
+import org.jlibrary.core.factory.JLibraryServiceFactory;
+import org.jlibrary.core.repository.RepositoryService;
 import org.jlibrary.web.freemarker.FreemarkerExporter;
 import org.jlibrary.web.freemarker.FreemarkerVariables;
 import org.jlibrary.web.freemarker.Page;
 import org.jlibrary.web.freemarker.RepositoryContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModel;
@@ -43,6 +48,8 @@ import freemarker.template.TemplateModelException;
  */
 public class NodePathMethod implements TemplateMethodModel {
 
+	static Logger logger = LoggerFactory.getLogger(NodePathMethod.class);
+	
 	private FreemarkerExporter exporter;
 
 	public NodePathMethod(FreemarkerExporter exporter) {
@@ -63,8 +70,19 @@ public class NodePathMethod implements TemplateMethodModel {
 		
 		String id = (String)arg;
 		RepositoryContext context = exporter.getContext();
-		Node node = EntityRegistry.getInstance().
-					getNode(id,context.getRepository().getId());
+		
+		Ticket ticket = context.getRepository().getTicket();
+		ServerProfile profile = context.getRepository().getServerProfile();
+		RepositoryService repositoryService = 
+			JLibraryServiceFactory.getInstance(profile).getRepositoryService();
+		Node node;
+		try {
+			node = repositoryService.findNode(ticket, id);
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			return "";
+		}
+		
 		if (node == null) {
 			throw new TemplateModelException("Node with id:"+id+"not found");			
 		}
@@ -72,19 +90,9 @@ public class NodePathMethod implements TemplateMethodModel {
 		Page page = exporter.getCurrentPage();
 		
 		String rootURL = 
-			((SimpleScalar)page.value(FreemarkerVariables.ROOT_URL))
+			((SimpleScalar)page.value(FreemarkerVariables.REPOSITORY_URL))
 			.getAsString();
 		
-		if (args.size() == 1) {
-			return rootURL+node.getPath();
-		} else {
-			String relativeId = (String)arg;
-			Node relativeNode = EntityRegistry.getInstance().
-				getAlreadyLoadedNode(relativeId);
-			if (relativeNode == null) {
-				throw new TemplateModelException("Node with id:"+relativeId+"not found");			
-			}
-			return rootURL+relativeNode.getPath();
-		}
+		return rootURL+node.getPath();
 	}
 }
