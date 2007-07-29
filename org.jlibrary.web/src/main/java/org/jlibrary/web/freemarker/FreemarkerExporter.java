@@ -59,6 +59,7 @@ public class FreemarkerExporter extends BaseExporter {
 	 */
 	public void initExportProcess(RepositoryContext context) throws ExportException {
 
+		setRepositoryContext(context);
 		factory.setTemplateCache(context.getTemplatesDirectory());
 		
 		copyResources(context);
@@ -221,7 +222,7 @@ public class FreemarkerExporter extends BaseExporter {
 		String href="./";
 		for (int i=pathParts.length-1;i>=0;i--) {
 			buffer.insert(0,"<A href=\"" + href + Text.escape(pathParts[i]) + "\">" + 
-					 pathParts[i] + "</A>/");
+					 Text.unescape(pathParts[i]) + "</A>/");
 			href = href + "../";
 		}
 		buffer.insert(0,"/");
