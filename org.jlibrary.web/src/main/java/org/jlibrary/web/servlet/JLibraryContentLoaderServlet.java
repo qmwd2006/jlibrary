@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Set;
 
-import javax.jcr.PathNotFoundException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,32 +13,27 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
 import org.apache.log4j.Logger;
 import org.jlibrary.core.entities.Category;
-import org.jlibrary.core.entities.Credentials;
 import org.jlibrary.core.entities.Directory;
 import org.jlibrary.core.entities.Document;
 import org.jlibrary.core.entities.Node;
 import org.jlibrary.core.entities.Repository;
+import org.jlibrary.core.entities.ServerProfile;
 import org.jlibrary.core.entities.Ticket;
 import org.jlibrary.core.factory.JLibraryServiceFactory;
 import org.jlibrary.core.jcr.JCRRepositoryService;
-import org.jlibrary.core.jcr.JCRUtils;
 import org.jlibrary.core.profiles.LocalServerProfile;
 import org.jlibrary.core.repository.RepositoryService;
 import org.jlibrary.core.repository.exception.NodeNotFoundException;
-import org.jlibrary.core.security.SecurityService;
 import org.jlibrary.web.freemarker.FreemarkerExporter;
 import org.jlibrary.web.freemarker.RepositoryContext;
+import org.jlibrary.web.services.TicketService;
 
 @SuppressWarnings("serial")
 public class JLibraryContentLoaderServlet extends HttpServlet {
 
 	private static Logger logger = Logger.getLogger(JLibraryContentLoaderServlet.class);
-	
-	private static Ticket ticket;
 
-	private LocalServerProfile profile;
-
-	private Repository repository;
+	private ServerProfile profile = new LocalServerProfile();
 
 	private String repositoryName;
 	
@@ -47,20 +41,6 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 	public void init() throws ServletException {
 
 		super.init();
-		
-		if (ticket == null) {
-			profile = new LocalServerProfile();
-			SecurityService service = 
-				JLibraryServiceFactory.getInstance(profile).getSecurityService();
-			Credentials credentials = new org.jlibrary.core.entities.Credentials();
-			credentials.setUser("admin_name");
-			credentials.setPassword("changeme");
-			try {
-				ticket = service.login(credentials, "www");
-			} catch (Exception e) {
-				logger.error(e.getMessage(),e);
-			}
-		}
 	}
 	
 	@Override
@@ -86,10 +66,13 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 		String[] pathElements = StringUtils.split(path,"/");
 		
 		repositoryName = pathElements[0];
-		
+		Ticket ticket = TicketService.getTicketService().getTicket(req, repositoryName);
+		Repository repository = null;
 		try {
 			RepositoryService repositoryService = 
 				JLibraryServiceFactory.getInstance(profile).getRepositoryService();
+			//TODO: Check if we really need to have this instance. Perhaps some of the methods that 
+			// use a RepositoryContext object don't need to get a whole repository object
 			repository = repositoryService.findRepository(repositoryName, ticket);
 			repository.setServerProfile(new LocalServerProfile());
 			repository.setTicket(ticket);
@@ -103,7 +86,7 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 						resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
 						resp.flushBuffer();
 					} else {
-						String output = exportCategory(req,category);
+						String output = exportCategory(req,repository,category);
 						resp.getOutputStream().write(output.getBytes());
 						resp.flushBuffer();
 					}
@@ -117,8 +100,14 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 				node = repository.getRoot();
 			} else {
 				String nodePath = StringUtils.difference(appURL+"/repositories/"+repositoryName,uri);
-				//node = repositoryService.findNode(ticket, nodeId);				
-				node = ((JCRRepositoryService)repositoryService).findNodeByPath(ticket,nodePath);
+				//node = repositoryService.findNode(ticket, nodeId);			
+				try {
+					node = ((JCRRepositoryService)repositoryService).findNodeByPath(ticket,nodePath);
+				} catch (NodeNotFoundException nnfe) {
+					// Perhaps somebody has unescaped the name
+					String unescapedPath = Text.unescape(nodePath);
+					node = ((JCRRepositoryService)repositoryService).findNodeByPath(ticket,unescapedPath);					
+				}
 			}
 			if (node == null) {
 				logger.debug("Node could not be found");
@@ -126,12 +115,11 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 				req.setAttribute("node", node);
 
 				if (node.isDocument()) {
-					//req.getRequestDispatcher("/document.jsp").forward(req, resp);
-					String output = exportDocument(req,node);
+					String output = exportDocument(req,repository,node);
 					resp.getOutputStream().write(output.getBytes());
 					resp.flushBuffer();
 				} else if (node.isDirectory()) {
-					String output = exportDirectory(req,node);
+					String output = exportDirectory(req,repository,node);
 					resp.getOutputStream().write(output.getBytes());
 					resp.flushBuffer();
 				}
@@ -148,7 +136,8 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 		Category category = null;
 		Set categoriesSet = null;
 		while (i < pathElements.length) {
-			String categoryName = pathElements[i];
+			String categoryName = Text.unescape(pathElements[i]);
+			
 			if (category == null) {
 				categoriesSet = repository.getCategories();
 			} else {
@@ -157,8 +146,8 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 			Iterator it = categoriesSet.iterator();
 			while (it.hasNext()) {
 				Category child = (Category)it.next();
-				String childEscapedName = Text.escape(child.getName());
-				if (childEscapedName.equals(pathElements[i])) {
+				//String childEscapedName = Text.escape(child.getName());
+				if (child.getName().equals(categoryName)) {
 					category = child;
 					break;
 				}
@@ -170,7 +159,7 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 
 	
 	
-	private String exportDocument(HttpServletRequest request,Node node) {
+	private String exportDocument(HttpServletRequest request, Repository repository, Node node) {
 		
 		try {
 			String templatesDirectory = 
@@ -201,7 +190,7 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 		return getRootURL(request) + "/repositories/" + repositoryName;
 	}
 	
-	private String exportDirectory(HttpServletRequest request,Node node) {
+	private String exportDirectory(HttpServletRequest request, Repository repository, Node node) {
 		
 		try {
 			String templatesDirectory = 
@@ -219,7 +208,7 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 		}
 	}
 	
-	private String exportCategory(HttpServletRequest request,Category category) {
+	private String exportCategory(HttpServletRequest request, Repository repository, Category category) {
 		
 		try {
 			String templatesDirectory = 
