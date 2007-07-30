@@ -32,7 +32,7 @@ public class TicketService {
 
 	private static Logger logger = Logger.getLogger(TicketService.class);
 	
-	private static final String SESSION_TICKET_ID = "ticket";
+	public static final String SESSION_TICKET_ID = "ticket";
 	private volatile static TicketService instance;
 	
 	private ConcurrentHashMap<String, Ticket> guestTickets = new ConcurrentHashMap<String, Ticket>();
