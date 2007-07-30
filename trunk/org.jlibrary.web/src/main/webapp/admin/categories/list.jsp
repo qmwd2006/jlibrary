@@ -11,7 +11,7 @@
 			<h:outputText value="#{labels.categories}"/>
 		</ui:define>
 		<ui:define name="body">
-			<t:saveState id="parent" value="#{categoriesManager.parentId}"/>
+			<t:saveState id="parent" value="#{categoriesManager.parentCategory}"/>
 			<h:form id="menu">
 				<h:dataTable id="categories" value="#{categoriesManager.list}" var="item">
 			     <h:column>     
@@ -43,9 +43,8 @@
 			  	<h:outputText value="nueva"/>
 			  </h:commandLink>
 			  <br/>
-			  <h:commandLink action="#{categoriesManager.parentCategory}">
+			  <h:commandLink action="#{categoriesManager.parent}">
 			  	<h:outputText value="padre"/>
-			  	<t:updateActionListener property="#{categoriesManager.id}" value="#{categoriesManager.parentId}"/>
 			  </h:commandLink>
 			</h:form>
 		</ui:define>
