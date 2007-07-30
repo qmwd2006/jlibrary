@@ -12,7 +12,7 @@
 		</ui:define>
 		<ui:define name="body">
 			<t:saveState id="category" value="#{categoriesManager.category}"/>
-			<t:saveState id="parent" value="#{categoriesManager.parentId}"/>
+			<t:saveState id="parent" value="#{categoriesManager.parentCategory}"/>
 			<h:form id="form">
 				<h:outputLabel value="nombre:" for="name"/>
 				<h:inputText id="name" required="true" value="#{categoriesManager.category.name}"/>

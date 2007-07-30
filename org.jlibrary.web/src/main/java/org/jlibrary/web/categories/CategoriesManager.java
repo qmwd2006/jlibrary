@@ -26,24 +26,24 @@ import org.jlibrary.web.Messages;
 public class CategoriesManager extends AbstractManager {
 	private ListDataModel list;
 	private Category category=null;
+	private Category parentCategory=null;
 	private Logger log=Logger.getLogger(CategoriesManager.class);
 	private String id;
-	private String parentId;
 	public CategoriesManager(){}
 	
 	public ListDataModel getList(){
 		Set cats;
 		try {
-			log.debug("Listando las categorias");
-			if(parentId!=null){
-				log.debug("categoria padre: "+parentId);
-				cats=category.getCategories();
+			if(parentCategory!=null){
+				log.debug("categoria padre: "+parentCategory.getId());
+				parentCategory=jlibrary.getRepositoryService().findCategoryById(getTicket(),parentCategory.getId());
+				cats=parentCategory.getCategories();
 			}else{
+				log.debug("categorias raiz");
 				cats=getRepository().getCategories();
 			}
 			List categories=new ArrayList(cats);
 			list=new ListDataModel(categories);
-			category=new Category();
 		} catch (RepositoryNotFoundException e) {
 			Messages.setMessageError(e);
 			e.printStackTrace();
@@ -58,20 +58,19 @@ public class CategoriesManager extends AbstractManager {
 	}
 	
 	public String subCategories(){
-		parentId=category.getId();
+		parentCategory=category;
 		return "categories$list";
 	}
 	
-	public String parentCategory(){
-		if(category!=null){
-			parentId=category.getParent().getId();
+	public String parent(){
+		if(parentCategory!=null){
+			parentCategory=parentCategory.getParent();
 		}
 		return "categories$list";
 	}
 	
 	public String create(){
 		category=new Category();
-		log.debug("categoria instanciada, parentId:"+parentId);
 		return "categories$form";
 	}
 	
@@ -104,8 +103,8 @@ public class CategoriesManager extends AbstractManager {
 				properties.addProperty(CategoryProperties.CATEGORY_NAME, category.getName());
 				properties.addProperty(CategoryProperties.CATEGORY_DESCRIPTION, category.getDescription());
 				properties.addProperty(CategoryProperties.CATEGORY_REPOSITORY, getTicket().getRepositoryId());
-				if (parentId != null) {
-					properties.addProperty(CategoryProperties.CATEGORY_PARENT, parentId);				
+				if (parentCategory != null) {
+					properties.addProperty(CategoryProperties.CATEGORY_PARENT, parentCategory.getId());				
 				}
 			} catch (PropertyNotFoundException e) {
 				Messages.setMessageError(e);
@@ -115,7 +114,7 @@ public class CategoriesManager extends AbstractManager {
 				e.printStackTrace();
 			}				
 			try {
-				Category nuevaCat=jlibrary.getRepositoryService().createCategory(getTicket(),properties);
+				jlibrary.getRepositoryService().createCategory(getTicket(),properties);
 			} catch (CategoryAlreadyExistsException e) {
 				Messages.setMessageError(e);
 				e.printStackTrace();
@@ -172,15 +171,15 @@ public class CategoriesManager extends AbstractManager {
 		}else{
 			category=null;
 		}
+		log.debug(id);
 		this.id = id;
 	}
 
-	public String getParentId() {
-		return parentId;
+	public Category getParentCategory() {
+		return parentCategory;
 	}
 
-	public void setParentId(String parentId) {
-		log.debug("seteando padre"+parentId);
-		this.parentId = parentId;
+	public void setParentCategory(Category parentCategory) {
+		this.parentCategory = parentCategory;
 	}
 }
