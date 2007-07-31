@@ -16,6 +16,7 @@
   </#if>
 </#list>
 </ul>
+Hola ${active_user}
 </div> 
     <#if location_url="">
     <#else>
