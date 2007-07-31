@@ -6,23 +6,18 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import javax.faces.model.ListDataModel;
 
 import org.apache.log4j.Logger;
 import org.apache.myfaces.custom.fileupload.UploadedFile;
-import org.jlibrary.core.entities.Category;
 import org.jlibrary.core.entities.Directory;
 import org.jlibrary.core.entities.Document;
 import org.jlibrary.core.entities.Node;
-import org.jlibrary.core.properties.CategoryProperties;
 import org.jlibrary.core.properties.DirectoryProperties;
 import org.jlibrary.core.properties.DocumentProperties;
 import org.jlibrary.core.properties.GenericProperties;
 import org.jlibrary.core.properties.InvalidPropertyTypeException;
 import org.jlibrary.core.properties.PropertyNotFoundException;
-import org.jlibrary.core.repository.exception.CategoryAlreadyExistsException;
 import org.jlibrary.core.repository.exception.NodeNotFoundException;
 import org.jlibrary.core.repository.exception.RepositoryException;
 import org.jlibrary.core.repository.exception.RepositoryNotFoundException;
@@ -33,18 +28,19 @@ import org.jlibrary.web.Messages;
 public class DocumentsManager extends AbstractManager {
 	private ListDataModel list;
 	private Node node;
+	private Node parent;
 	private Logger log=Logger.getLogger(DocumentsManager.class);
 	private String id;
-	private String parentId;
 
 	public ListDataModel getList(){
 		List nodes=new ArrayList();
 		try {
-			if(parentId==null){
-				parentId=getRepository().getRoot().getId();
+			if(parent==null){
+				parent=getRepository().getRoot();
 			}
-			nodes=new ArrayList(jlibrary.getRepositoryService().findNodeChildren(getTicket(),parentId));
-			log.debug("nodos:"+nodes.size());
+			
+			nodes=new ArrayList(jlibrary.getRepositoryService().findNodeChildren(getTicket(),parent.getId()));
+			log.debug("Nodo"+parent.getId()+" subnodos:"+nodes.size());
 		} catch (RepositoryNotFoundException e) {
 			Messages.setMessageError(e);
 			e.printStackTrace();
@@ -57,6 +53,30 @@ public class DocumentsManager extends AbstractManager {
 		}
 		list=new ListDataModel(nodes);
 		return list;
+	}
+	
+	public String subNodes(){
+		parent=node;
+		log.debug(parent.getId());
+		return "content$list";
+	}
+	
+	public String parentNode(){
+		if(parent!=null &&parent.getParent()!=null){
+			try {
+				parent=jlibrary.getRepositoryService().findNode(getTicket(),parent.getParent());
+			} catch (NodeNotFoundException e) {
+				Messages.setMessageError(e);
+				e.printStackTrace();
+			} catch (RepositoryException e) {
+				Messages.setMessageError(e);
+				e.printStackTrace();
+			} catch (SecurityException e) {
+				Messages.setMessageError(e);
+				e.printStackTrace();
+			}
+		}
+		return "content$list";
 	}
 	
 	public String details(){
@@ -101,18 +121,7 @@ public class DocumentsManager extends AbstractManager {
 				try {
 					properties.addProperty(DirectoryProperties.DIRECTORY_NAME, directory.getName());
 					properties.addProperty(DirectoryProperties.DIRECTORY_DESCRIPTION, directory.getDescription());
-					try {
-						properties.addProperty(DirectoryProperties.DIRECTORY_PARENT, getRepository().getRoot().getId());
-					} catch (RepositoryNotFoundException e) {
-						Messages.setMessageError(e);
-						log.error(e.getMessage());
-					} catch (RepositoryException e) {
-						Messages.setMessageError(e);
-						log.error(e.getMessage());
-					} catch (SecurityException e) {
-						Messages.setMessageError(e);
-						log.error(e.getMessage());
-					}
+					properties.addProperty(DirectoryProperties.DIRECTORY_PARENT, parent.getId());
 					properties.addProperty(DirectoryProperties.DIRECTORY_POSITION, 1);
 				} catch (PropertyNotFoundException e) {
 					Messages.setMessageError(e);
@@ -151,18 +160,7 @@ public class DocumentsManager extends AbstractManager {
 				try {
 					properties.addProperty(DocumentProperties.DOCUMENT_NAME, document.getName());
 					properties.addProperty(DocumentProperties.DOCUMENT_DESCRIPTION, document.getDescription());
-					try {
-						properties.addProperty(DocumentProperties.DOCUMENT_PARENT, getRepository().getRoot().getId());
-					} catch (RepositoryNotFoundException e) {
-						Messages.setMessageError(e);
-						log.error(e.getMessage());
-					} catch (RepositoryException e) {
-						Messages.setMessageError(e);
-						log.error(e.getMessage());
-					} catch (SecurityException e) {
-						Messages.setMessageError(e);
-						log.error(e.getMessage());
-					}
+					properties.addProperty(DocumentProperties.DOCUMENT_PARENT, parent.getId());
 					properties.addProperty(DocumentProperties.DOCUMENT_POSITION, 1);
 					properties.addProperty(DocumentProperties.DOCUMENT_PARENT, "path");
 				} catch (PropertyNotFoundException e) {
@@ -226,4 +224,12 @@ public class DocumentsManager extends AbstractManager {
         InputStream in = new BufferedInputStream(file.getInputStream());
         return in;
     }
+
+	public Node getParent() {
+		return parent;
+	}
+
+	public void setParent(Node parent) {
+		this.parent = parent;
+	}
 }

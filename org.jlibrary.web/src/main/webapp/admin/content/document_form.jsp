@@ -12,6 +12,7 @@
 		</ui:define>
 		<ui:define name="body">
 			<t:saveState value="#{documentsManager.node}" id="cat"/>
+			<t:saveState id="parent" value="#{documentsManager.parent}"/>
 			<h:form id="form">
 				<h:outputLabel value="nombre:" for="name"/>
 				<h:inputText id="name" required="true" value="#{documentsManager.node.name}"/>

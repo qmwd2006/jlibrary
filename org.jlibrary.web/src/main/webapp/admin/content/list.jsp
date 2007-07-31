@@ -11,6 +11,7 @@
 			<h:outputText value="#{labels.documents}"/>
 		</ui:define>
 		<ui:define name="body">
+			<t:saveState id="parent" value="#{documentsManager.parent}"/>
 			<h:form id="menu">
 				<h:dataTable id="contents" value="#{documentsManager.list}" var="item">
 			     <h:column>     
@@ -31,6 +32,12 @@
 			         	<t:updateActionListener property="#{documentsManager.id}" value="#{item.id}"/>
 			         </h:commandLink>
 			     </h:column>
+			     <h:column>     
+			         <h:commandLink id="sub" action="#{documentsManager.subNodes}">
+			         	<h:outputText value="subnodos"/>
+			         	<t:updateActionListener property="#{documentsManager.id}" value="#{item.id}"/>
+			         </h:commandLink>
+			     </h:column>
 			  </h:dataTable>
 			  <h:commandLink action="#{documentsManager.createDirectory}">
 			  	<h:outputText value="nuevo directorio"/>
@@ -38,6 +45,10 @@
 			  <br/>
 			  <h:commandLink action="#{documentsManager.createDocument}">
 			  	<h:outputText value="nuevo documento"/>
+			  </h:commandLink>
+			  <br/>
+			  <h:commandLink action="#{documentsManager.parentNode}">
+			  	<h:outputText value="padre"/>
 			  </h:commandLink>
 			</h:form>
 		</ui:define>
