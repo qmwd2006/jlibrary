@@ -30,6 +30,11 @@ package org.jlibrary.web.freemarker;
 public class FreemarkerVariables {
 
 	/**
+	 * Active user
+	 */
+	public static final String ACTIVE_USER = "active_user";
+	
+	/**
 	 * Exported category
 	 */
 	public static final String CATEGORY = "category";

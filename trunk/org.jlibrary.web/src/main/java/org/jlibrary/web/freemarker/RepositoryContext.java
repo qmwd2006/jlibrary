@@ -23,6 +23,7 @@
 package org.jlibrary.web.freemarker;
 
 import org.jlibrary.core.entities.Repository;
+import org.jlibrary.core.entities.Ticket;
 
 /**
  * @author martin
@@ -34,6 +35,7 @@ public class RepositoryContext {
 	private Repository repository;
 	private String templatesDirectory;
 	private String outputDirectory;
+	private Ticket ticket;
 	
 	/**
 	 * Constructor
@@ -84,5 +86,13 @@ public class RepositoryContext {
 	public void applyFilter(ExportFilter filter) {
 		
 		setRepository(filter.filter(getRepository()));
+	}
+
+	public Ticket getTicket() {
+		return ticket;
+	}
+
+	public void setTicket(Ticket ticket) {
+		this.ticket = ticket;
 	}	
 }
