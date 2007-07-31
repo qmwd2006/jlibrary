@@ -39,9 +39,22 @@
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>login$ok</from-outcome>
+			<to-view-id>/admin/home.jsp</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	
+	<navigation-rule>
+		<from-view-id>/admin/home.jsp</from-view-id>
+		<navigation-case>
+			<from-outcome>content$list</from-outcome>
+			<to-view-id>/admin/content/list.jsp</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>categories$list</from-outcome>
 			<to-view-id>/admin/categories/list.jsp</to-view-id>
 		</navigation-case>
 	</navigation-rule>
+	
 	<navigation-rule>
 		<from-view-id>/admin/categories/list.jsp</from-view-id>
 		<navigation-case>
