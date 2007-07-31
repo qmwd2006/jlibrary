@@ -86,7 +86,7 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 						resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
 						resp.flushBuffer();
 					} else {
-						String output = exportCategory(req,repository,category);
+						String output = exportCategory(req,ticket,repository,category);
 						resp.getOutputStream().write(output.getBytes());
 						resp.flushBuffer();
 					}
@@ -115,11 +115,11 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 				req.setAttribute("node", node);
 
 				if (node.isDocument()) {
-					String output = exportDocument(req,repository,node);
+					String output = exportDocument(req,ticket,repository,node);
 					resp.getOutputStream().write(output.getBytes());
 					resp.flushBuffer();
 				} else if (node.isDirectory()) {
-					String output = exportDirectory(req,repository,node);
+					String output = exportDirectory(req,ticket,repository,node);
 					resp.getOutputStream().write(output.getBytes());
 					resp.flushBuffer();
 				}
@@ -159,13 +159,17 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 
 	
 	
-	private String exportDocument(HttpServletRequest request, Repository repository, Node node) {
+	private String exportDocument(HttpServletRequest request, 
+							      Ticket ticket,
+								  Repository repository, 
+							      Node node) {
 		
 		try {
 			String templatesDirectory = 
 				"/software/apache-tomcat-6.0.13-pruebas/webapps/jlibrary/templates/andreas";
 			RepositoryContext context = 
 				new RepositoryContext(repository,templatesDirectory,null);
+			context.setTicket(ticket);
 			FreemarkerExporter exporter = new FreemarkerExporter();
 			exporter.setRootURL(getRootURL(request));
 			exporter.setRepositoryURL(getRepositoryURL(request));
@@ -190,13 +194,17 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 		return getRootURL(request) + "/repositories/" + repositoryName;
 	}
 	
-	private String exportDirectory(HttpServletRequest request, Repository repository, Node node) {
+	private String exportDirectory(HttpServletRequest request, 		
+								   Ticket ticket, 
+								   Repository repository, 
+								   Node node) {
 		
 		try {
 			String templatesDirectory = 
 				"/software/apache-tomcat-6.0.13-pruebas/webapps/jlibrary/templates/andreas";
 			RepositoryContext context = 
 				new RepositoryContext(repository,templatesDirectory,null);
+			context.setTicket(ticket);
 			FreemarkerExporter exporter = new FreemarkerExporter();
 			exporter.setRootURL(getRootURL(request));
 			exporter.setRepositoryURL(getRepositoryURL(request));
@@ -208,13 +216,17 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 		}
 	}
 	
-	private String exportCategory(HttpServletRequest request, Repository repository, Category category) {
+	private String exportCategory(HttpServletRequest request, 
+								  Ticket ticket, 
+								  Repository repository, 
+								  Category category) {
 		
 		try {
 			String templatesDirectory = 
 				"/software/apache-tomcat-6.0.13-pruebas/webapps/jlibrary/templates/andreas";
 			RepositoryContext context = 
 				new RepositoryContext(repository,templatesDirectory,null);
+			context.setTicket(ticket);
 			FreemarkerExporter exporter = new FreemarkerExporter();
 			exporter.setRootURL(getRootURL(request));
 			exporter.setRepositoryURL(getRepositoryURL(request));
