@@ -51,7 +51,7 @@ public class TicketService {
 		Ticket ticket = null;
 		
 		HttpSession session = request.getSession(true);
-		ticket = (Ticket)session.getAttribute(SESSION_TICKET_ID);
+		ticket = (Ticket)session.getAttribute(SESSION_TICKET_ID+repositoryName);
 		if (ticket == null) {
 			// Obtain a guest ticket. Synchronization for obtaining guest tickets it is not very 
 			// critical so we don't bother adding synchronized blocks for this collection
@@ -65,7 +65,7 @@ public class TicketService {
 				guestTickets.put(repositoryName, ticket);
 			}
 
-			session.setAttribute(SESSION_TICKET_ID, ticket);
+			session.setAttribute(SESSION_TICKET_ID+repositoryName, ticket);
 		}
 		
 		return ticket;
