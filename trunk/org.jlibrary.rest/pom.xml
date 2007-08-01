@@ -51,6 +51,13 @@
         <artifactId>spring</artifactId>
         <version>2.0.6</version>
     </dependency>
+
+    <dependency>
+        <groupId>opensymphony</groupId>
+        <artifactId>sitemesh</artifactId>
+        <version>2.2.1</version>
+        <scope>compile</scope>
+    </dependency>
     
     <dependency>
 	  <groupId>com.h2database</groupId>

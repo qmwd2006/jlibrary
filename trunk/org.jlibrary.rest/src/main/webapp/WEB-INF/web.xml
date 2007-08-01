@@ -26,6 +26,24 @@
      <param-value>WEB-INF/repository</param-value>
   </context-param>
 
+    <filter>
+        <filter-name>sitemesh</filter-name>
+        <filter-class>
+            com.opensymphony.module.sitemesh.filter.PageFilter
+        </filter-class>
+        <init-param>
+            <param-name>debug.pagewriter</param-name>
+            <param-value>true</param-value>
+        </init-param> 
+    </filter> 
+
+    <filter-mapping>
+        <filter-name>sitemesh</filter-name>
+        <url-pattern>*.html</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping> 
+
+
   <servlet>
      <servlet-name>RestServlet</servlet-name> 
      <servlet-class>com.noelios.restlet.ext.servlet.ServerServlet</servlet-class> 
