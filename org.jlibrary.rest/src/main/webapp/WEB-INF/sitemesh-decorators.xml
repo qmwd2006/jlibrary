@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<decorators defaultdir="/WEB-INF/jsp/theme/default">
+<decorators defaultdir="/WEB-INF/jsp/themes/default">
     <!--
   <excludes>
       <pattern>/ajax/*</pattern>
