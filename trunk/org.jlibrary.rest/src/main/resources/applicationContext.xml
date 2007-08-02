@@ -18,8 +18,8 @@
                   <entry key="/user/{user}"><ref local="userRestlet" /></entry>
 		  <entry key="/user"><ref local="usersRestlet" /></entry>
 -->
-                  <entry key="/cat/{cat}"><ref local="categoryRestlet" /></entry>
-                  <entry key="/doc/{doc}"><ref local="documentRestlet" /></entry>
+                  <entry key="/cat/{category}"><ref local="categoryRestlet" /></entry>
+                  <entry key="/doc/{document}"><ref local="documentRestlet" /></entry>
                   <entry key="/folder/{folder}"><ref local="folderRestlet" /></entry>
                   <entry key="/index"><ref local="categoryListRestlet" /></entry>
   		</map>

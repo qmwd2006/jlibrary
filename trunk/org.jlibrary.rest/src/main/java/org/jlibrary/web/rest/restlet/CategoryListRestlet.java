@@ -9,6 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.List;
 
+import org.jlibrary.core.entities.Category;
 import org.jlibrary.core.factory.JLibraryServiceFactory;
 import org.jlibrary.core.repository.RepositoryService;
 import org.jlibrary.core.repository.exception.RepositoryException;
@@ -31,7 +32,7 @@ import org.w3c.dom.NodeList;
  * @author Irfan Jamadar
  * @version 1.0
  */
-public class CategoryListRestlet extends Restlet {
+public class CategoryListRestlet extends AbstractRestlet {
 
 	
 	public void handle(Request request, Response response) {
@@ -42,20 +43,18 @@ public class CategoryListRestlet extends Restlet {
 				List cats = rs.findAllCategories(RestApplication.getTicket());
 				String responseText = "<ul>";
 				for (Iterator i = cats.iterator(); i.hasNext();){
-					responseText += "<li>" +i.next() + "</li>";
+					Category cat = (Category)i.next();
+					responseText += "<li><a href=\"./cat/"+ cat.getId() +".html\">" + cat.getName() + "</a></li>";
 				}
 				responseText += "</ul>";
 				response.setEntity(responseText, MediaType.TEXT_HTML);
 			} catch (RepositoryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				response.setEntity(exceptionToString(e), MediaType.TEXT_HTML);
 			}
-			
-	        	
 
-                } else {
-        	       response.setStatus(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
-                }
+        } else {
+	       response.setStatus(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
+        }
 	}
 
 

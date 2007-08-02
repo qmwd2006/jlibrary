@@ -4,6 +4,8 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
@@ -11,7 +13,6 @@ import java.util.List;
 
 import org.jlibrary.core.entities.Category;
 import org.jlibrary.core.repository.RepositoryService;
-import org.jlibrary.core.repository.exception.CategoryNotFoundException;
 import org.jlibrary.core.repository.exception.RepositoryException;
 import org.jlibrary.web.rest.RestApplication;
 import org.restlet.Restlet;
@@ -32,26 +33,29 @@ import org.w3c.dom.NodeList;
  * @author Irfan Jamadar
  * @version 1.0
  */
-public class CategoryRestlet extends AbstractRestlet {
+public abstract class AbstractRestlet extends Restlet {
 
-	public void handle(Request request, Response response) {
 
-		if (request.getMethod().equals(Method.GET)) {    
-			    
-		    try {
-		    	RepositoryService rs = RestApplication.getRepositoryService();
-		    	String catId = super.getIdForResource((String) request.getAttributes().get("category"));
-				Category cat = rs.findCategoryById(RestApplication.getTicket(), catId);
-	        	response.setEntity(cat.getName(), MediaType.TEXT_HTML);
-
-			} catch (Exception e) {
-				response.setEntity(exceptionToString(e), MediaType.TEXT_HTML);
-			}
-		
-        } else {
-	       response.setStatus(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
-        }
+	protected String exceptionToString(Throwable t){
+		StringWriter sw = new StringWriter();
+		t.printStackTrace(new PrintWriter(sw));
+		return sw.toString();
+	}
+	
+	protected String getIdForResource(String value){
+		if (value.indexOf('.') > 0){
+			return value.substring(0, value.lastIndexOf('.'));
+		}else{
+			return value;
+		}
 	}
 
+	protected String getFormatForResource(String value){
+		if (value.indexOf('.') > 0){
+			return value.substring(value.lastIndexOf('.') + 1);
+		}else{
+			return value;
+		}		
+	}
 	
 }
