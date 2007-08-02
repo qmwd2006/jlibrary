@@ -95,9 +95,9 @@ public class DocumentTemplateProcessor implements FreemarkerTemplateProcessor {
 			return;
 		}
 		*/
-		page.expose(FreemarkerVariables.ACTIVE_USER, context.getTicket().getUser().getName());
 		page.expose(FreemarkerVariables.REPOSITORY,context.getRepository());
-		page.expose(FreemarkerVariables.DOCUMENT, document);		
+		page.expose(FreemarkerVariables.DOCUMENT, document);
+		page.expose(FreemarkerVariables.TICKET, context.getTicket());	
 		
 		page.expose(FreemarkerVariables.DATE, new Date());
 		if (context.getRepository().getTicket().getUser().equals(User.ADMIN_USER)) {

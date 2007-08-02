@@ -28,11 +28,11 @@ package org.jlibrary.web.freemarker;
  * Freemarker defined variables holder class
  */
 public class FreemarkerVariables {
-
+	
 	/**
-	 * Active user
+	 * Is Admin?
 	 */
-	public static final String ACTIVE_USER = "active_user";
+	public static final String TICKET = "ticket";
 	
 	/**
 	 * Exported category

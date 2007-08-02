@@ -10,6 +10,8 @@ import org.jlibrary.core.entities.Credentials;
 import org.jlibrary.core.entities.Ticket;
 import org.jlibrary.core.entities.User;
 import org.jlibrary.core.factory.JLibraryServiceFactory;
+import org.jlibrary.core.jcr.RepositoryManager;
+import org.jlibrary.core.jcr.RepositorySessionState;
 import org.jlibrary.core.profiles.LocalServerProfile;
 import org.jlibrary.core.properties.UserProperties;
 import org.jlibrary.core.security.SecurityException;
@@ -57,17 +59,31 @@ public class TicketService {
 			// critical so we don't bother adding synchronized blocks for this collection
 			ticket = guestTickets.get(repositoryName);
 			if (ticket == null) {
-				ticket = createGuestTicket(repositoryName);
-				if (ticket == null) {
-					logger.error("Unable to obtain a guest ticket for repository '" + repositoryName + "'");
-					return null;
-				}	
-				guestTickets.put(repositoryName, ticket);
+				ticket = createGuestSession(session, repositoryName);
+			}			
+		} else {
+			// Check that the session is still valid, e.g. between server restarts
+			
+			RepositoryManager manager = RepositoryManager.getInstance();
+			RepositorySessionState state = manager.getRepositoryState(ticket);
+			if (state == null) {
+				// Session not active
+				ticket = createGuestSession(session, repositoryName);
 			}
-
-			session.setAttribute(SESSION_TICKET_ID+repositoryName, ticket);
 		}
 		
+		return ticket;
+	}
+
+	private Ticket createGuestSession(HttpSession session, String repositoryName) {
+		Ticket ticket;
+		ticket = createGuestTicket(repositoryName);
+		if (ticket == null) {
+			logger.error("Unable to obtain a guest ticket for repository '" + repositoryName + "'");
+			return null;
+		}	
+		guestTickets.put(repositoryName, ticket);
+		session.setAttribute(SESSION_TICKET_ID+repositoryName, ticket);
 		return ticket;
 	}
 	

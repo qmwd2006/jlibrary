@@ -75,9 +75,9 @@ public class CategoryTemplateProcessor implements FreemarkerTemplateProcessor {
 	public String processTemplate(FreemarkerFactory factory,
 								  Page page) throws ExportException {
 				
-		page.expose(FreemarkerVariables.ACTIVE_USER, context.getTicket().getUser().getName());
 		page.expose(FreemarkerVariables.REPOSITORY,context.getRepository());
-		page.expose(FreemarkerVariables.CATEGORY, category);		
+		page.expose(FreemarkerVariables.CATEGORY, category);	
+		page.expose(FreemarkerVariables.TICKET, context.getTicket());
 		
 		page.expose(FreemarkerVariables.DATE, new Date());
 		if (context.getRepository().getTicket().getUser().equals(User.ADMIN_USER)) {
