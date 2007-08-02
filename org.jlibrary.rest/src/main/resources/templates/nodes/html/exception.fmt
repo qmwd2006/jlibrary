@@ -1,0 +1,2 @@
+<p><b>${message}</b></p>
+<p><code>${trace}</code></p>

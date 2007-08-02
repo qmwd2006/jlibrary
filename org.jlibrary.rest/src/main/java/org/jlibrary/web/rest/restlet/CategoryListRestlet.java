@@ -14,6 +14,7 @@ import org.jlibrary.core.factory.JLibraryServiceFactory;
 import org.jlibrary.core.repository.RepositoryService;
 import org.jlibrary.core.repository.exception.RepositoryException;
 import org.jlibrary.web.rest.RestApplication;
+import org.jlibrary.web.rest.exporters.Exporter;
 import org.restlet.Restlet;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
@@ -49,7 +50,8 @@ public class CategoryListRestlet extends AbstractRestlet {
 				responseText += "</ul>";
 				response.setEntity(responseText, MediaType.TEXT_HTML);
 			} catch (RepositoryException e) {
-				response.setEntity(exceptionToString(e), MediaType.TEXT_HTML);
+				response.setEntity(exporter.exportException(e, Exporter.FORMAT_HTML), 
+				           MediaType.TEXT_HTML);
 			}
 
         } else {

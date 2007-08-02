@@ -36,6 +36,8 @@ public class RestApplication extends Application {
 
 	private String repoName = "www";
 	
+	private static SpringContext springContext;
+	
 	public RestApplication(Context context) {
 		super(context);
 	}
@@ -67,14 +69,14 @@ public class RestApplication extends Application {
 	public Restlet createRoot() {
 		Router router = new Router(getContext());
 
-		SpringContext springContext = new SpringContext(getContext());
+		springContext = new SpringContext(getContext());
 		XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(springContext);
 		xmlReader.loadBeanDefinitions(new ClassPathResource("applicationContext.xml"));
 
 		springContext.refresh();
 		RestManager manager = (RestManager) springContext.getBean("manager");
 		manager.init(router);
-
+		
 		return router;
 
 	}
@@ -131,6 +133,10 @@ public class RestApplication extends Application {
 		}
 	}
 
+	public static SpringContext getSpringContext(){
+		return springContext;
+	}
+	
 	public static RepositoryService getRepositoryService() {
 		return repositoryService;
 	}

@@ -15,6 +15,7 @@ import org.jlibrary.core.entities.Category;
 import org.jlibrary.core.repository.RepositoryService;
 import org.jlibrary.core.repository.exception.RepositoryException;
 import org.jlibrary.web.rest.RestApplication;
+import org.jlibrary.web.rest.exporters.Exporter;
 import org.restlet.Restlet;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
@@ -34,13 +35,9 @@ import org.w3c.dom.NodeList;
  * @version 1.0
  */
 public abstract class AbstractRestlet extends Restlet {
+	
+	protected Exporter exporter = (Exporter)RestApplication.getSpringContext().getBean("exporter");
 
-
-	protected String exceptionToString(Throwable t){
-		StringWriter sw = new StringWriter();
-		t.printStackTrace(new PrintWriter(sw));
-		return sw.toString();
-	}
 	
 	protected String getIdForResource(String value){
 		if (value.indexOf('.') > 0){
