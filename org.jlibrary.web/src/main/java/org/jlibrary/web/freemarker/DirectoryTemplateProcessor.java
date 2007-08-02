@@ -84,9 +84,9 @@ public class DirectoryTemplateProcessor implements FreemarkerTemplateProcessor {
 
 		loadChildren();
 		
-		page.expose(FreemarkerVariables.ACTIVE_USER, context.getTicket().getUser().getName());		
 		page.expose(FreemarkerVariables.REPOSITORY,context.getRepository());
 		page.expose(FreemarkerVariables.DIRECTORY, directory);		
+		page.expose(FreemarkerVariables.TICKET, context.getTicket());
 		
 		page.expose(FreemarkerVariables.DATE, new Date());
 		if (context.getRepository().getTicket().getUser().equals(User.ADMIN_USER)) {

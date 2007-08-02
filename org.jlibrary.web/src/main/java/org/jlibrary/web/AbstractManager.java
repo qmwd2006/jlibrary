@@ -12,11 +12,15 @@ import org.jlibrary.web.conf.JLibraryConfiguration;
 import org.jlibrary.web.services.TicketService;
 
 public abstract class AbstractManager {
+	
 	protected static final TicketService ticketService=TicketService.getTicketService();
 	protected static final JLibraryConfiguration jlibrary=JLibraryConfiguration.newInstance();
+	
 	public Ticket getTicket() {
+		
 		HttpServletRequest request=(HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-		return ticketService.getTicket(request,jlibrary.getRepositoryName());
+		
+		return ticketService.getTicket(request,request.getParameter("repository"));
 	}
 	
 	public void setTicket(Ticket ticket){
@@ -25,6 +29,12 @@ public abstract class AbstractManager {
 	}
 	
 	public Repository getRepository() throws RepositoryNotFoundException, RepositoryException, SecurityException {
-		return jlibrary.getRepositoryService().findRepository(jlibrary.getRepositoryName(),getTicket());
+
+		HttpServletRequest request=(HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+		String repositoryName = request.getParameter("repository");
+		Ticket ticket = ticketService.getTicket(request,repositoryName);
+
+		return jlibrary.getRepositoryService().findRepository(repositoryName,ticket);
 	}
+
 }

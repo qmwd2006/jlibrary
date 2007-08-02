@@ -1,11 +1,9 @@
 package org.jlibrary.web.conf;
 
 import org.apache.log4j.Logger;
-import org.jlibrary.core.entities.Credentials;
 import org.jlibrary.core.entities.Repository;
 import org.jlibrary.core.entities.ServerProfile;
 import org.jlibrary.core.entities.Ticket;
-import org.jlibrary.core.entities.User;
 import org.jlibrary.core.factory.JLibraryServiceFactory;
 import org.jlibrary.core.factory.ServicesFactory;
 import org.jlibrary.core.jcr.RepositoryManager;
@@ -22,8 +20,8 @@ import org.jlibrary.core.security.SecurityService;
  */
 public class JLibraryConfiguration {
 	private static JLibraryConfiguration instance= new JLibraryConfiguration();
-	private String repositoryServer="localhost";
-	private String repositoryName="www";
+
+
 	private SecurityService securityService;
 	private RepositoryService repositoryService;
 	private RepositoryManager repositoryManager;
@@ -56,34 +54,6 @@ public class JLibraryConfiguration {
 
 	public SecurityService getSecurityService() {
 		return securityService;
-	}
-
-	public String getRepositoryName() {
-		return repositoryName;
-	}
-
-	public String getRepositoryServer() {
-		return repositoryServer;
-	}
-	
-	public Repository createRepository(String repository){
-		Repository repo=null;
-		if(repository==null){
-			repository=this.repositoryName;
-		}
-		Credentials adminCredentials = new Credentials();
-		adminCredentials.setUser(User.ADMIN_NAME);
-		adminCredentials.setPassword(User.DEFAULT_PASSWORD);
-		Ticket ticket = null;
-		try {
-			ticket = securityService.login(adminCredentials,"system");
-			repo = repositoryService.createRepository(ticket, repositoryName, repositoryName, ticket.getUser());
-			securityService.disconnect(ticket);
-			log.info("Repositorio creado");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return repo;
 	}
 
 	public RepositoryManager getRepositoryManager() {
