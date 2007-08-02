@@ -14,6 +14,7 @@ import org.jlibrary.core.repository.RepositoryService;
 import org.jlibrary.core.repository.exception.CategoryNotFoundException;
 import org.jlibrary.core.repository.exception.RepositoryException;
 import org.jlibrary.web.rest.RestApplication;
+import org.jlibrary.web.rest.exporters.Exporter;
 import org.restlet.Restlet;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
@@ -42,12 +43,12 @@ public class CategoryRestlet extends AbstractRestlet {
 		    	RepositoryService rs = RestApplication.getRepositoryService();
 		    	String catId = super.getIdForResource((String) request.getAttributes().get("category"));
 				Category cat = rs.findCategoryById(RestApplication.getTicket(), catId);
-	        	response.setEntity(cat.getName(), MediaType.TEXT_HTML);
-
+				String result = exporter.exportCategory(cat, Exporter.FORMAT_HTML);
+	        	response.setEntity(result, MediaType.TEXT_HTML);
 			} catch (Exception e) {
-				response.setEntity(exceptionToString(e), MediaType.TEXT_HTML);
+				response.setEntity(exporter.exportException(e, Exporter.FORMAT_HTML), 
+						           MediaType.TEXT_HTML);
 			}
-		
         } else {
 	       response.setStatus(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
         }

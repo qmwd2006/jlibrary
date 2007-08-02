@@ -64,7 +64,13 @@
 	  <artifactId>h2</artifactId>
 	  <version>1.0.20061217</version>    
 	  <scope>compile</scope>
-    </dependency>    
+    </dependency> 
+    
+	<dependency>
+	    <groupId>org.freemarker</groupId>
+	    <artifactId>freemarker</artifactId>
+	    <version>2.3.10</version>
+	</dependency>       
 
     <dependency>
         <groupId>org.restlet</groupId>
