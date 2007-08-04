@@ -16,7 +16,6 @@
   </#if>
 </#list>
 </ul>
-Hola ${active_user}
 </div> 
     <#if location_url="">
     <#else>
@@ -24,5 +23,17 @@ Hola ${active_user}
 	        <A href="${repository_url}">${repository.name}</A> ${location_url?replace("/<A"," &raquo; <A")}
 	    </div>
 	</#if>
+<div id="connect_info">
+<p>Hola ${ticket.user.name}
+<#if ticket.user.name="guest">
+  <A href="${root_url}/login.jsf?repository=${repository.name}">(Conectarse)</A>
+<#else>
+  <A href="${root_url}/logout.jsf?repository=${repository.name}">(Desconectarse)</A>
+</#if> 
+<#if ticket.user.admin>
+  <A href="${root_url}/admin/main.jsp">Admin</A>
+</#if> 
+</p>
+</div> 	
 <div id="wrap">
 </#macro>
