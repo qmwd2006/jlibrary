@@ -25,6 +25,8 @@ package org.jlibrary.web.freemarker;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import org.jlibrary.core.entities.Author;
 import org.jlibrary.core.entities.Document;
@@ -35,6 +37,7 @@ import org.jlibrary.core.entities.Types;
 import org.jlibrary.core.entities.User;
 import org.jlibrary.core.factory.JLibraryServiceFactory;
 import org.jlibrary.core.repository.RepositoryService;
+import org.jlibrary.web.WebConstants;
 import org.jlibrary.web.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,15 +98,22 @@ public class DocumentTemplateProcessor implements FreemarkerTemplateProcessor {
 			return;
 		}
 		*/
+		ResourceBundle bundle = ResourceBundle.getBundle("messages", Locale.getDefault());
+		page.expose("loc",bundle);  
+		
 		page.expose(FreemarkerVariables.REPOSITORY,context.getRepository());
 		page.expose(FreemarkerVariables.DOCUMENT, document);
 		page.expose(FreemarkerVariables.TICKET, context.getTicket());	
 		
 		page.expose(FreemarkerVariables.DATE, new Date());
 		if (context.getRepository().getTicket().getUser().equals(User.ADMIN_USER)) {
-			page.expose(FreemarkerVariables.USER, Messages.getMessage(User.ADMIN_NAME));
+			page.expose(FreemarkerVariables.USER, bundle.getString(User.ADMIN_NAME));
 		} else {
-			page.expose(FreemarkerVariables.USER, context.getRepository().getTicket().getUser().getName());
+			String userName = context.getRepository().getTicket().getUser().getName();
+			if (userName.equals(WebConstants.ANONYMOUS_WEB_USERNAME)) {
+				userName = bundle.getString(WebConstants.ANONYMOUS_WEB_USERNAME);
+			}
+			page.expose(FreemarkerVariables.USER, userName);
 		}
 		
 		String rootURL = exporter.getRootURL(document);
