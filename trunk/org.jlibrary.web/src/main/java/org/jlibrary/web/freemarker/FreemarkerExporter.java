@@ -23,6 +23,7 @@
 package org.jlibrary.web.freemarker;
 
 import java.io.File;
+import java.util.Collection;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
@@ -99,7 +100,7 @@ public class FreemarkerExporter extends BaseExporter {
 	}
 	
 	public String exportCategory(Category category, 
-							   RepositoryContext context) throws ExportException {
+							     RepositoryContext context) throws ExportException {
 
 		return new CategoryTemplateProcessor(this,category,context).processTemplate(factory);
 	}
@@ -107,6 +108,12 @@ public class FreemarkerExporter extends BaseExporter {
 	public void filterRepository(RepositoryContext context) throws ExportException {
 
 		context.applyFilter(filter);
+	}
+	
+	public String exportSearchResults(Collection results, 
+									  RepositoryContext context) throws ExportException {
+		
+		return new SearchTemplateProcessor(this,results,context).processTemplate(factory);
 	}
 	
 	/**

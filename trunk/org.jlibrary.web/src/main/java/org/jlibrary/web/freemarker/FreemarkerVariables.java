@@ -30,7 +30,12 @@ package org.jlibrary.web.freemarker;
 public class FreemarkerVariables {
 	
 	/**
-	 * Is Admin?
+	 * Search results
+	 */
+	public static final String SEARCH_RESULTS = "results";
+	
+	/**
+	 * Ticket
 	 */
 	public static final String TICKET = "ticket";
 	
