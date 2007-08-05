@@ -24,6 +24,8 @@ import org.jlibrary.core.jcr.JCRRepositoryService;
 import org.jlibrary.core.profiles.LocalServerProfile;
 import org.jlibrary.core.repository.RepositoryService;
 import org.jlibrary.core.repository.exception.NodeNotFoundException;
+import org.jlibrary.core.repository.exception.RepositoryException;
+import org.jlibrary.core.security.SecurityException;
 import org.jlibrary.web.freemarker.FreemarkerExporter;
 import org.jlibrary.web.freemarker.RepositoryContext;
 import org.jlibrary.web.services.TicketService;
@@ -95,19 +97,11 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 			}
 			
 			Node node = null;
-
+			String nodePath = StringUtils.difference(appURL+"/repositories/"+repositoryName,uri);
 			if (pathElements.length == 1) {
 				node = repository.getRoot();
-			} else {
-				String nodePath = StringUtils.difference(appURL+"/repositories/"+repositoryName,uri);
-				//node = repositoryService.findNode(ticket, nodeId);			
-				try {
-					node = ((JCRRepositoryService)repositoryService).findNodeByPath(ticket,nodePath);
-				} catch (NodeNotFoundException nnfe) {
-					// Perhaps somebody has unescaped the name
-					String unescapedPath = Text.unescape(nodePath);
-					node = ((JCRRepositoryService)repositoryService).findNodeByPath(ticket,unescapedPath);					
-				}
+			} else {							
+				node = findNode(ticket, repositoryService, nodePath);
 			}
 			if (node == null) {
 				logger.debug("Node could not be found");
@@ -119,6 +113,7 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 					resp.getOutputStream().write(output.getBytes());
 					resp.flushBuffer();
 				} else if (node.isDirectory()) {
+					// Search for a root document (index.html)
 					String output = exportDirectory(req,ticket,repository,node);
 					resp.getOutputStream().write(output.getBytes());
 					resp.flushBuffer();
@@ -129,6 +124,23 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 		}
+	}
+
+	private Node findNode(Ticket ticket, 
+						  RepositoryService repositoryService,
+						  String nodePath) throws RepositoryException,
+						  						  SecurityException, 
+						  						  NodeNotFoundException {
+		
+		Node node;
+		try {
+			node = ((JCRRepositoryService)repositoryService).findNodeByPath(ticket,nodePath);
+		} catch (NodeNotFoundException nnfe) {
+			// Perhaps somebody has unescaped the name
+			String unescapedPath = Text.unescape(nodePath);
+			node = ((JCRRepositoryService)repositoryService).findNodeByPath(ticket,unescapedPath);					
+		}
+		return node;
 	}
 	private Category findCategory(Repository repository, String[] pathElements) {
 
@@ -209,7 +221,7 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 			exporter.setRootURL(getRootURL(request));
 			exporter.setRepositoryURL(getRepositoryURL(request));
 			exporter.initExportProcess(context);
-			return exporter.exportDirectory((Directory)node, context);
+			return exporter.exportDirectory((Directory)node, context);				
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 			return "";

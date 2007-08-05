@@ -73,17 +73,6 @@ public class DocumentTemplateProcessor implements FreemarkerTemplateProcessor {
 	}
 	
 	public String processTemplate(FreemarkerFactory factory) throws ExportException {
-
-
-		if (document.getPath().toLowerCase().endsWith("index.html")) {
-			// Skip index.html files, because it will overwrite directory index files.
-			//
-			// If you need to get the index.html file content, you can use the variable
-			// dir_content
-			//
-			// See template examples to find more information
-			return "";
-		}
 				
 		return processTemplate(factory,factory.getPage("document.ftl"));
 		
