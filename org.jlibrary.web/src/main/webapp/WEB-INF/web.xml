@@ -85,10 +85,21 @@
     <display-name>JLibraryContentLoaderServlet</display-name>
     <servlet-class>org.jlibrary.web.servlet.JLibraryContentLoaderServlet</servlet-class>    
   </servlet>
+  
+  <servlet>
+    <servlet-name>JLibrarySearchServlet</servlet-name>
+    <display-name>JLibrarySearchServlet</display-name>
+    <servlet-class>org.jlibrary.web.servlet.JLibrarySearchServlet</servlet-class>    
+  </servlet>
 
   <servlet-mapping>
     <servlet-name>JLibraryContentLoaderServlet</servlet-name>
     <url-pattern>/repositories/*</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>JLibrarySearchServlet</servlet-name>
+    <url-pattern>/search</url-pattern>
   </servlet-mapping>
   	
   <servlet-mapping>
