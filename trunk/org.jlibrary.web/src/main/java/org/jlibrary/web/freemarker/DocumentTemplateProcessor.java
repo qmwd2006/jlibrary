@@ -54,6 +54,8 @@ public class DocumentTemplateProcessor implements FreemarkerTemplateProcessor {
 	private Document document;
 	private RepositoryContext context;
 	private FreemarkerExporter exporter;
+
+	private ResourceBundle bundle;
 	
 
 	/**
@@ -87,7 +89,7 @@ public class DocumentTemplateProcessor implements FreemarkerTemplateProcessor {
 			return;
 		}
 		*/
-		ResourceBundle bundle = ResourceBundle.getBundle("messages", Locale.getDefault());
+		bundle = ResourceBundle.getBundle("messages", Locale.getDefault());
 		page.expose("loc",bundle);  
 		
 		page.expose(FreemarkerVariables.REPOSITORY,context.getRepository());
@@ -133,10 +135,14 @@ public class DocumentTemplateProcessor implements FreemarkerTemplateProcessor {
 		
 		if (document.getMetaData().getAuthor().isUnknown()) {
 			page.expose(FreemarkerVariables.NODE_CREATOR, 
-						Messages.getMessage(Author.UNKNOWN_NAME));
+						bundle.getString(Author.UNKNOWN_NAME));
 		} else {
-			page.expose(FreemarkerVariables.NODE_CREATOR, 
-					    document.getMetaData().getAuthor().getName());
+			String authorName = document.getMetaData().getAuthor().getName();
+			if (authorName.equals(User.ADMIN_NAME) || 
+				authorName.equals(WebConstants.ANONYMOUS_WEB_USERNAME)) {
+				authorName = bundle.getString(authorName);
+			}
+			page.expose(FreemarkerVariables.NODE_CREATOR, authorName);
 		}
 		
 		if (document.getMetaData().getAuthor().isUnknown()) {

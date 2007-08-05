@@ -137,20 +137,18 @@ public class DirectoryTemplateProcessor implements FreemarkerTemplateProcessor {
 		SecurityService ss = 
 			JLibraryServiceFactory.getInstance(profile).getSecurityService();
 	
+		User user = null;
 		try {
-			User user = ss.findUserById(ticket,userId);
-			page.expose(FreemarkerVariables.NODE_CREATOR, user.getName());
+			user = ss.findUserById(ticket,userId);
+			
+			if (user.getName().equals(User.ADMIN_NAME) || 
+				user.getName().equals(WebConstants.ANONYMOUS_WEB_USERNAME)) {
+				page.expose(FreemarkerVariables.NODE_CREATOR, bundle.getString(user.getName()));
+			} else {
+				page.expose(FreemarkerVariables.NODE_CREATOR, user.getName());
+			}
 		} catch (Exception e) {
 		   logger.error(e.getMessage(),e);
-		}
-		
-		if (userId.equals(User.ADMIN_CODE)) {
-			page.expose(FreemarkerVariables.NODE_CREATOR, 
-						Messages.getMessage(User.ADMIN_NAME));
-		} else {
-			User user = MembersRegistry.getInstance().
-								getUser(repository.getId(),userId);
-			page.expose(FreemarkerVariables.NODE_CREATOR, user.getName());
 		}
 		
 		return page.getAsString();
