@@ -40,9 +40,7 @@ import org.jlibrary.core.factory.JLibraryServiceFactory;
 import org.jlibrary.core.repository.RepositoryService;
 import org.jlibrary.core.security.SecurityService;
 import org.jlibrary.web.WebConstants;
-import org.jlibrary.web.content.MembersRegistry;
 import org.jlibrary.web.content.WordCounter;
-import org.jlibrary.web.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
