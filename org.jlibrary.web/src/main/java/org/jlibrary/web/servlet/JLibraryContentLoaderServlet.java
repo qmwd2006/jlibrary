@@ -123,6 +123,7 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 			resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
+			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
 
