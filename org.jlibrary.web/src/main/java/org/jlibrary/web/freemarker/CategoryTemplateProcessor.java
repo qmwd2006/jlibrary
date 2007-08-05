@@ -24,6 +24,8 @@ package org.jlibrary.web.freemarker;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import org.jlibrary.core.entities.Category;
 import org.jlibrary.core.entities.Repository;
@@ -32,6 +34,7 @@ import org.jlibrary.core.factory.JLibraryServiceFactory;
 import org.jlibrary.core.repository.RepositoryService;
 import org.jlibrary.core.repository.exception.CategoryNotFoundException;
 import org.jlibrary.core.repository.exception.RepositoryException;
+import org.jlibrary.web.WebConstants;
 import org.jlibrary.web.content.WordCounter;
 import org.jlibrary.web.i18n.Messages;
 import org.slf4j.Logger;
@@ -74,16 +77,23 @@ public class CategoryTemplateProcessor implements FreemarkerTemplateProcessor {
 	
 	public String processTemplate(FreemarkerFactory factory,
 								  Page page) throws ExportException {
-				
+			
+		ResourceBundle bundle = ResourceBundle.getBundle("messages", Locale.getDefault());
+		page.expose("loc",bundle);  
+		
 		page.expose(FreemarkerVariables.REPOSITORY,context.getRepository());
 		page.expose(FreemarkerVariables.CATEGORY, category);	
 		page.expose(FreemarkerVariables.TICKET, context.getTicket());
 		
 		page.expose(FreemarkerVariables.DATE, new Date());
 		if (context.getRepository().getTicket().getUser().equals(User.ADMIN_USER)) {
-			page.expose(FreemarkerVariables.USER, Messages.getMessage(User.ADMIN_NAME));
+			page.expose(FreemarkerVariables.USER, bundle.getString(User.ADMIN_NAME));
 		} else {
-			page.expose(FreemarkerVariables.USER, context.getRepository().getTicket().getUser().getName());
+			String userName = context.getRepository().getTicket().getUser().getName();
+			if (userName.equals(WebConstants.ANONYMOUS_WEB_USERNAME)) {
+				userName = bundle.getString(WebConstants.ANONYMOUS_WEB_USERNAME);
+			}
+			page.expose(FreemarkerVariables.USER, userName);
 		}
 
 		String rootURL = exporter.getRootURL(category);
