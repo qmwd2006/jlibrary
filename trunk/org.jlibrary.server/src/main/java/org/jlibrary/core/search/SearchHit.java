@@ -43,6 +43,15 @@ public class SearchHit implements Serializable {
 	private String repository;
 	private Integer importance;
 	private String path;
+	private String excerpt;
+
+	public String getExcerpt() {
+		return excerpt;
+	}
+
+	public void setExcerpt(String excerpt) {
+		this.excerpt = excerpt;
+	}
 
 	public Integer getImportance() {
 		return importance;
