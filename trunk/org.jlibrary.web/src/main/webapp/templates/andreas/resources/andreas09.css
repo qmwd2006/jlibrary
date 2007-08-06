@@ -9,6 +9,15 @@ padding:0;
 text-align:center;
 }
 
+highlight {
+background:#ffff00;
+}
+
+fragment {
+    display:block;
+    margin:10px;
+}
+
 a {
 color:#505050;
 font-weight:bold;

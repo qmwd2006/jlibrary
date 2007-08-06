@@ -9,11 +9,11 @@
   <@head.header/>
   
 	<!-- search results -->
- 	<p>Search Results</p>
+ 	<h1>Search Results</h1>
 	<#list results as hit>
-	  <h1><A style="text-decoration:none" 
-		  	   href="${repository_url}${hit.path}">${hit.name}</A></h1>
-		<p>${hit.name}</p>
+	  <h2><A style="text-decoration:none" 
+		  	   href="${repository_url}${hit.path}">${hit.name}</A></h2>
+		<p>${hit.excerpt}</p>
 	</#list>
     
   <!--footer-->
