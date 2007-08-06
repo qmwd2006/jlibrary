@@ -29,7 +29,7 @@
 	    </PersistenceManager>
 		<SearchIndex class="org.apache.jackrabbit.core.query.lucene.SearchIndex">
 	  		<param name="path" value="${wsp.home}/index"/>
-	    	<param name="textFilterClasses" value="org.apache.jackrabbit.core.query.lucene.TextPlainTextFilter,org.apache.jackrabbit.core.query.MsExcelTextFilter,org.apache.jackrabbit.core.query.MsPowerPointTextFilter,org.apache.jackrabbit.core.query.MsWordTextFilter,org.apache.jackrabbit.core.query.PdfTextFilter,org.apache.jackrabbit.core.query.HTMLTextFilter,org.apache.jackrabbit.core.query.XMLTextFilter,org.apache.jackrabbit.core.query.RTFTextFilter,org.apache.jackrabbit.core.query.OpenOfficeTextFilter" />
+	    	<param name="textFilterClasses" value="org.apache.jackrabbit.extractor.PlainTextExtractor,org.apache.jackrabbit.extractor.MsExcelTextExtractor,org.apache.jackrabbit.extractor.MsPowerPointTextExtractor,org.apache.jackrabbit.extractor.MsWordTextExtractor,org.apache.jackrabbit.extractor.PdfTextExtractor,org.apache.jackrabbit.extractor.HTMLTextExtractor,org.apache.jackrabbit.extractor.XMLTextExtractor,org.apache.jackrabbit.extractor.RTFTextExtractor,org.apache.jackrabbit.extractor.OpenOfficeTextExtractor" />
 	    	
 			<!-- These are all default values. You can change them if you want -->
 	        <param name="useCompoundFile" value="true"/>
@@ -43,9 +43,11 @@
 	        <param name="autoRepair" value="true"/>
 	        <param name="analyzer" value="org.apache.lucene.analysis.standard.StandardAnalyzer"/>
 	        <param name="queryClass" value="org.apache.jackrabbit.core.query.QueryImpl"/>
-	        <param name="idleTime" value="-1"/>
+	        <param name="maxIdleTime" value="-1"/>
 	        <!-- end of default values -->    	
 	    	
+	    	<param name="supportHighlighting" value="true"/>
+	    	<param name="excerptProviderClass" value="org.apache.jackrabbit.core.query.lucene.DefaultXMLExcerpt"/>
 	    	<param name="respectDocumentOrder" value="false"/>
 		</SearchIndex>
     </Workspace>
