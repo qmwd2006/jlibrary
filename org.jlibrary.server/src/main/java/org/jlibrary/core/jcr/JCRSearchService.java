@@ -28,6 +28,7 @@ import java.util.Set;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.Session;
+import javax.jcr.Value;
 import javax.jcr.Workspace;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.QueryManager;
@@ -72,7 +73,7 @@ public class JCRSearchService implements SearchService {
 		} else if (searchType.equals(SearchService.SEARCH_CONTENT)) {
 			query = "//element(*,nt:resource)[jcr:contains(.,'" +
 					phrase + 
-					"') and @jlib:active='true']";
+					"') and @jlib:active='true']/(@jlib:description|rep:excerpt(.))";
 		}		
 
 		RepositoryManager manager = RepositoryManager.getInstance();
@@ -118,6 +119,8 @@ public class JCRSearchService implements SearchService {
 			NodeIterator nodeIterator = result.getNodes();
 			while (it.hasNext()) {
 				javax.jcr.query.Row row = (javax.jcr.query.Row) it.nextRow();
+				Value excerpt = row.getValue("rep:excerpt()");
+				String textExcerpt = excerpt.getString();
 				javax.jcr.Node node = (javax.jcr.Node)nodeIterator.nextNode();
 				if (node.isNodeType("nt:frozenNode")) continue;
 				if (node.isNodeType(JLibraryConstants.CONTENT_MIXIN)) {
@@ -143,6 +146,7 @@ public class JCRSearchService implements SearchService {
 						JLibraryConstants.JLIBRARY_PATH).getString());
 				sh.setImportance(new Integer((int)node.getProperty(
 						JLibraryConstants.JLIBRARY_IMPORTANCE).getLong()));
+				sh.setExcerpt(textExcerpt);
 				
 				sh.setScore(score/1000);
 				results.add(sh);
