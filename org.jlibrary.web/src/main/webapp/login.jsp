@@ -2,7 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core">
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:t="http://myfaces.apache.org/tomahawk">
 <body>
 	<ui:composition template="/template1.jsp">
 		<ui:define name="title">
@@ -10,7 +11,7 @@
 			<h:outputText value="#{labels.title}"/>
 		</ui:define>
 		<ui:define name="body">
-			<h:form id="login">
+			<h:form id="repository">
 				<h:outputLabel for="user" value="#{labels.user}:"/>
 				<h:inputText id="user" value="#{loginManager.credentials.user}" required="true"/>
 				<h:message for="user"/>
@@ -19,7 +20,7 @@
 				<h:inputText id="password" value="#{loginManager.credentials.password}" required="true"/>
 				<h:message for="password"/>
 				<br/>
-				<h:commandButton id="login" action="#{loginManager.login}" value="#{labels.entrar}"/>	
+				<h:commandButton id="login" action="#{loginManager.login}" value="#{labels.entrar} #{param.repository}"/>
 			</h:form>
 		</ui:define>
 	</ui:composition>

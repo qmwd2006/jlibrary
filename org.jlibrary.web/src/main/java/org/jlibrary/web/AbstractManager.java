@@ -3,6 +3,7 @@ package org.jlibrary.web;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.jlibrary.core.entities.Repository;
 import org.jlibrary.core.entities.Ticket;
 import org.jlibrary.core.repository.exception.RepositoryException;
@@ -12,29 +13,45 @@ import org.jlibrary.web.conf.JLibraryConfiguration;
 import org.jlibrary.web.services.TicketService;
 
 public abstract class AbstractManager {
-	
 	protected static final TicketService ticketService=TicketService.getTicketService();
 	protected static final JLibraryConfiguration jlibrary=JLibraryConfiguration.newInstance();
-	
+	private static final String CURRENT_REPOSITORY="current";
+	private String repositoryName;
+	private Logger log=Logger.getLogger(AbstractManager.class);
 	public Ticket getTicket() {
-		
 		HttpServletRequest request=(HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-		
-		return ticketService.getTicket(request,request.getParameter("repository"));
+		Ticket ticket;
+		log.debug("repositorio:"+getRepositoryName());
+		ticket=(Ticket) request.getSession(true).getAttribute(TicketService.SESSION_TICKET_ID+getRepositoryName());
+		log.debug("ticket:"+ticket);
+		return ticket;
 	}
 	
 	public void setTicket(Ticket ticket){
 		HttpServletRequest request=(HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-		request.getSession(true).setAttribute(TicketService.SESSION_TICKET_ID,ticket);
+		request.getSession(true).setAttribute(TicketService.SESSION_TICKET_ID+getRepositoryName(),ticket);
 	}
 	
 	public Repository getRepository() throws RepositoryNotFoundException, RepositoryException, SecurityException {
-
-		HttpServletRequest request=(HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-		String repositoryName = request.getParameter("repository");
-		Ticket ticket = ticketService.getTicket(request,repositoryName);
-
-		return jlibrary.getRepositoryService().findRepository(repositoryName,ticket);
+		return jlibrary.getRepositoryService().findRepository(getRepositoryName(),getTicket());
 	}
 
+	public String getRepositoryName() {
+		if(repositoryName==null){
+			HttpServletRequest request=(HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+			repositoryName=(String) request.getSession(true).getAttribute(CURRENT_REPOSITORY);
+			log.debug("recupera el nombre del repositorio de sesion");
+		}
+		log.debug("recupera el nombre del repositorio"+repositoryName);
+		return repositoryName;
+	}
+
+	public void setRepositoryName(String repositoryName) {
+		if(repositoryName!=null){
+			HttpServletRequest request=(HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+			request.getSession(true).setAttribute(CURRENT_REPOSITORY,repositoryName);
+		}
+		log.debug("establece el nombre del repositorio"+repositoryName);
+		this.repositoryName = repositoryName;
+	}
 }
