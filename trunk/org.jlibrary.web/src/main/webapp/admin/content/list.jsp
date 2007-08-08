@@ -3,7 +3,8 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:t="http://myfaces.apache.org/tomahawk">
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:c="http://java.sun.com/jstl/core">
 <body>
 <ui:composition template="/template1.jsp">
 		<ui:define name="title">
@@ -47,9 +48,11 @@
 			  	<h:outputText value="nuevo documento"/>
 			  </h:commandLink>
 			  <br/>
+			  <c:if test="#{not empty documentsManager.parent}">
 			  <h:commandLink action="#{documentsManager.parentNode}">
 			  	<h:outputText value="padre"/>
 			  </h:commandLink>
+			  </c:if>
 			</h:form>
 		</ui:define>
 	</ui:composition>

@@ -62,19 +62,22 @@ public class DocumentsManager extends AbstractManager {
 	}
 	
 	public String parentNode(){
-		if(parent!=null &&parent.getParent()!=null){
-			try {
-				parent=jlibrary.getRepositoryService().findNode(getTicket(),parent.getParent());
-			} catch (NodeNotFoundException e) {
-				Messages.setMessageError(e);
-				e.printStackTrace();
-			} catch (RepositoryException e) {
-				Messages.setMessageError(e);
-				e.printStackTrace();
-			} catch (SecurityException e) {
-				Messages.setMessageError(e);
-				e.printStackTrace();
-			}
+		if(parent!=null && parent.getParent()!=null){
+				try {
+					parent=jlibrary.getRepositoryService().findNode(getTicket(),parent.getParent());
+					if(parent.getParent()==null){
+						parent=null;
+					}
+				} catch (NodeNotFoundException e) {
+					Messages.setMessageError(e);
+					e.printStackTrace();
+				} catch (RepositoryException e) {
+					Messages.setMessageError(e);
+					e.printStackTrace();
+				} catch (SecurityException e) {
+					Messages.setMessageError(e);
+					e.printStackTrace();
+				}
 		}
 		return "content$list";
 	}
