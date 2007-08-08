@@ -14,16 +14,28 @@
 		<managed-bean-name>loginManager</managed-bean-name>
 		<managed-bean-class>org.jlibrary.web.login.LoginManager</managed-bean-class>
 		<managed-bean-scope>request</managed-bean-scope>
+		<managed-property>
+	        <property-name>repositoryName</property-name>
+	        <value>#{param.repository}</value>
+    	</managed-property>
 	</managed-bean>
 	<managed-bean>
 		<managed-bean-name>categoriesManager</managed-bean-name>
 		<managed-bean-class>org.jlibrary.web.categories.CategoriesManager</managed-bean-class>
 		<managed-bean-scope>request</managed-bean-scope>
+		<managed-property>
+	        <property-name>repositoryName</property-name>
+	        <value>#{param.repository}</value>
+    	</managed-property>
 	</managed-bean>
 	<managed-bean>
 		<managed-bean-name>documentsManager</managed-bean-name>
 		<managed-bean-class>org.jlibrary.web.content.DocumentsManager</managed-bean-class>
 		<managed-bean-scope>request</managed-bean-scope>
+		<managed-property>
+	        <property-name>repositoryName</property-name>
+	        <value>#{param.repository}</value>
+    	</managed-property>
 	</managed-bean>
 	<managed-bean>
 		<managed-bean-name>fileManager</managed-bean-name>

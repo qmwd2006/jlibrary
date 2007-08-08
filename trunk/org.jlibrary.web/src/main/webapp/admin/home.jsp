@@ -11,12 +11,14 @@
 			<h:outputText value="#{labels.admin}"/>
 		</ui:define>
 		<ui:define name="body">
-			<h:form id="menu">
+			<h:form id="repository">
 				<h:commandLink action="categories$list" immediate="true">
+					<f:param name="repository" value="#{categoriesManager.repositoryName}"/>
 					<h:outputText value="#{labels.categories}"/>
 				</h:commandLink>
 				<br/>
 				<h:commandLink action="content$list" immediate="true">
+					<f:param name="repository" value="#{documentsManager.repositoryName}"/>
 					<h:outputText value="#{labels.documents}"/>
 				</h:commandLink>
 			</h:form>

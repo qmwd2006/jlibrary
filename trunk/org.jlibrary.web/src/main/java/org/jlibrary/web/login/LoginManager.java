@@ -2,9 +2,6 @@ package org.jlibrary.web.login;
 
 import java.net.ConnectException;
 
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.log4j.Logger;
 import org.jlibrary.core.entities.Credentials;
 import org.jlibrary.core.entities.Ticket;
@@ -16,11 +13,9 @@ import org.jlibrary.core.security.exception.AuthenticationException;
 import org.jlibrary.core.security.exception.UserNotFoundException;
 import org.jlibrary.web.AbstractManager;
 import org.jlibrary.web.Messages;
-import org.jlibrary.web.services.TicketService;
 
 public class LoginManager extends AbstractManager {
 	private Credentials credentials;
-	public static final String LOGGED="usuario";
 	private static final String LOGIN_OK="login$ok";
 	private static final String LOGIN_KO="login$ko";
 	private Logger log=Logger.getLogger(LoginManager.class);
@@ -31,20 +26,15 @@ public class LoginManager extends AbstractManager {
 	}
 	
 	public String login(){
-		
-		HttpServletRequest request=(HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-		String repositoryName = request.getParameter("repository");
-
 		log.debug("Entra al login");
 		String ret=LOGIN_KO;
 		SecurityService securityService=jlibrary.getSecurityService();
 		Ticket ticket=null;
 		try {
-			ticket=securityService.login(credentials,repositoryName);
+			ticket=securityService.login(credentials,getRepositoryName());
 			if(ticket!=null){
 				setTicket(ticket);
 				ret=LOGIN_OK;
-				log.debug("login OK");
 			}
 		} catch (ConnectException e) {
 			Messages.setMessageError(e);
@@ -62,8 +52,6 @@ public class LoginManager extends AbstractManager {
 			Messages.setMessageError(e);
 			e.printStackTrace();
 		}
-		request.getSession().setAttribute(LOGGED,ticket);
-		request.getSession().setAttribute(TicketService.SESSION_TICKET_ID+repositoryName,ticket);
 		return ret;
 	}
 
