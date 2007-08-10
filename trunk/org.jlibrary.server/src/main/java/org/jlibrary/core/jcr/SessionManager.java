@@ -38,7 +38,7 @@ import org.jlibrary.core.entities.Ticket;
  */
 public class SessionManager {
 
-	private static SessionManager instance;
+	private static SessionManager instance = new SessionManager();
 	
 	private HashMap sessions = new HashMap();
 	
@@ -92,10 +92,6 @@ public class SessionManager {
 	}
 	
 	public static SessionManager getInstance() {
-		
-		if (instance == null) {
-			instance = new SessionManager();
-		}
 		
 		return instance;
 	}
