@@ -42,3 +42,11 @@
 	</#if>
 </p>
 </#macro>
+
+<#macro search>
+<h1>Search</h1>
+<p class="searchform">
+<input type="text" alt="Search" class="searchbox" />
+<input type="submit" value="Go!" class="searchbutton" />
+</p>
+</#macro>

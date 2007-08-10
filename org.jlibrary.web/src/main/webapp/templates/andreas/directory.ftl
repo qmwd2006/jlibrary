@@ -13,11 +13,12 @@
     <!--leftbar-->
     <@com.leftbar>
       <div id="leftside">
-        <@leftbar.directories/>
+        <@leftbar.directories/>        
     	<#if !(directory_content="")>
     		<@leftbar.documents/>
-    	</#if>
-      </div>
+    		<@leftbar.search/>
+    	</#if>              
+	    </div>
     </@com.leftbar>
     
     <!--rightbar-->
@@ -26,6 +27,7 @@
 	    	<div id="rightside">
 		      <@rightbar.infoDirectory/>
 		      <@rightbar.directoryDocuments/>
+		      <@rightbar.search/>
 		    </div>
 		</#if>
 	</@com.rightbar>
