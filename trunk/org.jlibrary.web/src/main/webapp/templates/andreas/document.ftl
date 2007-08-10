@@ -15,6 +15,7 @@
 	      <@rightbar.infoDocument/>
 	      <@rightbar.categoriesDocument/>
 	      <@rightbar.relationsDocument/>
+	      <@rightbar.search/>
     	</div>
     </@com.rightbar>
         

@@ -13,14 +13,15 @@
     <!--leftbar-->
     <@com.leftbar>
       <div id="leftside">
-         <@leftbar.categories/>
+         <@leftbar.categories/>         
       </div>
     </@com.leftbar>
 
     <!--rightbar-->
     <@com.rightbar>
       <div id="rightside">
-        <@rightbar.favorites/>
+        <@rightbar.favorites/> 
+        <@rightbar.search/>       
       </div>
     </@com.rightbar>
 

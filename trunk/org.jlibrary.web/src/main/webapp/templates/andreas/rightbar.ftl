@@ -68,3 +68,14 @@
      </#list>
   </#if> 
 </#macro>
+
+<#macro search>
+<h1>Search</h1>
+<p class="searchform">
+<form action="${root_url}/search">
+<input type="text" name="text" alt="Search" class="searchbox" />
+<input type="hidden" name="repository" value="${repository.name}"/>
+<input type="submit" value="Go!" class="searchbutton" />
+</form>
+</p>
+</#macro>
