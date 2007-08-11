@@ -30,7 +30,7 @@ import java.io.Serializable;
  *
  * <p>This is a simple holder class for a search result entry.</p> 
  */
-public class SearchHit implements Serializable {
+public class SearchHit implements Serializable, Comparable {
 
 	/**
 	 * 
@@ -146,5 +146,18 @@ public class SearchHit implements Serializable {
 
 	public void setRepository(String repository) {
 		this.repository = repository;
+	}
+	
+	public int compareTo(Object arg0) {
+
+		if (!(arg0 instanceof SearchHit)) return -1;
+		
+		SearchHit hit = (SearchHit)arg0;
+		if (hit.score > this.score) {
+			return 1;
+		} else if (hit.score < this.score) {
+			return -1;
+		} 
+		return 0;
 	}
 }

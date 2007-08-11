@@ -25,6 +25,7 @@ package org.jlibrary.core.jcr;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.Session;
@@ -101,7 +102,7 @@ public class JCRSearchService implements SearchService {
 							  javax.jcr.Session session, 
 			 				  String strQuery) throws SearchException {
 
-		Set results = new HashSet();
+		Set results = new TreeSet();
 		try {
 			Workspace workspace = session.getWorkspace();
 			QueryManager queryManager = workspace.getQueryManager();
