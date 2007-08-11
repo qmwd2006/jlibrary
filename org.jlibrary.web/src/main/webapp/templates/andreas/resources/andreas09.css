@@ -340,5 +340,12 @@ margin-top:-25px;
 margin-right:0px;
 }
 
+#score {
+float:right;
+margin-top:-25px;
+margin-right:0px;
+font-weight:bold;
+}
+
 
 /*** End of file ***/
