@@ -31,7 +31,7 @@
   <A href="${root_url}/logout.jsf?repository=${repository.name}">(log out)</A>
 </#if> 
 <#if ticket.user.admin>
-  <A href="${root_url}/admin/main.jsp">Admin</A>
+  <A href="${root_url}/admin/home.jsf">Admin</A>
 </#if> 
 </p>
 </div> 	
