@@ -90,7 +90,7 @@ public class FreemarkerFactory {
     Configuration cfg = Configuration.getDefaultConfiguration();
     cfg.setNumberFormat("0");
     
-    cfg.setSharedVariable("node",new NodeMethod());
+    cfg.setSharedVariable("node",new NodeMethod(exporter));
     cfg.setSharedVariable("filename",new FileMethod());
     cfg.setSharedVariable("nodeURL",new NodePathMethod(exporter));
     cfg.setSharedVariable("categoryURL",new CategoryPathMethod(exporter));

@@ -24,7 +24,15 @@ package org.jlibrary.web.freemarker.methods;
 
 import java.util.List;
 
-import org.jlibrary.web.EntityRegistry;
+import org.jlibrary.core.entities.Node;
+import org.jlibrary.core.entities.ServerProfile;
+import org.jlibrary.core.entities.Ticket;
+import org.jlibrary.core.factory.JLibraryServiceFactory;
+import org.jlibrary.core.repository.RepositoryService;
+import org.jlibrary.web.freemarker.FreemarkerExporter;
+import org.jlibrary.web.freemarker.RepositoryContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
@@ -37,13 +45,38 @@ import freemarker.template.TemplateModelException;
  */
 public class NodeMethod implements TemplateMethodModel {
 
+	static Logger logger = LoggerFactory.getLogger(NodeMethod.class);
+	
+	private FreemarkerExporter exporter;
+
+	public NodeMethod(FreemarkerExporter exporter) {
+
+		this.exporter = exporter;
+	}
+	
 	public Object exec(List args) throws TemplateModelException {
 
 		if (args.size() != 1) {
             throw new TemplateModelException("Wrong arguments");
         }
-		
-		String id = (String)args.get(0);
-		return EntityRegistry.getInstance().getAlreadyLoadedNode(id);
+
+		Object arg = args.get(0);
+		if (!(arg instanceof String)) {
+			throw new TemplateModelException("Argument should be a string");
+		}
+		String id = (String)arg;
+		RepositoryContext context = exporter.getContext();
+		Ticket ticket = context.getRepository().getTicket();
+		ServerProfile profile = context.getRepository().getServerProfile();
+		RepositoryService repositoryService = 
+			JLibraryServiceFactory.getInstance(profile).getRepositoryService();
+		Node node;
+		try {
+			node = repositoryService.findNode(ticket, id);
+			return node;
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			return "";
+		}
 	}
 }
