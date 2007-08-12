@@ -31,7 +31,7 @@
   <#else>
 	  <#list category.favorites as children>
 	  	<p><a href="${nodeURL(children.document)}">
-		  		${children.document}</a></p>
+		  		${node(children.document).name}</a></p>
 	  </#list> 			         
   </#if>
 </#macro>
