@@ -19,6 +19,7 @@ import org.jlibrary.core.entities.Node;
 import org.jlibrary.core.entities.Repository;
 import org.jlibrary.core.entities.ServerProfile;
 import org.jlibrary.core.entities.Ticket;
+import org.jlibrary.core.entities.Types;
 import org.jlibrary.core.factory.JLibraryServiceFactory;
 import org.jlibrary.core.jcr.JCRRepositoryService;
 import org.jlibrary.core.profiles.LocalServerProfile;
@@ -26,6 +27,7 @@ import org.jlibrary.core.repository.RepositoryService;
 import org.jlibrary.core.repository.exception.NodeNotFoundException;
 import org.jlibrary.core.repository.exception.RepositoryException;
 import org.jlibrary.core.security.SecurityException;
+import org.jlibrary.core.util.FileUtils;
 import org.jlibrary.web.freemarker.FreemarkerExporter;
 import org.jlibrary.web.freemarker.RepositoryContext;
 import org.jlibrary.web.services.TicketService;
@@ -117,6 +119,9 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 					String output = exportDirectory(req,ticket,repository,node);
 					resp.getOutputStream().write(output.getBytes());
 					resp.flushBuffer();
+				} else if (node.isResource()) {
+					exportResouce(req,resp,repositoryService,ticket,node);
+					
 				}
 			}			
 		} catch (NodeNotFoundException nnfe) {
@@ -250,4 +255,23 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 			return "";
 		}
 	}	
+	
+	private void exportResouce(HttpServletRequest req,
+							   HttpServletResponse resp, 
+							   RepositoryService repositoryService,
+							   Ticket ticket, 
+							   Node node) {
+
+		try {
+			String extension = FileUtils.getExtension(node.getPath());
+			String mime = Types.getMimeTypeForExtension(extension);
+			resp.setContentType(mime);  
+			repositoryService.loadResourceNodeContent(ticket, node.getId(), resp.getOutputStream());
+			resp.getOutputStream().flush();
+		} catch (Exception e) {
+			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			logger.error(e.getMessage(),e);
+			return;
+		}
+	}
 }
