@@ -23,7 +23,6 @@
 package org.jlibrary.core.jcr;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -57,6 +56,8 @@ public class JCRSearchService implements SearchService {
 	
 	static Logger logger = LoggerFactory.getLogger(JCRSearchService.class);
 	
+	public static final int NO_PAGING=-1;
+	
 	public JCRSearchService() {}
 	
 	private SearchAlgorithm searchAlgorithm = new DefaultSearchAlgorithm();
@@ -65,6 +66,17 @@ public class JCRSearchService implements SearchService {
 	public Collection search(Ticket ticket, 
 							 String phrase, 
 							 String searchType) throws SearchException {
+
+		return search(ticket,phrase,searchType,NO_PAGING,NO_PAGING);
+	}
+	
+	//TODO: Test and improve XPath queries
+	public Collection search(Ticket ticket, 
+							 String phrase, 
+							 String searchType,
+							 int init,
+							 int end) throws SearchException {
+		
 
 		String query = null;
 		if (searchType.equals(SearchService.SEARCH_KEYWORDS)) {
@@ -82,11 +94,19 @@ public class JCRSearchService implements SearchService {
 		Session session = manager.getRepositoryState(ticket).
 								getSession(ticket.getRepositoryId());
 		
-		return search(ticket,session,query);
-	}	
+		return search(ticket,session,query,init,end);		
+	}
 	
 	public Collection search(Ticket ticket, 
 			 				 String xpathQuery) throws SearchException {
+
+		return search(ticket,xpathQuery,NO_PAGING,NO_PAGING);		
+	}
+	
+	public Collection search(Ticket ticket, 
+			 				 String xpathQuery,
+			 				 int init,
+			 				 int end) throws SearchException {
 
 		String query = "//element(*,nt:file)" + xpathQuery; 
 		
@@ -95,12 +115,14 @@ public class JCRSearchService implements SearchService {
 		Session session = manager.getRepositoryState(ticket).
 										getSession(ticket.getRepositoryId());
 
-		return search(ticket,session,query);
+		return search(ticket,session,query,init,end);
 	}	
 	
 	private Collection search(Ticket ticket,
 							  javax.jcr.Session session, 
-			 				  String strQuery) throws SearchException {
+			 				  String strQuery,
+			 				  int init,
+			 				  int end) throws SearchException {
 
 		Set results = new TreeSet();
 		try {
@@ -118,7 +140,17 @@ public class JCRSearchService implements SearchService {
 
 			RowIterator it = result.getRows();
 			NodeIterator nodeIterator = result.getNodes();
+			if (init != NO_PAGING) {
+				it.skip(init);
+				nodeIterator.skip(init);
+			}
 			while (it.hasNext()) {
+				if (init != NO_PAGING && end != NO_PAGING) {					
+					if (init>end) {
+						break;
+					}
+					init++;
+				}
 				javax.jcr.query.Row row = (javax.jcr.query.Row) it.nextRow();
 				Value excerpt = row.getValue("rep:excerpt()");
 				String textExcerpt = excerpt.getString();
