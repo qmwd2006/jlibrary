@@ -13,6 +13,7 @@ import org.jlibrary.core.entities.Repository;
 import org.jlibrary.core.entities.ServerProfile;
 import org.jlibrary.core.entities.Ticket;
 import org.jlibrary.core.factory.JLibraryServiceFactory;
+import org.jlibrary.core.jcr.JCRSearchService;
 import org.jlibrary.core.profiles.LocalServerProfile;
 import org.jlibrary.core.repository.RepositoryService;
 import org.jlibrary.core.search.SearchService;
@@ -64,15 +65,37 @@ public class JLibrarySearchServlet extends HttpServlet {
 			return;
 		}
 		
-		
 		String type = req.getParameter("type");
 		if (type == null) {
 			type = SearchService.SEARCH_CONTENT;
 		}
+		int init = JCRSearchService.NO_PAGING;
+		String initParameter = req.getParameter("init");
+		if (initParameter != null) {
+			try {
+				init = Integer.parseInt(initParameter);
+			} catch (NumberFormatException nfe) {
+				if (logger.isDebugEnabled()) {
+					logger.debug("Wrong value for init parameter=" + initParameter);
+				}
+			}
+		}
+		int end = JCRSearchService.NO_PAGING;
+		String endParameter = req.getParameter("end");
+		if (endParameter != null) {
+			try {
+				end = Integer.parseInt(endParameter);
+			} catch (NumberFormatException nfe) {
+				if (logger.isDebugEnabled()) {
+					logger.debug("Wrong value for end parameter=" + endParameter);
+				}
+			}
+		}		
 		
 		Ticket ticket = TicketService.getTicketService().getTicket(req, repositoryName);
-		SearchService searchService = 
-			JLibraryServiceFactory.getInstance(profile).getSearchService();
+		//TODO: Refactor init/end methods to interface and remove this explicit cast
+		JCRSearchService searchService = 
+			(JCRSearchService)JLibraryServiceFactory.getInstance(profile).getSearchService();
 		RepositoryService repositoryService = 
 			JLibraryServiceFactory.getInstance(profile).getRepositoryService();
 		try {
@@ -82,7 +105,7 @@ public class JLibrarySearchServlet extends HttpServlet {
 			repository.setServerProfile(new LocalServerProfile());
 			repository.setTicket(ticket);
 			
-			Collection results = searchService.search(ticket, text, type);
+			Collection results = searchService.search(ticket, text, type, init, end);
 			String output = exportResults(req,ticket,repository,results);
 			resp.getOutputStream().write(output.getBytes());
 			resp.flushBuffer();
