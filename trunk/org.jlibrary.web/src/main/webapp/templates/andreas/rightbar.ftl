@@ -58,6 +58,17 @@
   </#if>
 </#macro>
 
+<#macro resources>
+  <h1>Attachments</h1>
+  <#if document.resourceNodes?size = 0>
+    <p>This document has no attachments</p>
+  <#else>
+    <#list document.resourceNodes as resource>
+          <p><a href="${nodeURL(resource.id)}">${node(resource.id).name}</A></p>
+     </#list>
+  </#if> 
+</#macro>
+
 <#macro relationsDocument>
   <h1>You may be interested in...</h1>
   <#if document.relations?size = 0>
