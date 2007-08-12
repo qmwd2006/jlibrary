@@ -26,7 +26,7 @@
 <div id="connect_info">
 <p>Welcome ${ticket.user.name}
 <#if ticket.user.name="guest">
-  <A href="${root_url}/login.jsf?repository=${repository.name}">(log in)</A>
+  (<A href="${root_url}/register.jsf?repository=${repository.name}">sign in</A>/<A href="${root_url}/login.jsf?repository=${repository.name}">log in</A>)
 <#else>
   <A href="${root_url}/logout.jsf?repository=${repository.name}">(log out)</A>
 </#if> 
