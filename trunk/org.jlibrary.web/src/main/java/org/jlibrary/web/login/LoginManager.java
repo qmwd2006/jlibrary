@@ -1,6 +1,9 @@
 package org.jlibrary.web.login;
 
+import java.io.IOException;
 import java.net.ConnectException;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.jlibrary.core.entities.Credentials;
@@ -53,6 +56,26 @@ public class LoginManager extends AbstractManager {
 			e.printStackTrace();
 		}
 		return ret;
+	}
+	
+	public String logout(){
+		log.debug("Entra al logout");
+		SecurityService securityService=jlibrary.getSecurityService();
+		String repositorio="";
+		try {
+			securityService.disconnect(getTicket());
+			repositorio=getRepositoryName();
+			setTicket(null);
+			setRepositoryName(null);
+			redirect("repositories/"+repositorio);
+		} catch (SecurityException e) {
+			Messages.setMessageError(e);
+			e.printStackTrace();
+		} catch (IOException e) {
+			Messages.setMessageError(e);
+			e.printStackTrace();
+		}
+		return "logout$ok";
 	}
 
 	public Credentials getCredentials() {

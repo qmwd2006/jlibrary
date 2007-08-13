@@ -1,7 +1,10 @@
 package org.jlibrary.web;
 
+import java.io.IOException;
+
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.jlibrary.core.entities.Repository;
@@ -53,5 +56,15 @@ public abstract class AbstractManager {
 		}
 		log.debug("establece el nombre del repositorio"+repositoryName);
 		this.repositoryName = repositoryName;
+	}
+	
+	/**
+	 * Ejecuta un redirect al path indicado
+	 * @param path
+	 * @throws IOException 
+	 */
+	public void redirect(String path) throws IOException{
+		HttpServletResponse response=(HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+		response.sendRedirect(response.encodeRedirectURL(path));
 	}
 }
