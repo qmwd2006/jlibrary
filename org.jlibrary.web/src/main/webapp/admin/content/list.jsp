@@ -33,9 +33,9 @@
 			         	<t:updateActionListener property="#{documentsManager.id}" value="#{item.id}"/>
 			         </h:commandLink>
 			     </h:column>
-			     <h:column>     
-			         <h:commandLink id="sub" action="#{documentsManager.subNodes}">
-			         	<h:outputText value="subnodos"/>
+			     <h:column>
+				     <h:commandLink id="sub" action="#{documentsManager.subNodes}">
+			         	<h:outputText rendered="#{item.directory}" value="subdirectorios"/>
 			         	<t:updateActionListener property="#{documentsManager.id}" value="#{item.id}"/>
 			         </h:commandLink>
 			     </h:column>
