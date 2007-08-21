@@ -37,11 +37,6 @@
 	        <value>#{param.repository}</value>
     	</managed-property>
 	</managed-bean>
-	<managed-bean>
-		<managed-bean-name>fileManager</managed-bean-name>
-		<managed-bean-class>org.jlibrary.web.content.FileManager</managed-bean-class>
-		<managed-bean-scope>request</managed-bean-scope>
-	</managed-bean>
 	
 	<navigation-rule>
 		<from-view-id>/login.jsp</from-view-id>

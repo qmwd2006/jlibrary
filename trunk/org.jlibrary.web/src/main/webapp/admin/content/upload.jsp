@@ -11,19 +11,17 @@
 			<h:outputText value="#{labels.title}"/>
 		</ui:define>
 		<ui:define name="body">
-			<h:form id="MyForm" enctype="multipart/form-data" >
-			    <h:messages globalOnly="true" styleClass="message"/>
-			    <h:panelGrid columns="3" border="0" cellspacing="5">
-			        <h:outputLabel for="myFileId" value="File: "/>
-			        <t:inputFileUpload id="myFileId"
-			            value="#{fileManager.file}"
-			            storage="file"
-			            required="true"/>
-			        <h:message for="myFileId"/>
-			        <h:commandButton value="Submit"
-			            action="#{fileManager.processMyFile}"/>
-			        <h:outputText value=" "/>
-			    </h:panelGrid>
+			<h:form id="form" enctype="multipart/form-data" >
+		        <h:outputLabel for="fileupload" value="File: "/>
+	            <t:inputFileUpload id="fileupload"
+                             value="#{documentsManager.file}"
+                             storage="file"
+                             required="true"
+                             />
+		        <h:message for="fileupload"/>
+				<h:commandButton action="#{documentsManager.processMyFile}">
+					<h:outputText value="Guardar"/>
+				</h:commandButton>
 			</h:form>
 		</ui:define>
 	</ui:composition>
