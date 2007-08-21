@@ -31,6 +31,7 @@ public class DocumentsManager extends AbstractManager {
 	private Node parent;
 	private Logger log=Logger.getLogger(DocumentsManager.class);
 	private String id;
+	private UploadedFile file;
 
 	public ListDataModel getList(){
 		List nodes=new ArrayList();
@@ -39,7 +40,7 @@ public class DocumentsManager extends AbstractManager {
 				parent=getRepository().getRoot();
 			}
 			
-			nodes=new ArrayList(jlibrary.getRepositoryService().findNodeChildren(getTicket(),parent.getId()));
+			nodes=(List) jlibrary.getRepositoryService().findNodeChildren(getTicket(),parent.getId());
 			log.debug("Nodo"+parent.getId()+" subnodos:"+nodes.size());
 		} catch (RepositoryNotFoundException e) {
 			Messages.setMessageError(e);
@@ -223,11 +224,6 @@ public class DocumentsManager extends AbstractManager {
 		this.node = node;
 	}
 	
-	private InputStream upload(UploadedFile file) throws IOException {
-        InputStream in = new BufferedInputStream(file.getInputStream());
-        return in;
-    }
-
 	public Node getParent() {
 		return parent;
 	}
@@ -235,4 +231,26 @@ public class DocumentsManager extends AbstractManager {
 	public void setParent(Node parent) {
 		this.parent = parent;
 	}
+	
+	public UploadedFile getFile() {
+        return file;
+    }
+
+    public void setFile(UploadedFile file) {
+        this.file = file;
+    }
+
+    public String processMyFile() {
+    	log.debug("procesando");
+        try {
+            InputStream in = new BufferedInputStream(
+            		file.getInputStream());
+            log.debug("file:"+file.getName());
+            return "content$saved";
+        } catch (IOException e) {
+        	Messages.setMessageError(e);
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
