@@ -71,7 +71,7 @@
           <text>Explore the different jLibrary tutorials.</text>
         </link>
         <link label="Samples" url="http://org.eclipse.ui.intro/showPage?id=samples" id="samples" style-id="right">
-          <text>CStart working with the jLibrary samples.</text>
+          <text>Start working with the jLibrary samples.</text>
         </link>
         <link label="What's New?" url="http://org.eclipse.ui.intro/showPage?id=news" id="news" style-id="right">
           <text>Learn about this release new and noteworthy jLibrary features.</text>
