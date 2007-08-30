@@ -11,15 +11,15 @@
           <img id="overview_img" style-id="content-img" src="css/graphics/icons/etool/overview72.gif" alt="Introduction"></img>
           <text>Apprenez les bases de jLibrary.</text>
         </link>
-        <link label="Tutorials" url="http://org.eclipse.ui.intro/showPage?id=tutorials" id="tutorials" style-id="left">
+        <link label="Didacticiels" url="http://org.eclipse.ui.intro/showPage?id=tutorials" id="tutorials" style-id="left">
 	      <img id="tutorials_img" style-id="content-img" src="css/graphics/icons/etool/tutorials72.gif" alt="Tutorials"></img>
           <text>Explorez les différents didactitiels de jLibrary.</text>
         </link>
-        <link label="Samples" url="http://org.eclipse.ui.intro/showPage?id=samples" id="samples" style-id="right">
+        <link label="Exemples" url="http://org.eclipse.ui.intro/showPage?id=samples" id="samples" style-id="right">
           <img id="samples_img" style-id="content-img" src="css/graphics/icons/etool/samples72.gif" alt="Samples"></img>
-          <text>Commencez en utilisant les exempls de jLibrary.</text>
+          <text>Commencez en utilisant les exemples de jLibrary.</text>
         </link>
-        <link label="What's New?" url="http://org.eclipse.ui.intro/showPage?id=news" id="news" style-id="right">
+        <link label="Quoi de neuf?" url="http://org.eclipse.ui.intro/showPage?id=news" id="news" style-id="right">
           <img id="whatsnew_img" style-id="content-img" src="css/graphics/icons/etool/whatsnew72.gif" alt="What's New?"></img>
           <text>Apprenez à utiliser les nouvelles fonctionnalités de cette version.</text>
         </link>
@@ -37,20 +37,20 @@
 
 -->
   <page alt-style="css/standby_swt.properties" style="css/standby_root.css" id="standby" style-id="page">
-    <title style-id="intro-header">Welcome to jLibrary 1.0.2</title>
+    <title style-id="intro-header">Bienvenue dans jLibrary 1.0.2</title>
     <group id="links-background">
       <group id="page-links">
         <link label="Introduction" url="http://org.eclipse.ui.intro/showPage?id=overview&amp;standby=false" id="overview" style-id="left">
-          <text>Learn the basics about jLibrary.</text>
+          <text>Apprenez les bases de jLibrary.</text>
         </link>
-        <link label="Tutorials" url="http://org.eclipse.ui.intro/showPage?id=tutorials&amp;standby=false" id="tutorials" style-id="left">
-          <text>Explore the different jLibrary tutorials.</text>
+        <link label="Didacticiels" url="http://org.eclipse.ui.intro/showPage?id=tutorials&amp;standby=false" id="tutorials" style-id="left">
+          <text>Explorez les différents didactitiels de jLibrary.</text>
         </link>
-        <link label="Samples" url="http://org.eclipse.ui.intro/showPage?id=samples&amp;standby=false" id="samples" style-id="right">
-          <text>Start working with the jLibrary samples.</text>
+        <link label="Exemples" url="http://org.eclipse.ui.intro/showPage?id=samples&amp;standby=false" id="samples" style-id="right">
+          <text>Commencez en utilisant les exemples de jLibrary.</text>
         </link>
-        <link label="What's New?" url="http://org.eclipse.ui.intro/showPage?id=news&amp;standby=false" id="news" style-id="right">
-          <text>Learn about this release new and noteworthy jLibrary features.</text>
+        <link label="Quoi de neuf?" url="http://org.eclipse.ui.intro/showPage?id=news&amp;standby=false" id="news" style-id="right">
+          <text>Apprenez à utiliser les nouvelles fonctionnalités de cette version.</text>
         </link>
       </group>
     </group>
@@ -59,27 +59,27 @@
 
 -->
   <page style="css/overview/overview.css" alt-style="css/overview/swt.properties" id="overview" style-id="page">
-    <title style-id="intro-header">Welcome to jLibrary 1.0.2</title>
+    <title style-id="intro-header">Bienvenue dans jLibrary 1.0.2</title>
     <group id="background-image" filteredFrom="swt"/>
     <group id="curve-image" filteredFrom="swt"/>
     <group id="navigation-links" filteredFrom="swt">
       <group id="page-links">
         <link label="Introduction" url="http://org.eclipse.ui.intro/showPage?id=overview" id="overview" style-id="left">
-          <text>Learn the basics about jLibrary.</text>
+          <text>Apprenez les bases de jLibrary.</text>
         </link>
-        <link label="Tutorials" url="http://org.eclipse.ui.intro/showPage?id=tutorials" id="tutorials" style-id="left">
-          <text>Explore the different jLibrary tutorials.</text>
+        <link label="Didacticiels" url="http://org.eclipse.ui.intro/showPage?id=tutorials" id="tutorials" style-id="left">
+          <text>Explorez les différents didactitiels de jLibrary.</text>
         </link>
-        <link label="Samples" url="http://org.eclipse.ui.intro/showPage?id=samples" id="samples" style-id="right">
-          <text>CStart working with the jLibrary samples.</text>
+        <link label="Exemples" url="http://org.eclipse.ui.intro/showPage?id=samples" id="samples" style-id="right">
+          <text>Commencez en utilisant les exemples de jLibrary.</text>
         </link>
-        <link label="What's New?" url="http://org.eclipse.ui.intro/showPage?id=news" id="news" style-id="right">
-          <text>Learn about this release new and noteworthy jLibrary features.</text>
+        <link label="Quoi de neuf?" url="http://org.eclipse.ui.intro/showPage?id=news" id="news" style-id="right">
+          <text>Apprenez à utiliser les nouvelles fonctionnalités de cette version.</text>
         </link>
       </group>
       <group id="action-links">
       	<link url="http://org.eclipse.ui.intro/close" label="jLibrary" id="workbench">
-        	<text>Working with jLibrary</text>
+        	<text>Ouvrir l'atelier jLibrary</text>
       	</link>
       </group>
     </group>
@@ -88,15 +88,15 @@
     <group id="page-content">
       <group id="content-header" label="Introduction" filteredFrom="swt"></group>
       <text style-id="page-title" id="page-title" filteredFrom="html">Introduction</text>
-      <text style-id="page-description" id="page-description">jLibrary is a Open Source content management system that fits in both enterprise and personal worlds. With jLibrary you can manage your and your enterprise documents, in a very easy an efficient way.</text>
-      <text style-id="page-description" id="page-description2">With jLibrary you can store your PDF, DOC, SXW, and many more different documents; you can search within them; you can categorize your documents; you can export the information very easly; you can generate entire web portals with all your information and publish it in an intranet or extranet; In summary, jLibrary is a powerful Open Source alternative for your documentation management, with all the free software advantages.</text>
+      <text style-id="page-description" id="page-description">jLibrary est logiciel libre de gestion de contenu qui convient à l'utilisation professionnelle ou personnelle. Avec jLibrary vous pouvez gérer vos documents et ceux de votre entreprise de manière très efficace.</text>
+      <text style-id="page-description" id="page-description2">Avec jLibrary vous pouvez stocket vos PDF, DOC, SXW, ainsi que de nombreux autres formats de fichiers; vous pouvez effectuer des recherches à l'intérieur de ces documents; vous pouvez les organiser dans des catégories; vous pouvez exporter vos données très facilement; Vous pouvez générer un portail Web complet avec l'ensemble de vos données et les publier sur un intranet ou extranet; En résumé, jLibrary est une alternative Open Source très puissante pour la gestion de vos documents, avec tous les avantages du logiciel libre.</text>
       <group id="overview-links">
 	<anchor id="beginAnchor"/>
-        <link label="Do you want to know more?" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/4/index.html" id="basics">
-          <text>Learn more about jLibrary</text>
+        <link label="Voulez-vous en savoir plus?" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/4/index.html" id="basics">
+          <text>En savoir plus sur jLibrary</text>
         </link>
-        <link label="Soporte" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/4/about.html" id="team">
-          <text>Do you want to collaborate?</text>
+        <link label="A propos" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/4/about.html" id="team">
+          <text>Souhaites-vous participer ?</text>
         </link>
         <anchor id="jdtAnchor"/>
         <anchor id="pdeAnchor"/>
@@ -108,45 +108,45 @@
 
 -->
   <page style="css/tutorials/tutorials.css" alt-style="css/samples/swt.properties" id="tutorials" style-id="page">
-    <title style-id="intro-header">Welcome to jLibrary 1.0.2</title>
+    <title style-id="intro-header">Bienvenue dans jLibrary 1.0.2</title>
     <group id="background-image" filteredFrom="swt"/>
     <group id="curve-image" filteredFrom="swt"/>
     <include path="overview/navigation-links"/>
     <group id="page-content">
       <group id="content-header" label="Tutorials" filteredFrom="swt"></group>
-      <text style-id="page-title" id="page-title" filteredFrom="html">Tutorials</text>
-      <text style-id="page-description" id="page-description">Do you want to know how to increase your productivity with jLibrary? The following tutorials will help you to win with jLibrary</text>
+      <text style-id="page-title" id="page-title" filteredFrom="html">Didacticiels</text>
+      <text style-id="page-description" id="page-description">Voulez-vous savoir comment augmenter votre productivité avec jLibrary? Le didacticiel suivant vous aidera à gagner avec jLibrary</text>
       <anchor id="beginAnchor"/>
-      <group label="Tutorials" id="workbench" style-id="samples-group">
-        <link label="Creating a repository" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/1/tut1.html" id="multi-page-editor" style-id="sample-link">
-          <text>This tutorial shows how to create your first repository.</text>
+      <group label="Didacticiels" id="workbench" style-id="samples-group">
+        <link label="Créer un référentiel" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/1/tut1.html" id="multi-page-editor" style-id="sample-link">
+          <text>Ce didacticiel montre comment créer votre premier référentiel.</text>
         </link>
-        <link label="Opening a repository" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/1/tut2.html" id="property-sheet" style-id="sample-link">
-          <text>This tutorial shows how to open repositories.</text>
+        <link label="Ouvrir un référentiel" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/1/tut2.html" id="property-sheet" style-id="sample-link">
+          <text>Ce didacticiel montre comment ouvrir des référentiels.</text>
         </link>
-        <link label="Creating a document" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/1/tut3.html" id="readmetool" style-id="sample-link">
-          <text>In this tutorial you'll learn how to create your first document.</text>
+        <link label="Créer un document" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/1/tut3.html" id="readmetool" style-id="sample-link">
+          <text>Dans ce didacticiel vous apprendrez à créer votre premier document.</text>
         </link>
-        <link label="Adding multiple documents" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/1/tut4.html" id="multi-page-editor" style-id="sample-link">
-          <text>This tutorial shows how to add a lot of files to a repository in a single step.</text>
+        <link label="Ajouter plusieurs documents" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/1/tut4.html" id="multi-page-editor" style-id="sample-link">
+          <text>Ce didacticiel montre commend ajouter de nombreux document à un référentiel en une seule étape.</text>
         </link>
-        <link label="Updating documents" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/1/tut5.html" id="property-sheet" style-id="sample-link">
-          <text>In this tutorial you'll learn how to modify your the attributes and content of your documents.</text>
+        <link label="Mettre à jour des documents" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/1/tut5.html" id="property-sheet" style-id="sample-link">
+          <text>Dans ce didacticiel vous apprendrez à modifier les attributs et le contenus de vos documents.</text>
         </link>
-        <link label="Security management" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/1/tut6.html" id="readmetool" style-id="sample-link">
-          <text>This tutorial shows how to deal with repositories and server security.</text>
+        <link label="Gestion de la sécurité" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/1/tut6.html" id="readmetool" style-id="sample-link">
+          <text>Ce didacticiel montre comment gérer les référentiels et la sécurité du serveur.</text>
         </link>
-        <link label="Version management" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/1/tut7.html" id="multi-page-editor" style-id="sample-link">
-          <text>In this tutorial you'll learn how to create and restore document versions.</text>
+        <link label="Gestion des versions" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/1/tut7.html" id="multi-page-editor" style-id="sample-link">
+          <text>Dans ce didacticiel vous apprendrez à créer et restaurer des versions de documents.</text>
         </link>
-        <link label="Searching" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/1/tut8.html" id="property-sheet" style-id="sample-link">
-          <text>This tutorial shows how to search something on a repository.</text>
+        <link label="Rechercher" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/1/tut8.html" id="property-sheet" style-id="sample-link">
+          <text>Ce didacticiel montre comment chercher quelque chose dans un référentiel.</text>
         </link>
-        <link label="Working with documents" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/1/tut9.html" id="readmetool" style-id="sample-link">
-          <text>In this tutorial you'll learn some useful tasks like lock management, data refresh, etc.</text>
+        <link label="Travailler avec les documents" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/1/tut9.html" id="readmetool" style-id="sample-link">
+          <text>Dans ce didacticiel vous apprendrez différentes tâches utiles comme la gestion des verrous, le rafraichissement des données, etc.</text>
         </link>
-        <link label="Categories management" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/1/tut10.html" id="multi-page-editor" style-id="sample-link">
-          <text>This tutorial shows how to classify your documents into categories.</text>
+        <link label="Gestion des catégories" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/1/tut10.html" id="multi-page-editor" style-id="sample-link">
+          <text>Ce didacticiel montre comment classer vos documents dans des catégories.</text>
         </link>
         <anchor id="jdtAnchor"/>
         <anchor id="workbenchGroupAnchor"/>
@@ -158,19 +158,19 @@
 
 -->
   <page style="css/samples/samples.css" alt-style="css/samples/swt.properties" id="samples" style-id="page">
-    <title style-id="intro-header">Welcome to jLibrary 1.0.2</title>
+    <title style-id="intro-header">Bienvenue dans jLibrary 1.0.2</title>
     <group id="background-image" filteredFrom="swt"/>
     <group id="curve-image" filteredFrom="swt"/>
     <include path="overview/navigation-links"/>
     <group id="page-content">
-      <group id="content-header" label="Samples" filteredFrom="swt"></group>
-      <text style-id="page-title" id="page-title" filteredFrom="html">Samples</text>
-      <text style-id="page-description" id="page-description">Explore main jLibrary features through pre-created repositories (requieres Internet connection).</text>
+      <group id="content-header" label="Exemples" filteredFrom="swt"></group>
+      <text style-id="page-title" id="page-title" filteredFrom="html">Exemples</text>
+      <text style-id="page-description" id="page-description">Explorer les fonctionnalités principales de jLibrary au travers de référéntiel pré-existants (nécessite une connexion Internet).</text>
       <anchor id="beginAnchor"/>
-      <group label="Repositories" id="swt" style-id="samples-group">
-        <text style-id="group-description">The sample repositories allows to try all the jLibrary funcionality with minimum effort.</text>
-        <link label="jLibrary Repository" url="http://org.eclipse.ui.intro/runAction?pluginId=org.jlibrary.client&amp;class=org.jlibrary.client.intro.ImportSampleAction&amp;id=org.jlibrary.client" id="swt-examples" style-id="sample-link">
-          <text>jLibrary web home page is stored on a jLibrary repository. To run this example, you must first download the jLibrary exported repository from this URL: http://jlibrary.sourceforge.net/samples/jlibrary-repository.jlib Next, press the left button to show the import dialog. Import the recently download repository. Once the repository has been imported, go to the main jLibrary interface to see and work with its content</text>
+      <group label="Référentiels" id="swt" style-id="samples-group">
+        <text style-id="group-description">Les référentiels d'exemples vous permettent d'essayer toutes les fonctionnalités de jLibrary sans effort.</text>
+        <link label="Référentiels jLibrary" url="http://org.eclipse.ui.intro/runAction?pluginId=org.jlibrary.client&amp;class=org.jlibrary.client.intro.ImportSampleAction&amp;id=org.jlibrary.client" id="swt-examples" style-id="sample-link">
+          <text>Le site Web de jLibrary est stocké dans un référentiel jLibrary. Pour exécuter cet exemple, vous devez d'abord télécharger l'extraction de ce référentiel à l'adresse: http://jlibrary.sourceforge.net/samples/jlibrary-repository.jlib Ensuite, cliquer avec le bouton de gauche pour afficher la boite de dialogue d'importation. Importer le référentiel téléchargé. Une fois le référentiel importé, aller dans l'interface principale de jLibrary pour voir et travailler avec le contenu.</text>
         </link>
         
         <anchor id="swtGroupAnchor"/>
@@ -182,25 +182,25 @@
 
 -->
   <page style="css/whatsnew/whatsnew.css" alt-style="css/whatsnew/swt.properties" id="news" style-id="page">
-    <title style-id="intro-header">Welcome to jLibrary 1.0.2</title>
+    <title style-id="intro-header">Bienvenue dans jLibrary 1.0.2</title>
     <group id="background-image" filteredFrom="swt"/>
     <group id="curve-image" filteredFrom="swt"/>
     <include path="overview/navigation-links"/>
     <group id="page-content">
-      <group id="content-header" label="What's New?" filteredFrom="swt"></group>
-      <text style-id="page-title" id="page-title" filteredFrom="html">What's New?</text>
+      <group id="content-header" label="Quoi de neuf?" filteredFrom="swt"></group>
+      <text style-id="page-title" id="page-title" filteredFrom="html">Quoi de neuf?</text>
       <anchor id="beginAnchor"/>
       <group id="noteworthy-links" label="Main changes">
         <link label="jLibrary 1.0.2" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/4/whatsnew_final.html" id="platform-noteworthy" style-id="noteworthy-link">
-          <text>Find out about the major new features in this release</text>
+          <text>Renseignez-vous sur les principales nouvelles fonctionnalités de cette version.</text>
         </link>
         <anchor id="jdtAnchor"/>
         <anchor id="pdeAnchor"/>
         <anchor id="generalAnchor"/>
       </group>
       <group id="news-links" label="General">
-        <link label="The project" url="http://www.sourceforge.net/projects/jlibrary" id="eclipse">
-          <text>Visit the project home page. There is mail lists to obtain help, CVS access instructions, etc.</text>
+        <link label="Le projet" url="http://www.sourceforge.net/projects/jlibrary" id="eclipse">
+          <text>Visiter la page d'accueil du projet. Il permet l'accès aux listes de difusion pour obtenir de l'aide, des instructions d'accès CVS, etc.</text>
         </link>
 	<anchor id="linksAnchor"/>
       </group>
