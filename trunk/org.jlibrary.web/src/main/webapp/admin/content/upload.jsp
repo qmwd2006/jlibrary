@@ -11,6 +11,8 @@
 			<h:outputText value="#{labels.title}"/>
 		</ui:define>
 		<ui:define name="body">
+			<t:saveState value="#{documentsManager.node}" id="nod"/>
+			<t:saveState value="#{documentsManager.parent}" id="parent"/>
 			<h:form id="form" enctype="multipart/form-data" >
 		        <h:outputLabel for="fileupload" value="File: "/>
 	            <t:inputFileUpload id="fileupload"
@@ -19,7 +21,7 @@
                              required="true"
                              />
 		        <h:message for="fileupload"/>
-				<h:commandButton action="#{documentsManager.processMyFile}">
+				<h:commandButton action="#{documentsManager.details}">
 					<h:outputText value="Guardar"/>
 				</h:commandButton>
 			</h:form>

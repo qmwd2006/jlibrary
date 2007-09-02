@@ -12,7 +12,7 @@
   	</application>
 	<managed-bean>
 		<managed-bean-name>loginManager</managed-bean-name>
-		<managed-bean-class>org.jlibrary.web.login.LoginManager</managed-bean-class>
+		<managed-bean-class>org.jlibrary.web.admin.login.LoginManager</managed-bean-class>
 		<managed-bean-scope>request</managed-bean-scope>
 		<managed-property>
 	        <property-name>repositoryName</property-name>
@@ -21,7 +21,7 @@
 	</managed-bean>
 	<managed-bean>
 		<managed-bean-name>categoriesManager</managed-bean-name>
-		<managed-bean-class>org.jlibrary.web.categories.CategoriesManager</managed-bean-class>
+		<managed-bean-class>org.jlibrary.web.admin.categories.CategoriesManager</managed-bean-class>
 		<managed-bean-scope>request</managed-bean-scope>
 		<managed-property>
 	        <property-name>repositoryName</property-name>
@@ -30,7 +30,7 @@
 	</managed-bean>
 	<managed-bean>
 		<managed-bean-name>documentsManager</managed-bean-name>
-		<managed-bean-class>org.jlibrary.web.content.DocumentsManager</managed-bean-class>
+		<managed-bean-class>org.jlibrary.web.admin.content.DocumentsManager</managed-bean-class>
 		<managed-bean-scope>request</managed-bean-scope>
 		<managed-property>
 	        <property-name>repositoryName</property-name>
@@ -99,6 +99,10 @@
 			<to-view-id>/admin/content/document_form.jsp</to-view-id>
 		</navigation-case>
 		<navigation-case>
+			<from-outcome>document$upload</from-outcome>
+			<to-view-id>/admin/content/upload.jsp</to-view-id>
+		</navigation-case>
+		<navigation-case>
 			<from-outcome>content$delete</from-outcome>
 			<to-view-id>/admin/content/list.jsp</to-view-id>
 		</navigation-case>
@@ -115,6 +119,13 @@
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
+	  <from-view-id>/admin/content/upload.jsp</from-view-id>
+	  <navigation-case>
+			<from-outcome>document$details</from-outcome>
+			<to-view-id>/admin/content/document_form.jsp</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
 		<from-view-id>/admin/content/document_form.jsp</from-view-id>
 		<navigation-case>
 			<from-outcome>content$saved</from-outcome>
@@ -122,13 +133,6 @@
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>content$back</from-outcome>
-			<to-view-id>/admin/content/list.jsp</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-	<navigation-rule>
-	  <from-view-id>/admin/content/upload.jsp</from-view-id>
-	  <navigation-case>
-			<from-outcome>content$saved</from-outcome>
 			<to-view-id>/admin/content/list.jsp</to-view-id>
 		</navigation-case>
 	</navigation-rule>
