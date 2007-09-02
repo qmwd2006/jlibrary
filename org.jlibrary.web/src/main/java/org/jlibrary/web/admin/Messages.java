@@ -1,4 +1,4 @@
-package org.jlibrary.web;
+package org.jlibrary.web.admin;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
