@@ -1,9 +1,7 @@
-package org.jlibrary.web.login;
+package org.jlibrary.web.admin.login;
 
 import java.io.IOException;
 import java.net.ConnectException;
-
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.jlibrary.core.entities.Credentials;
@@ -14,8 +12,8 @@ import org.jlibrary.core.security.SecurityException;
 import org.jlibrary.core.security.SecurityService;
 import org.jlibrary.core.security.exception.AuthenticationException;
 import org.jlibrary.core.security.exception.UserNotFoundException;
-import org.jlibrary.web.AbstractManager;
-import org.jlibrary.web.Messages;
+import org.jlibrary.web.admin.AbstractManager;
+import org.jlibrary.web.admin.Messages;
 
 public class LoginManager extends AbstractManager {
 	private Credentials credentials;

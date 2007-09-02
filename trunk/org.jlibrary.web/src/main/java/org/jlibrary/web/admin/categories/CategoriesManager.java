@@ -1,4 +1,4 @@
-package org.jlibrary.web.categories;
+package org.jlibrary.web.admin.categories;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +16,8 @@ import org.jlibrary.core.repository.exception.CategoryNotFoundException;
 import org.jlibrary.core.repository.exception.RepositoryException;
 import org.jlibrary.core.repository.exception.RepositoryNotFoundException;
 import org.jlibrary.core.security.SecurityException;
-import org.jlibrary.web.AbstractManager;
-import org.jlibrary.web.Messages;
+import org.jlibrary.web.admin.AbstractManager;
+import org.jlibrary.web.admin.Messages;
 /**
  * 
  * @author Dani

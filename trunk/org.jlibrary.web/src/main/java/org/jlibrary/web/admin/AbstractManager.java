@@ -1,4 +1,4 @@
-package org.jlibrary.web;
+package org.jlibrary.web.admin;
 
 import java.io.IOException;
 
@@ -53,8 +53,8 @@ public abstract class AbstractManager {
 		if(repositoryName!=null){
 			HttpServletRequest request=(HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
 			request.getSession(true).setAttribute(CURRENT_REPOSITORY,repositoryName);
+			log.debug("establece el nombre del repositorio"+repositoryName);
 		}
-		log.debug("establece el nombre del repositorio"+repositoryName);
 		this.repositoryName = repositoryName;
 	}
 	
