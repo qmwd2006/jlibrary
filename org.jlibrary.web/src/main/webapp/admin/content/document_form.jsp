@@ -10,9 +10,11 @@
 			<f:loadBundle basename="org.jlibrary.web.labels" var="labels"/>
 			<h:outputText value="#{labels.documents}"/>
 		</ui:define>
-		<ui:define name="body">
-			<t:saveState value="#{documentsManager.node}" id="cat"/>
-			<t:saveState id="parent" value="#{documentsManager.parent}"/>
+		<ui:define name="body" enctype="multipart/form-data">
+			<t:saveState value="#{documentsManager.node}" id="nod"/>
+			<t:saveState value="#{documentsManager.data}" id="data"/>
+			<t:saveState value="#{documentsManager.file}" id="file"/>
+			<t:saveState value="#{documentsManager.parent}" id="parent"/>
 			<h:form id="form">
 				<h:outputLabel value="nombre:" for="name"/>
 				<h:inputText id="name" required="true" value="#{documentsManager.node.name}"/>
@@ -21,6 +23,14 @@
 				<h:outputLabel value="descripcion:" for="description"/>
 				<h:inputTextarea id="description" required="true" value="#{documentsManager.node.description}"/>
 				<h:message for="description"/>
+				<br/>
+				<h:outputLabel value="keywords:" for="keywords"/>
+				<h:inputTextarea id="keywords" value="#{documentsManager.node.metaData.keywords}"/>
+				<h:message for="keywords"/>
+				<br/>
+				<h:outputLabel value="url:" for="url"/>
+				<h:inputText id="url" value="#{documentsManager.node.metaData.url}"/>
+				<h:message for="url"/>
 				<br/>
 				<h:commandButton action="#{documentsManager.save}">
 					<h:outputText value="Guardar"/>
