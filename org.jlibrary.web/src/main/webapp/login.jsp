@@ -20,7 +20,11 @@
 				<h:inputText id="password" value="#{loginManager.credentials.password}" required="true"/>
 				<h:message for="password"/>
 				<br/>
-				<h:commandButton id="login" action="#{loginManager.login}" value="#{labels.entrar} #{param.repository}"/>
+				<h:outputLabel for="repository" value="#{labels.repository}:"/>
+				<h:inputText id="repository" value="#{loginManager.repositoryName}" required="true"/>
+				<h:message for="repository"/>
+				<br/>
+				<h:commandButton id="login" action="#{loginManager.login}" value="#{labels.entrar}"/>
 			</h:form>
 		</ui:define>
 	</ui:composition>
