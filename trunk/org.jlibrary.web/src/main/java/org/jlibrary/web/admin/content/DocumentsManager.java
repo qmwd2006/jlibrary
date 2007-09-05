@@ -89,13 +89,15 @@ public class DocumentsManager extends AbstractManager {
 		if(node.isDirectory()){
 			ret= "directory$details";
 		}else if(node.isDocument()){
-			getNode().setName(file.getName());
-			try {
-				data=file.getBytes();
-				log.debug(data.length);
-			} catch (IOException e) {
-				Messages.setMessageError(e);
-				log.error(e.getMessage());
+			if(file!=null){
+				getNode().setName(file.getName());
+				try {
+					data=file.getBytes();
+					log.debug(data.length);
+				} catch (IOException e) {
+					Messages.setMessageError(e);
+					log.error(e.getMessage());
+				}
 			}
 			ret= "document$details";
 		}
