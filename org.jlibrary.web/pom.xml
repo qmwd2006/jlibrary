@@ -92,6 +92,11 @@
       <groupId>FCKEditor</groupId>
       <artifactId>FCKEditor</artifactId>
       <version>2.3</version>
+    </dependency> 
+    <dependency>
+      <groupId>fck-faces</groupId>
+      <artifactId>fck-faces</artifactId>
+      <version>1.7.26</version>
     </dependency>    
     <!--  Maven 2 WAR overlay -->
     <dependency>
