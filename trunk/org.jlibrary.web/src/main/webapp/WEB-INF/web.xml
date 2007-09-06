@@ -147,6 +147,17 @@
     <display-name>JLibrarySearchServlet</display-name>
     <servlet-class>org.jlibrary.web.servlet.JLibrarySearchServlet</servlet-class>    
   </servlet>
+  
+	<servlet>
+		<servlet-name>FCKServlet</servlet-name>
+		<servlet-class>org.fckfaces.util.Servlet</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+        <servlet-name>FCKServlet</servlet-name>
+        <url-pattern>/fckfaces/*</url-pattern>
+	</servlet-mapping>
+	
 
 
   <servlet-mapping>
@@ -164,10 +175,6 @@
     <url-pattern>/search</url-pattern>
   </servlet-mapping>
 
-  <servlet-mapping>
-    <servlet-name>JLibraryUploaderServlet</servlet-name>
-    <url-pattern>/upload</url-pattern>
-  </servlet-mapping>
   	
   <servlet-mapping>
 	<servlet-name>Faces Servlet</servlet-name>
