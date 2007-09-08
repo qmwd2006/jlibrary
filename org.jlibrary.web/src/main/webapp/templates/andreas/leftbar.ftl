@@ -14,7 +14,7 @@
   There are no directories
 </#if>
 <br/>
-<A href="${root_url}/editor/create.jsp">Create new document</A>
+<A href="${root_url}/admin/content/document_form.jsf?repository=${repository.id}&parentId=${directory.id}">Create new document</A>
 </p>
 </#macro>
 
