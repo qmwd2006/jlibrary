@@ -4,6 +4,12 @@
   <p><strong>Created by:</strong> ${node_creator}</p>
 </#macro>
 
+<#macro admin>
+  <h1>Admin</h1>
+  <p><A href="${root_url}/admin/content/document_form.jsf?repository=${repository.id}&docId=${document.id}">Update document</A>
+  <p><A href="">Delete document</A>
+</#macro>
+
 <#macro directoryDocuments>
   <#assign hasDocuments=false/>
   <#list directory.nodes as children>

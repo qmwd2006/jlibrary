@@ -13,6 +13,7 @@
     <@com.rightbar>
     	<div id="rightside">
 	      <@rightbar.infoDocument/>
+	      <@rightbar.admin/>
 	      <@rightbar.resources/>
 	      <@rightbar.categoriesDocument/>
 	      <@rightbar.relationsDocument/>
