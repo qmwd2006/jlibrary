@@ -147,6 +147,12 @@
     <display-name>JLibrarySearchServlet</display-name>
     <servlet-class>org.jlibrary.web.servlet.JLibrarySearchServlet</servlet-class>    
   </servlet>
+
+  <servlet>
+    <servlet-name>JLibraryForwardServlet</servlet-name>
+    <display-name>JLibraryForwardServlet</display-name>
+    <servlet-class>org.jlibrary.web.servlet.JLibraryForwardServlet</servlet-class>    
+  </servlet>
   
 	<servlet>
 		<servlet-name>FCKServlet</servlet-name>
@@ -158,8 +164,6 @@
         <url-pattern>/fckfaces/*</url-pattern>
 	</servlet-mapping>
 	
-
-
   <servlet-mapping>
     <servlet-name>Connector</servlet-name>
     <url-pattern>/editor/filemanager/browser/default/connectors/jsp/connector</url-pattern>
@@ -175,6 +179,10 @@
     <url-pattern>/search</url-pattern>
   </servlet-mapping>
 
+  <servlet-mapping>
+    <servlet-name>JLibraryForwardServlet</servlet-name>
+    <url-pattern>/forward</url-pattern>
+  </servlet-mapping>
   	
   <servlet-mapping>
 	<servlet-name>Faces Servlet</servlet-name>

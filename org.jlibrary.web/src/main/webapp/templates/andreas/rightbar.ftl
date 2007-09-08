@@ -6,7 +6,7 @@
 
 <#macro admin>
   <h1>Admin</h1>
-  <p><A href="${root_url}/admin/content/document_form.jsf?repository=${repository.id}&docId=${document.id}">Update document</A>
+  <p><A href="${root_url}/forward?method=update&repository=${repository.name}&id=${document.id}">Update document</A>
   <p><A href="">Delete document</A>
 </#macro>
 
