@@ -30,6 +30,9 @@
           <br/>
       </#list>
   </#if>
+  <br/>
+  <p><A href="${root_url}/forward?method=comment&repository=${repository.name}&id=${document.id}">Add new comment</A>
+
 </#macro>
 
 <#macro listCategory>

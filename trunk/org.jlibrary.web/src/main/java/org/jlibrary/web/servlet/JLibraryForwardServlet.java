@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.jlibrary.core.entities.Node;
+import org.jlibrary.core.entities.Note;
 import org.jlibrary.core.entities.ServerProfile;
 import org.jlibrary.core.entities.Ticket;
 import org.jlibrary.core.factory.JLibraryServiceFactory;
@@ -74,6 +75,8 @@ public class JLibraryForwardServlet extends HttpServlet {
 			createDocument(req,resp);
 		} else if (method.equals("update")) {
 			updateDocument(req,resp);
+		} else if (method.equals("comment")) {
+			addComment(req,resp);
 		} else {
 			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
@@ -122,6 +125,47 @@ public class JLibraryForwardServlet extends HttpServlet {
 		}	
 	}
 
+	private void addComment(HttpServletRequest req, HttpServletResponse resp) {
+
+		String id = req.getParameter("id");
+		if (id == null) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("Invalid update request. Document id not found.");
+				resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				return;
+			}
+		}
+
+		String repositoryName = req.getParameter("repository");
+		if (repositoryName == null) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("Invalid update request. Repository name not found.");
+				resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				return;
+			}
+		}
+		
+		Ticket ticket = TicketService.getTicketService().getTicket(req, repositoryName);
+		RepositoryService repositoryService = 
+			JLibraryServiceFactory.getInstance(profile).getRepositoryService();
+		try {
+			Node node = repositoryService.findNode(ticket, id);
+			
+			// Now update the JSF documents manager with the requested node
+			DocumentsManager documentsManager = new DocumentsManager();
+			documentsManager.setNode(node);
+			documentsManager.setNote(new Note());
+			req.setAttribute("documentsManager", documentsManager);
+			RequestDispatcher dispatcher = 
+				req.getRequestDispatcher("/admin/content/comments.jsf");
+			dispatcher.forward(req, resp);
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		}	
+	}
+	
 	private void createDocument(HttpServletRequest req, HttpServletResponse resp) {
 
 		/*

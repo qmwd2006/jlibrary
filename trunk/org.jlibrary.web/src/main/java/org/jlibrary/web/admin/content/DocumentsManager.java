@@ -14,6 +14,7 @@ import org.jlibrary.core.entities.Directory;
 import org.jlibrary.core.entities.Document;
 import org.jlibrary.core.entities.DocumentMetaData;
 import org.jlibrary.core.entities.Node;
+import org.jlibrary.core.entities.Note;
 import org.jlibrary.core.entities.Node.Types;
 import org.jlibrary.core.properties.DirectoryProperties;
 import org.jlibrary.core.properties.DocumentProperties;
@@ -35,6 +36,10 @@ public class DocumentsManager extends AbstractManager {
 	private String id;
 	private UploadedFile file;
 	private byte[] data;
+	
+	private Note note = new Note();
+	private String requestURL;
+	
 	public ListDataModel getList(){
 		List nodes=new ArrayList();
 		try {
@@ -114,6 +119,31 @@ public class DocumentsManager extends AbstractManager {
 		doc.setMetaData(new DocumentMetaData());
 		node=doc;
 		return "document$upload";
+	}
+	
+	public String saveComment() {
+		
+		if ((node == null) || !node.isDocument() || (note == null)) {
+			return "comment$error";
+		}
+		
+		Document document = (Document)node;
+		document.addNote(note);
+		DocumentProperties properties=document.dumpProperties();
+		try {
+			jlibrary.getRepositoryService().updateDocument(getTicket(),(DocumentProperties)properties);
+			// Just testing
+			requestURL="http://localhost:8080/jlibrary";
+			return "comment$ok";
+		} catch (RepositoryException e) {
+			Messages.setMessageError(e);
+			e.printStackTrace();
+			return "comment$error";
+		} catch (SecurityException e) {
+			Messages.setMessageError(e);
+			e.printStackTrace();
+			return "comment$error";
+		}		
 	}
 	
 	public String save(){
@@ -277,5 +307,13 @@ public class DocumentsManager extends AbstractManager {
 
 	public void setData(byte[] data) {
 		this.data = data;
+	}
+
+	public Note getNote() {
+		return note;
+	}
+
+	public void setNote(Note note) {
+		this.note = note;
 	}
 }
