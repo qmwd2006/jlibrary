@@ -60,7 +60,7 @@
 			<from-outcome>categories$list</from-outcome>
 			<to-view-id>/admin/categories/list.jsp</to-view-id>
 		</navigation-case>
-	</navigation-rule>
+	</navigation-rule>	
 	
 	<navigation-rule>
 		<from-view-id>/admin/categories/list.jsp</from-view-id>
@@ -136,4 +136,15 @@
 			<to-view-id>/admin/content/list.jsp</to-view-id>
 		</navigation-case>
 	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>/admin/content/comments.jsp</from-view-id>
+		<navigation-case>
+			<from-outcome>content$ok</from-outcome>
+			<to-view-id>#{documentsManager.requestURL}</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>content$back</from-outcome>
+			<to-view-id>/admin/content/list.jsp</to-view-id>
+		</navigation-case>
+	</navigation-rule>	
 </faces-config>
