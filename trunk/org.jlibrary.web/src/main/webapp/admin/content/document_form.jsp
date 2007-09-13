@@ -4,7 +4,8 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:t="http://myfaces.apache.org/tomahawk"
-      xmlns:fck="http://www.fck-faces.org/fck-faces">
+      xmlns:fck="http://www.fck-faces.org/fck-faces"
+      xmlns:c="http://java.sun.com/jstl/core">
 <body>
 <ui:composition template="/template1.jsp">
 		<ui:define name="title">
@@ -32,8 +33,10 @@
 				<h:outputLabel value="url:" for="url"/>
 				<h:inputText id="url" value="#{documentsManager.node.metaData.url}"/>
 				<h:message for="url"/>
+				<c:if test="#{not empty documentsManager.content}">
 				<br/>
-				<fck:editor value="prueba" width="100%" toolbarSet="Basic"/>
+				<fck:editor value="#{documentsManager.content}" width="100%" toolbarSet="Basic"/>
+				</c:if>
 				<br/>
 				<h:commandButton action="#{documentsManager.save}">
 					<h:outputText value="Guardar"/>
