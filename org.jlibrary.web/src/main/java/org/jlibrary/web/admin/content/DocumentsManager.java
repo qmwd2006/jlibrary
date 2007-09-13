@@ -15,7 +15,7 @@ import org.jlibrary.core.entities.Document;
 import org.jlibrary.core.entities.DocumentMetaData;
 import org.jlibrary.core.entities.Node;
 import org.jlibrary.core.entities.Note;
-import org.jlibrary.core.entities.Node.Types;
+import org.jlibrary.core.entities.Types;
 import org.jlibrary.core.properties.DirectoryProperties;
 import org.jlibrary.core.properties.DocumentProperties;
 import org.jlibrary.core.properties.GenericProperties;
@@ -27,6 +27,7 @@ import org.jlibrary.core.repository.exception.RepositoryNotFoundException;
 import org.jlibrary.core.security.SecurityException;
 import org.jlibrary.web.admin.AbstractManager;
 import org.jlibrary.web.admin.Messages;
+import org.jlibrary.web.freemarker.HTMLUtils;
 
 public class DocumentsManager extends AbstractManager {
 	private ListDataModel list;
@@ -36,6 +37,7 @@ public class DocumentsManager extends AbstractManager {
 	private String id;
 	private UploadedFile file;
 	private byte[] data;
+	private String content;
 	
 	private Note note = new Note();
 	private String requestURL;
@@ -46,7 +48,6 @@ public class DocumentsManager extends AbstractManager {
 			if(parent==null){
 				parent=getRepository().getRoot();
 			}
-			
 			nodes=(List) jlibrary.getRepositoryService().findNodeChildren(getTicket(),parent.getId());
 			log.debug("Nodo"+parent.getId()+" subnodos:"+nodes.size());
 		} catch (RepositoryNotFoundException e) {
@@ -94,19 +95,48 @@ public class DocumentsManager extends AbstractManager {
 		if(node.isDirectory()){
 			ret= "directory$details";
 		}else if(node.isDocument()){
+			ret= "document$details";
 			if(file!=null){
 				getNode().setName(file.getName());
 				try {
 					data=file.getBytes();
-					log.debug(data.length);
 				} catch (IOException e) {
 					Messages.setMessageError(e);
 					log.error(e.getMessage());
 				}
+				
+				if(Types.getTypeForFile(file.getName()).equals(Types.HTML_DOCUMENT)){
+					content = HTMLUtils.extractBody(new String(data));
+				}else if(Types.getTypeForFile(file.getName()).equals(Types.HTML_DOCUMENT)){
+					content=new String(data);
+				}
+			}else{
+				content=getDocumentContent((Document) node);
 			}
-			ret= "document$details";
 		}
 		return ret;
+	}
+	
+	private String getDocumentContent(Document doc){
+		String body=null;
+		try {
+			byte[] content = jlibrary.getRepositoryService().loadDocumentContent(doc.getId(), getTicket());
+			if (doc.getTypecode().equals(Types.HTML_DOCUMENT)) {				
+				body = HTMLUtils.extractBody(new String(content));
+			} else if(doc.getTypecode().equals(Types.TEXT_DOCUMENT)) {
+				body= new String(content);			
+			}else {
+				//TODO: Implement binary content return
+				body= "";			
+			}			
+		} catch (RepositoryException e) {
+			Messages.setMessageError(e);
+			log.error(e.getMessage());
+		} catch (SecurityException e) {
+			Messages.setMessageError(e);
+			log.error(e.getMessage());
+		}
+		return body;
 	}
 	
 	public String createDirectory(){
@@ -187,9 +217,24 @@ public class DocumentsManager extends AbstractManager {
 			}
 		}else if(node.isDocument()){
 			Document document=(Document) node;
+			if(getContent()!=null && !"".equals(getContent())){
+				setData(content.getBytes());
+			}
 			if(node.getId()!=null){
 				log.debug("modifico");
 				properties=document.dumpProperties();
+				if(getData()!=null){
+					try {
+						properties.addProperty(DocumentProperties.DOCUMENT_CONTENT,getData());
+					} catch (PropertyNotFoundException e1) {
+						Messages.setMessageError(e1);
+						e1.printStackTrace();
+					} catch (InvalidPropertyTypeException e1) {
+						Messages.setMessageError(e1);
+						e1.printStackTrace();
+					}
+				}
+				
 				try {
 					jlibrary.getRepositoryService().updateDocument(getTicket(),(DocumentProperties)properties);
 				} catch (RepositoryException e) {
@@ -205,7 +250,6 @@ public class DocumentsManager extends AbstractManager {
 					properties.addProperty(DocumentProperties.DOCUMENT_NAME, document.getName());
 					properties.addProperty(DocumentProperties.DOCUMENT_DESCRIPTION, document.getDescription());
 					properties.addProperty(DocumentProperties.DOCUMENT_CONTENT, getData());
-					log.debug(getData().length);
 					properties.addProperty(DocumentProperties.DOCUMENT_CREATION_DATE, new Date());
 					properties.addProperty(DocumentProperties.DOCUMENT_CREATOR, getTicket().getUser().getId());
 					properties.addProperty(DocumentProperties.DOCUMENT_IMPORTANCE, Document.IMPORTANCE_MEDIUM);
@@ -214,7 +258,7 @@ public class DocumentsManager extends AbstractManager {
 					properties.addProperty(DocumentProperties.DOCUMENT_PARENT, parent.getId());
 					properties.addProperty(DocumentProperties.DOCUMENT_POSITION, 1);
 					properties.addProperty(DocumentProperties.DOCUMENT_TITLE, "asd");
-					properties.addProperty(DocumentProperties.DOCUMENT_TYPECODE, Types.TEXT);
+					properties.addProperty(DocumentProperties.DOCUMENT_TYPECODE, Types.getTypeForFile(file.getName()));
 					properties.addProperty(DocumentProperties.DOCUMENT_URL, document.getMetaData().getUrl());
 					properties.addProperty(DocumentProperties.DOCUMENT_AUTHOR, Author.UNKNOWN);
 					properties.addProperty(DocumentProperties.DOCUMENT_PATH, file.getName());
@@ -315,5 +359,13 @@ public class DocumentsManager extends AbstractManager {
 
 	public void setNote(Note note) {
 		this.note = note;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
 	}
 }
