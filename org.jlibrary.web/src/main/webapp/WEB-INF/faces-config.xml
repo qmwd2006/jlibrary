@@ -7,7 +7,7 @@
 <faces-config>
 	<application>
     	<view-handler>
-      	com.sun.facelets.FaceletViewHandler
+      	org.jlibrary.web.JLibraryViewHandler
     	</view-handler>    
   	</application>
 	<managed-bean>
@@ -137,13 +137,14 @@
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
-		<from-view-id>/admin/content/comments.jsp</from-view-id>
+		<from-view-id>*</from-view-id>
 		<navigation-case>
-			<from-outcome>content$ok</from-outcome>
+			<from-outcome>comment$ok</from-outcome>
 			<to-view-id>#{documentsManager.requestURL}</to-view-id>
+			<redirect/>
 		</navigation-case>
 		<navigation-case>
-			<from-outcome>content$back</from-outcome>
+			<from-outcome>comment$back</from-outcome>
 			<to-view-id>/admin/content/list.jsp</to-view-id>
 		</navigation-case>
 	</navigation-rule>	

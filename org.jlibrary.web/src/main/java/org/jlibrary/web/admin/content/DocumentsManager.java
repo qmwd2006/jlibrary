@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.faces.context.FacesContext;
 import javax.faces.model.ListDataModel;
 
 import org.apache.log4j.Logger;
@@ -162,8 +163,6 @@ public class DocumentsManager extends AbstractManager {
 		DocumentProperties properties=document.dumpProperties();
 		try {
 			jlibrary.getRepositoryService().updateDocument(getTicket(),(DocumentProperties)properties);
-			// Just testing
-			requestURL="http://localhost:8080/jlibrary";
 			return "comment$ok";
 		} catch (RepositoryException e) {
 			Messages.setMessageError(e);
@@ -367,5 +366,13 @@ public class DocumentsManager extends AbstractManager {
 
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	public String getRequestURL() {
+		return requestURL;
+	}
+
+	public void setRequestURL(String requestURL) {
+		this.requestURL = requestURL;
 	}
 }

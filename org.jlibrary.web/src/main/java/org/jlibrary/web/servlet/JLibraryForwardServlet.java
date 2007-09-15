@@ -1,5 +1,6 @@
 package org.jlibrary.web.servlet;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import javax.servlet.RequestDispatcher;
@@ -10,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jlibrary.core.entities.Node;
 import org.jlibrary.core.entities.Note;
@@ -108,12 +111,15 @@ public class JLibraryForwardServlet extends HttpServlet {
 		Ticket ticket = TicketService.getTicketService().getTicket(req, repositoryName);
 		RepositoryService repositoryService = 
 			JLibraryServiceFactory.getInstance(profile).getRepositoryService();
+		ByteArrayInputStream bais = null;
 		try {
 			Node node = repositoryService.findNode(ticket, id);
-			
+			byte[] content = repositoryService.loadDocumentContent(id, ticket);
+			bais = new ByteArrayInputStream(content);
 			// Now update the JSF documents manager with the requested node
 			DocumentsManager documentsManager = new DocumentsManager();
 			documentsManager.setNode(node);
+			documentsManager.setContent(IOUtils.toString(bais));
 			req.setAttribute("documentsManager", documentsManager);
 			RequestDispatcher dispatcher = 
 				req.getRequestDispatcher("/admin/content/document_form.jsf");
@@ -122,7 +128,13 @@ public class JLibraryForwardServlet extends HttpServlet {
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-		}	
+		} finally {
+			try {
+				bais.close();
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
+		}
 	}
 
 	private void addComment(HttpServletRequest req, HttpServletResponse resp) {
@@ -155,6 +167,7 @@ public class JLibraryForwardServlet extends HttpServlet {
 			DocumentsManager documentsManager = new DocumentsManager();
 			documentsManager.setNode(node);
 			documentsManager.setNote(new Note());
+			documentsManager.setRequestURL(req.getHeader("referer"));
 			req.setAttribute("documentsManager", documentsManager);
 			RequestDispatcher dispatcher = 
 				req.getRequestDispatcher("/admin/content/comments.jsf");
