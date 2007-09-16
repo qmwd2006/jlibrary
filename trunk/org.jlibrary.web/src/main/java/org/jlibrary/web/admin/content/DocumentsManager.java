@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.faces.context.FacesContext;
 import javax.faces.model.ListDataModel;
 
 import org.apache.log4j.Logger;
@@ -41,7 +40,6 @@ public class DocumentsManager extends AbstractManager {
 	private String content;
 	
 	private Note note = new Note();
-	private String requestURL;
 	
 	public ListDataModel getList(){
 		List nodes=new ArrayList();
@@ -366,13 +364,5 @@ public class DocumentsManager extends AbstractManager {
 
 	public void setContent(String content) {
 		this.content = content;
-	}
-
-	public String getRequestURL() {
-		return requestURL;
-	}
-
-	public void setRequestURL(String requestURL) {
-		this.requestURL = requestURL;
 	}
 }

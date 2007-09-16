@@ -33,17 +33,16 @@
 				<h:outputLabel value="url:" for="url"/>
 				<h:inputText id="url" value="#{documentsManager.node.metaData.url}"/>
 				<h:message for="url"/>
-				<c:if test="#{not empty documentsManager.content}">
 				<br/>
 				<fck:editor value="#{documentsManager.content}" width="100%" toolbarSet="Basic"/>
-				</c:if>
-				<br/>
+				<br/>				
 				<h:commandButton action="#{documentsManager.save}">
 					<h:outputText value="Guardar"/>
 				</h:commandButton>
 				<h:commandLink action="content$back" immediate="true">
 					<h:outputText value="Atras"/>
 				</h:commandLink>
+				<h:inputHidden value="#{documentsManager.referer}"/>
 			</h:form>
 		</ui:define>
 	</ui:composition>

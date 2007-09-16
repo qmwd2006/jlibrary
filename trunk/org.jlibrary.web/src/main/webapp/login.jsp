@@ -25,6 +25,7 @@
 				<h:message for="repository"/>
 				<br/>
 				<h:commandButton id="login" action="#{loginManager.login}" value="#{labels.entrar}"/>
+				<h:inputHidden value="#{loginManager.referer}"/>
 			</h:form>
 		</ui:define>
 	</ui:composition>

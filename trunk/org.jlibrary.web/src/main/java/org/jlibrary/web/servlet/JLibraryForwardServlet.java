@@ -4,15 +4,12 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jlibrary.core.entities.Node;
 import org.jlibrary.core.entities.Note;
@@ -80,12 +77,37 @@ public class JLibraryForwardServlet extends HttpServlet {
 			updateDocument(req,resp);
 		} else if (method.equals("comment")) {
 			addComment(req,resp);
+		} else if (method.equals("login")) {
+			login(req,resp);
 		} else {
 			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
 		
 		return;
+	}
+	
+	private void login(HttpServletRequest req, HttpServletResponse resp) {
+
+		String repositoryName = req.getParameter("repository");
+		if (repositoryName == null) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("Invalid update request. Repository name not found.");
+				resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				return;
+			}
+		}
+		req.setAttribute("referer", req.getHeader("referer"));
+
+		RequestDispatcher dispatcher = 
+				req.getRequestDispatcher("/login.jsf");
+		try {
+			dispatcher.forward(req, resp);
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 	private void updateDocument(HttpServletRequest req, HttpServletResponse resp) {
@@ -120,6 +142,7 @@ public class JLibraryForwardServlet extends HttpServlet {
 			DocumentsManager documentsManager = new DocumentsManager();
 			documentsManager.setNode(node);
 			documentsManager.setContent(IOUtils.toString(bais));
+			documentsManager.setReferer(req.getHeader("referer"));
 			req.setAttribute("documentsManager", documentsManager);
 			RequestDispatcher dispatcher = 
 				req.getRequestDispatcher("/admin/content/document_form.jsf");
@@ -167,7 +190,7 @@ public class JLibraryForwardServlet extends HttpServlet {
 			DocumentsManager documentsManager = new DocumentsManager();
 			documentsManager.setNode(node);
 			documentsManager.setNote(new Note());
-			documentsManager.setRequestURL(req.getHeader("referer"));
+			documentsManager.setReferer(req.getHeader("referer"));
 			req.setAttribute("documentsManager", documentsManager);
 			RequestDispatcher dispatcher = 
 				req.getRequestDispatcher("/admin/content/comments.jsf");
