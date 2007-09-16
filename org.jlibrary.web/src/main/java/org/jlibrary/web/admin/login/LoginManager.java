@@ -3,6 +3,9 @@ package org.jlibrary.web.admin.login;
 import java.io.IOException;
 import java.net.ConnectException;
 
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Logger;
 import org.jlibrary.core.entities.Credentials;
 import org.jlibrary.core.entities.Ticket;
@@ -24,6 +27,9 @@ public class LoginManager extends AbstractManager {
 		credentials=new Credentials();
 		credentials.setUser(User.ADMIN_NAME);
 		credentials.setPassword(User.DEFAULT_PASSWORD);
+		
+		HttpServletRequest request=(HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+		setReferer((String)request.getAttribute("referer"));
 	}
 	
 	public String login(){

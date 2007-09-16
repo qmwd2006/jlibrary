@@ -20,6 +20,7 @@ public abstract class AbstractManager {
 	protected static final JLibraryConfiguration jlibrary=JLibraryConfiguration.newInstance();
 	private static final String CURRENT_REPOSITORY="current";
 	private String repositoryName;
+	private String referer;
 	private Logger log=Logger.getLogger(AbstractManager.class);
 	public Ticket getTicket() {
 		HttpServletRequest request=(HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
@@ -66,5 +67,13 @@ public abstract class AbstractManager {
 	public void redirect(String path) throws IOException{
 		HttpServletResponse response=(HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
 		response.sendRedirect(response.encodeRedirectURL(path));
+	}
+
+	public String getReferer() {
+		return referer;
+	}
+
+	public void setReferer(String referer) {
+		this.referer = referer;
 	}
 }

@@ -17,7 +17,7 @@
 		<managed-property>
 	        <property-name>repositoryName</property-name>
 	        <value>#{param.repository}</value>
-    	</managed-property>
+    	</managed-property>   	
 	</managed-bean>
 	<managed-bean>
 		<managed-bean-name>categoriesManager</managed-bean-name>
@@ -46,7 +46,8 @@
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>login$ok</from-outcome>
-			<to-view-id>/admin/home.jsp</to-view-id>
+			<to-view-id>#{loginManager.referer}</to-view-id>
+			<redirect/>
 		</navigation-case>
 	</navigation-rule>
 	
@@ -129,23 +130,26 @@
 		<from-view-id>/admin/content/document_form.jsp</from-view-id>
 		<navigation-case>
 			<from-outcome>content$saved</from-outcome>
-			<to-view-id>/admin/content/list.jsp</to-view-id>
+			<to-view-id>#{documentsManager.referer}</to-view-id>
+			<redirect/>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>content$back</from-outcome>
-			<to-view-id>/admin/content/list.jsp</to-view-id>
+			<to-view-id>#{documentsManager.referer}</to-view-id>
+			<redirect/>
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
 		<from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>comment$ok</from-outcome>
-			<to-view-id>#{documentsManager.requestURL}</to-view-id>
+			<to-view-id>#{documentsManager.referer}</to-view-id>
 			<redirect/>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>comment$back</from-outcome>
-			<to-view-id>/admin/content/list.jsp</to-view-id>
+			<to-view-id>#{documentsManager.referer}</to-view-id>
+			<redirect/>
 		</navigation-case>
 	</navigation-rule>	
 </faces-config>
