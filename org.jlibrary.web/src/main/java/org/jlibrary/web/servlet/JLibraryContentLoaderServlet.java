@@ -184,7 +184,7 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 		
 		try {
 			String templatesDirectory = 
-				"/software/apache-tomcat-6.0.13-pruebas/webapps/jlibrary/templates/andreas";
+				"/software/apache-tomcat-6.0.13-pruebas/webapps/jlibrary/templates/terrafirma";
 			RepositoryContext context = 
 				new RepositoryContext(repository,templatesDirectory,null);
 			context.setTicket(ticket);
@@ -192,7 +192,7 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 			exporter.setRootURL(getRootURL(request));
 			exporter.setRepositoryURL(getRepositoryURL(request));
 			exporter.initExportProcess(context);
-			return exporter.exportDocument((Document)node, context);
+			return exporter.exportDocument((Document)node, context, "document.ftl");
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 			return "";
@@ -219,7 +219,7 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 		
 		try {
 			String templatesDirectory = 
-				"/software/apache-tomcat-6.0.13-pruebas/webapps/jlibrary/templates/andreas";
+				"/software/apache-tomcat-6.0.13-pruebas/webapps/jlibrary/templates/terrafirma";
 			RepositoryContext context = 
 				new RepositoryContext(repository,templatesDirectory,null);
 			context.setTicket(ticket);
@@ -227,7 +227,7 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 			exporter.setRootURL(getRootURL(request));
 			exporter.setRepositoryURL(getRepositoryURL(request));
 			exporter.initExportProcess(context);
-			return exporter.exportDirectory((Directory)node, context);				
+			return exporter.exportDirectory((Directory)node, context, "directory.ftl");				
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 			return "";
@@ -241,7 +241,7 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 		
 		try {
 			String templatesDirectory = 
-				"/software/apache-tomcat-6.0.13-pruebas/webapps/jlibrary/templates/andreas";
+				"/software/apache-tomcat-6.0.13-pruebas/webapps/jlibrary/templates/terrafirma";
 			RepositoryContext context = 
 				new RepositoryContext(repository,templatesDirectory,null);
 			context.setTicket(ticket);
@@ -249,7 +249,7 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 			exporter.setRootURL(getRootURL(request));
 			exporter.setRepositoryURL(getRepositoryURL(request));
 			exporter.initExportProcess(context);
-			return exporter.exportCategory(category, context);
+			return exporter.exportCategory(category, context, "category.ftl");
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 			return "";

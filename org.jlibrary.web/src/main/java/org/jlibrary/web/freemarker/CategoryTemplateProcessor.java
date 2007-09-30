@@ -52,6 +52,7 @@ public class CategoryTemplateProcessor implements FreemarkerTemplateProcessor {
 	private Category category;
 	private RepositoryContext context;
 	private FreemarkerExporter exporter;
+	private String ftl;
 
 	/**
 	 * Document template processor
@@ -62,17 +63,19 @@ public class CategoryTemplateProcessor implements FreemarkerTemplateProcessor {
 	 */
 	public CategoryTemplateProcessor(FreemarkerExporter exporter,
 									 Category category, 
-									 RepositoryContext context) {
+									 RepositoryContext context,
+									 String ftl) {
 
 		this.category = category;
 		this.context = context;
 		this.exporter = exporter;
+		this.ftl = ftl;
 	}
 	
 	public String processTemplate(FreemarkerFactory factory) throws ExportException {
 
 
-		return processTemplate(factory,factory.getPage("category.ftl"));		
+		return processTemplate(factory,factory.getPage(ftl));		
 	}	
 	
 	public String processTemplate(FreemarkerFactory factory,

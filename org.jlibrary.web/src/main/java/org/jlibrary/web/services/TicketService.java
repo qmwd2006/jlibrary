@@ -53,7 +53,7 @@ public class TicketService {
 		Ticket ticket = null;
 		
 		HttpSession session = request.getSession(true);
-		ticket = (Ticket)session.getAttribute(SESSION_TICKET_ID+repositoryName);
+		ticket = (Ticket)session.getAttribute((SESSION_TICKET_ID+repositoryName).toLowerCase());
 		if (ticket == null) {
 			// Obtain a guest ticket. Synchronization for obtaining guest tickets it is not very 
 			// critical so we don't bother adding synchronized blocks for this collection
@@ -75,6 +75,32 @@ public class TicketService {
 		return ticket;
 	}
 
+	/**
+	 * Adds a new Ticket to the user session. 
+	 * 
+	 * @param request HTTP Request object
+	 * @param repositoryName Repository to which we will add the user's ticket
+	 * @param ticket Ticket with user information.
+	 */
+	public void putTicket(HttpServletRequest request, String repositoryName, Ticket ticket) {
+		
+		HttpSession session = request.getSession(true);
+		session.setAttribute((SESSION_TICKET_ID+repositoryName).toLowerCase(),ticket);		
+	}
+	
+	/**
+	 * Removes a ticket from the user's session. This method will commonly be called when the 
+	 * user logs out from a repository and so the ticket must be removed from the user's space.
+	 * 
+	 * @param request HTTP request
+	 * @param repositoryName Repository name which the user is logging out
+	 */
+	public void removeTicket(HttpServletRequest request, String repositoryName) {
+		
+		HttpSession session = request.getSession(true);
+		session.removeAttribute((SESSION_TICKET_ID+repositoryName).toLowerCase());
+	}
+	
 	private Ticket createGuestSession(HttpSession session, String repositoryName) {
 		Ticket ticket;
 		ticket = createGuestTicket(repositoryName);
@@ -83,7 +109,7 @@ public class TicketService {
 			return null;
 		}	
 		guestTickets.put(repositoryName, ticket);
-		session.setAttribute(SESSION_TICKET_ID+repositoryName, ticket);
+		session.setAttribute((SESSION_TICKET_ID+repositoryName).toLowerCase(), ticket);
 		return ticket;
 	}
 	
