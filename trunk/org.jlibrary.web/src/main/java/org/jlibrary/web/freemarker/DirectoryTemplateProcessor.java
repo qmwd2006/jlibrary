@@ -57,6 +57,7 @@ public class DirectoryTemplateProcessor implements FreemarkerTemplateProcessor {
 	private RepositoryContext context;
 	private FreemarkerExporter exporter;
 	private Document indexDocument;
+	private String ftl;
 
 	/**
 	 * Document template processor
@@ -64,19 +65,22 @@ public class DirectoryTemplateProcessor implements FreemarkerTemplateProcessor {
 	 * @param exporter Main freemarker template exporter
 	 * @param directory Directory to process
 	 * @param context Context repository for this processor
+	 * @param ftl Template file
 	 */
 	public DirectoryTemplateProcessor(FreemarkerExporter exporter,
 									  Directory directory, 
-									  RepositoryContext context) {
+									  RepositoryContext context,
+									  String ftl) {
 
 		this.directory = directory;
 		this.context = context;
 		this.exporter = exporter;
+		this.ftl = ftl;
 	}
 	
 	public String processTemplate(FreemarkerFactory factory) throws ExportException {
 
-		return processTemplate(factory,factory.getPage("directory.ftl"));
+		return processTemplate(factory,factory.getPage(ftl));
 	}	
 	
 
@@ -184,7 +188,7 @@ public class DirectoryTemplateProcessor implements FreemarkerTemplateProcessor {
 			}
 		}
 		
-		return new DocumentTemplateProcessor(exporter,indexDocument,context).loadContent();
+		return new DocumentTemplateProcessor(exporter,indexDocument,context,"document.ftl").loadContent();
 	}
 	
 	private boolean hasIndexDocument() {

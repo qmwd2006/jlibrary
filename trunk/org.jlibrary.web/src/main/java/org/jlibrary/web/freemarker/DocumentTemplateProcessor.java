@@ -38,7 +38,6 @@ import org.jlibrary.core.entities.User;
 import org.jlibrary.core.factory.JLibraryServiceFactory;
 import org.jlibrary.core.repository.RepositoryService;
 import org.jlibrary.web.WebConstants;
-import org.jlibrary.web.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,6 +55,7 @@ public class DocumentTemplateProcessor implements FreemarkerTemplateProcessor {
 	private FreemarkerExporter exporter;
 
 	private ResourceBundle bundle;
+	private String ftl;
 	
 
 	/**
@@ -64,19 +64,22 @@ public class DocumentTemplateProcessor implements FreemarkerTemplateProcessor {
 	 * @param exporter Main freemarker template exporter
 	 * @param document Document to process
 	 * @param context Context repository for this processor
+	 * @param ftl Template to use
 	 */
 	public DocumentTemplateProcessor(FreemarkerExporter exporter,
 									 Document document, 
-									 RepositoryContext context) {
+									 RepositoryContext context,
+									 String ftl) {
 
 		this.document = document;
 		this.context = context;
 		this.exporter = exporter;
+		this.ftl = ftl;
 	}
 	
 	public String processTemplate(FreemarkerFactory factory) throws ExportException {
 				
-		return processTemplate(factory,factory.getPage("document.ftl"));
+		return processTemplate(factory,factory.getPage(ftl));
 		
 	}
 	
@@ -116,11 +119,6 @@ public class DocumentTemplateProcessor implements FreemarkerTemplateProcessor {
 		page.expose(FreemarkerVariables.LOCATION_URL, exporter.getLocationURL(document));
 		page.expose(FreemarkerVariables.PRINT_FILE, getPrintFile(document));
 		
-		if (document.getMetaData().getAuthor().equals(Author.UNKNOWN)) {
-			page.expose(FreemarkerVariables.PAGE_AUTHOR,Messages.getMessage(Author.UNKNOWN_NAME));
-		} else {
-			page.expose(FreemarkerVariables.PAGE_AUTHOR, document.getMetaData().getAuthor().getName());
-		}
 		page.expose(FreemarkerVariables.PAGE_KEYWORDS,document.getMetaData().getKeywords());
 		
 		page.expose(FreemarkerVariables.DOCUMENT_CATEGORIES, loadCategories());
@@ -136,6 +134,10 @@ public class DocumentTemplateProcessor implements FreemarkerTemplateProcessor {
 		if (document.getMetaData().getAuthor().isUnknown()) {
 			page.expose(FreemarkerVariables.NODE_CREATOR, 
 						bundle.getString(Author.UNKNOWN_NAME));
+			page.expose(FreemarkerVariables.PAGE_AUTHOR, 
+					bundle.getString(Author.UNKNOWN_NAME));
+			page.expose(FreemarkerVariables.NODE_AUTHOR, 
+					bundle.getString(Author.UNKNOWN_NAME));			
 		} else {
 			String authorName = document.getMetaData().getAuthor().getName();
 			if (authorName.equals(User.ADMIN_NAME) || 
@@ -143,14 +145,8 @@ public class DocumentTemplateProcessor implements FreemarkerTemplateProcessor {
 				authorName = bundle.getString(authorName);
 			}
 			page.expose(FreemarkerVariables.NODE_CREATOR, authorName);
-		}
-		
-		if (document.getMetaData().getAuthor().isUnknown()) {
-			page.expose(FreemarkerVariables.NODE_AUTHOR, 
-						Messages.getMessage(Author.UNKNOWN_NAME));
-		} else {
-			page.expose(FreemarkerVariables.NODE_AUTHOR, 
-					    document.getMetaData().getAuthor().getName());
+			page.expose(FreemarkerVariables.NODE_AUTHOR, authorName);
+			page.expose(FreemarkerVariables.PAGE_AUTHOR, authorName);
 		}
 		
 		page.expose(FreemarkerVariables.DOCUMENT_UPDATE_DATE, 

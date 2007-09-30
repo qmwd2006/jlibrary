@@ -61,16 +61,16 @@ public class BaseExporter {
 	public void endExportProcess(RepositoryContext context) 
 		throws ExportException {}
 	
-	public String exportDocument(Document document, RepositoryContext context) 
+	public String exportDocument(Document document, RepositoryContext context, String ftl) 
 		throws ExportException {return "";}
 	
 	public String exportResource(ResourceNode resource, RepositoryContext context) 
 		throws ExportException {return "";}
 
-	public String exportCategory(Category category, RepositoryContext context) 
+	public String exportCategory(Category category, RepositoryContext context, String ftl) 
 		throws ExportException {return "";}
 	
-	public String exportDirectory(Directory directory, RepositoryContext context) 
+	public String exportDirectory(Directory directory, RepositoryContext context, String ftl) 
 		throws ExportException {return "";}
 	
 	public void exportRepository(RepositoryContext context) 

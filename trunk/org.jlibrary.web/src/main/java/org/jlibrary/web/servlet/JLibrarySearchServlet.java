@@ -123,7 +123,7 @@ public class JLibrarySearchServlet extends HttpServlet {
 		
 		try {
 			String templatesDirectory = 
-				"/software/apache-tomcat-6.0.13-pruebas/webapps/jlibrary/templates/andreas";
+				"/software/apache-tomcat-6.0.13-pruebas/webapps/jlibrary/templates/terrafirma";
 			RepositoryContext context = 
 				new RepositoryContext(repository,templatesDirectory,null);
 			context.setTicket(ticket);

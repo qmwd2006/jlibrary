@@ -82,9 +82,10 @@ public class FreemarkerExporter extends BaseExporter {
 	}
 	
 	public String exportDocument(Document document, 
-							   RepositoryContext context) throws ExportException {
+							     RepositoryContext context,
+							     String ftl) throws ExportException {
 		
-		return new DocumentTemplateProcessor(this,document,context).processTemplate(factory);
+		return new DocumentTemplateProcessor(this,document,context,ftl).processTemplate(factory);
 	}
 	
 	public String exportResource(ResourceNode resource, 
@@ -94,15 +95,17 @@ public class FreemarkerExporter extends BaseExporter {
 	}	
 	
 	public String exportDirectory(Directory directory, 
-							    RepositoryContext context) throws ExportException {
+							      RepositoryContext context,
+							      String ftl) throws ExportException {
 
-		return new DirectoryTemplateProcessor(this,directory,context).processTemplate(factory);
+		return new DirectoryTemplateProcessor(this,directory,context,ftl).processTemplate(factory);
 	}
 	
 	public String exportCategory(Category category, 
-							     RepositoryContext context) throws ExportException {
+							     RepositoryContext context,
+							     String ftl) throws ExportException {
 
-		return new CategoryTemplateProcessor(this,category,context).processTemplate(factory);
+		return new CategoryTemplateProcessor(this,category,context, ftl).processTemplate(factory);
 	}
 	
 	public void filterRepository(RepositoryContext context) throws ExportException {
@@ -114,6 +117,12 @@ public class FreemarkerExporter extends BaseExporter {
 									  RepositoryContext context) throws ExportException {
 		
 		return new SearchTemplateProcessor(this,results,context).processTemplate(factory);
+	}
+	
+	public String export(RepositoryContext context) throws ExportException {
+
+		return new GenericTemplateProcessor(this,context).processTemplate(factory);
+
 	}
 	
 	/**
