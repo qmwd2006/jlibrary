@@ -867,16 +867,20 @@ public class JCRRepositoryService implements RepositoryService {
 			path = JLibraryConstants.JLIBRARY_ROOT + "/" + path;
 		}
 		try {
-			javax.jcr.Node node = session.getRootNode().getNode(path);
-			javax.jcr.Node parent = node.getParent();
-			String uuid = null;
-			if (parent.isNodeType(JCRConstants.JCR_REFERENCEABLE))
-				uuid = parent.getUUID();
 
+			javax.jcr.Node root = JCRUtils.getRootNode(session); 			
+			javax.jcr.Node node = session.getRootNode().getNode(path);
 			if (!JCRSecurityService.canRead(node, ticket.getUser().getId())) {
 				throw new SecurityException(SecurityException.NOT_ENOUGH_PERMISSIONS);
 			}
-			javax.jcr.Node root = JCRUtils.getRootNode(session); 
+
+			javax.jcr.Node parent = node.getParent();
+			String uuid = null;
+			if (parent.isNodeType(JCRConstants.JCR_REFERENCEABLE)) {
+				uuid = parent.getUUID();
+			} else {
+				uuid = root.getUUID(); 
+			}
 			
 			if (node.isNodeType(JLibraryConstants.DOCUMENT_MIXIN)) {
 				return JCRAdapter.createDocument(node,
@@ -916,14 +920,19 @@ public class JCRRepositoryService implements RepositoryService {
 		try {
 			javax.jcr.Node node = session.getNodeByUUID(id);
 			javax.jcr.Node parent = node.getParent();
+			javax.jcr.Node root = JCRUtils.getRootNode(session); 
+			
 			String uuid = null;
-			if (parent.isNodeType(JCRConstants.JCR_REFERENCEABLE))
+			if (parent.isNodeType(JCRConstants.JCR_REFERENCEABLE)) {
 				uuid = parent.getUUID();
+			} else {
+				uuid = root.getUUID(); 
+			}
 
 			if (!JCRSecurityService.canRead(node, ticket.getUser().getId())) {
 				throw new SecurityException(SecurityException.NOT_ENOUGH_PERMISSIONS);
 			}
-			javax.jcr.Node root = JCRUtils.getRootNode(session); 
+			
 			
 			if (node.isNodeType(JLibraryConstants.DOCUMENT_MIXIN)) {
 				return JCRAdapter.createDocument(node,
