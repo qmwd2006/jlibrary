@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.jlibrary.core.entities.Repository;
+import org.jlibrary.core.entities.SearchResult;
 import org.jlibrary.core.entities.ServerProfile;
 import org.jlibrary.core.entities.Ticket;
 import org.jlibrary.core.factory.JLibraryServiceFactory;
@@ -105,8 +106,8 @@ public class JLibrarySearchServlet extends HttpServlet {
 			repository.setServerProfile(new LocalServerProfile());
 			repository.setTicket(ticket);
 			
-			Collection results = searchService.search(ticket, text, type, init, end);
-			String output = exportResults(req,ticket,repository,results);
+			SearchResult result = searchService.search(ticket, text, type, init, end);
+			String output = exportResults(req,ticket,repository,result);
 			resp.getOutputStream().write(output.getBytes());
 			resp.flushBuffer();
 		} catch (Exception e) {
@@ -119,7 +120,7 @@ public class JLibrarySearchServlet extends HttpServlet {
 	private String exportResults(HttpServletRequest request, 
 								  Ticket ticket, 
 								  Repository repository, 
-								  Collection results) {
+								  SearchResult result) {
 		
 		try {
 			String templatesDirectory = 
@@ -133,7 +134,7 @@ public class JLibrarySearchServlet extends HttpServlet {
 			exporter.setRepositoryURL(getRepositoryURL(request));
 			
 			exporter.initExportProcess(context);
-			return exporter.exportSearchResults(results, context);
+			return exporter.exportSearchResults(result, context);
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 			return "";

@@ -32,6 +32,7 @@ import org.jlibrary.core.entities.Directory;
 import org.jlibrary.core.entities.Document;
 import org.jlibrary.core.entities.Node;
 import org.jlibrary.core.entities.ResourceNode;
+import org.jlibrary.core.entities.SearchResult;
 import org.jlibrary.core.util.FileUtils;
 
 /**
@@ -113,10 +114,10 @@ public class FreemarkerExporter extends BaseExporter {
 		context.applyFilter(filter);
 	}
 	
-	public String exportSearchResults(Collection results, 
+	public String exportSearchResults(SearchResult result, 
 									  RepositoryContext context) throws ExportException {
 		
-		return new SearchTemplateProcessor(this,results,context).processTemplate(factory);
+		return new SearchTemplateProcessor(this,result,context).processTemplate(factory);
 	}
 	
 	public String export(RepositoryContext context) throws ExportException {
