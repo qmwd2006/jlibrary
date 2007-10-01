@@ -25,6 +25,7 @@ package org.jlibrary.web.freemarker;
 import java.util.Collection;
 import java.util.Date;
 
+import org.jlibrary.core.entities.SearchResult;
 import org.jlibrary.core.search.SearchResultSet;
 import org.jlibrary.web.content.WordCounter;
 import org.slf4j.Logger;
@@ -39,7 +40,7 @@ public class SearchTemplateProcessor implements FreemarkerTemplateProcessor {
 
 	static Logger logger = LoggerFactory.getLogger(SearchTemplateProcessor.class);
 	
-	private Collection results;
+	private SearchResult result;
 	private RepositoryContext context;
 	private FreemarkerExporter exporter;
 
@@ -51,10 +52,10 @@ public class SearchTemplateProcessor implements FreemarkerTemplateProcessor {
 	 * @param context Context repository for this processor
 	 */
 	public SearchTemplateProcessor(FreemarkerExporter exporter,
-								   Collection results, 
+								   SearchResult result, 
 								   RepositoryContext context) {
 
-		this.results = results;
+		this.result = result;
 		this.context = context;
 		this.exporter = exporter;
 	}
@@ -69,7 +70,7 @@ public class SearchTemplateProcessor implements FreemarkerTemplateProcessor {
 								  Page page) throws ExportException {
 		
 		page.expose(FreemarkerVariables.REPOSITORY,context.getRepository());
-		page.expose(FreemarkerVariables.SEARCH_RESULTS, results);		
+		page.expose(FreemarkerVariables.SEARCH_RESULTS, result);
 		page.expose(FreemarkerVariables.TICKET, context.getTicket());
 		
 		page.expose(FreemarkerVariables.DATE, new Date());

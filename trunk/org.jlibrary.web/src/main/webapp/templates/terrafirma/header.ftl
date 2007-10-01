@@ -26,8 +26,10 @@
 		  <form method="post" action="${root_url}/search">
 				<div id="search">
 					<input type="text" class="text" maxlength="64" name="text" />
-					<input type="hidden" name="repository" value="${repository.name}"/>
 					<input type="submit" class="submit" value="Search" />
+					<input type="hidden" name="repository" value="${repository.name}"/>
+					<input type="hidden" name="init" value="0"/>
+					<input type="hidden" name="end" value="10"/>
 				</div>
 			</form>
 
