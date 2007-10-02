@@ -35,6 +35,7 @@ import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.RowIterator;
 
+import org.jlibrary.core.entities.SearchResult;
 import org.jlibrary.core.entities.Ticket;
 import org.jlibrary.core.search.SearchException;
 import org.jlibrary.core.search.SearchHit;
@@ -67,15 +68,15 @@ public class JCRSearchService implements SearchService {
 							 String phrase, 
 							 String searchType) throws SearchException {
 
-		return search(ticket,phrase,searchType,NO_PAGING,NO_PAGING);
+		return search(ticket,phrase,searchType,NO_PAGING,NO_PAGING).getItems();
 	}
 	
 	//TODO: Test and improve XPath queries
-	public Collection search(Ticket ticket, 
-							 String phrase, 
-							 String searchType,
-							 int init,
-							 int end) throws SearchException {
+	public SearchResult search(Ticket ticket, 
+							   String phrase, 
+							   String searchType,
+							   int init,
+							   int end) throws SearchException {
 		
 
 		String query = null;
@@ -100,13 +101,13 @@ public class JCRSearchService implements SearchService {
 	public Collection search(Ticket ticket, 
 			 				 String xpathQuery) throws SearchException {
 
-		return search(ticket,xpathQuery,NO_PAGING,NO_PAGING);		
+		return search(ticket,xpathQuery,NO_PAGING,NO_PAGING).getItems();		
 	}
 	
-	public Collection search(Ticket ticket, 
-			 				 String xpathQuery,
-			 				 int init,
-			 				 int end) throws SearchException {
+	public SearchResult search(Ticket ticket, 
+			 				   String xpathQuery,
+			 				   int init,
+			 				   int end) throws SearchException {
 
 		String query = "//element(*,nt:file)" + xpathQuery; 
 		
@@ -118,13 +119,17 @@ public class JCRSearchService implements SearchService {
 		return search(ticket,session,query,init,end);
 	}	
 	
-	private Collection search(Ticket ticket,
-							  javax.jcr.Session session, 
-			 				  String strQuery,
-			 				  int init,
-			 				  int end) throws SearchException {
+	private SearchResult search(Ticket ticket,
+							  	javax.jcr.Session session, 
+							  	String strQuery,
+							  	int init,
+							  	int end) throws SearchException {
 
 		Set results = new TreeSet();
+		SearchResult result = new SearchResult();
+		result.setItems(results);
+		result.setInit(init);
+		result.setEnd(end);
 		try {
 			Workspace workspace = session.getWorkspace();
 			QueryManager queryManager = workspace.getQueryManager();
@@ -136,10 +141,11 @@ public class JCRSearchService implements SearchService {
 
 			javax.jcr.query.Query query = 
 				queryManager.createQuery(statement,javax.jcr.query.Query.XPATH);
-			QueryResult result = query.execute();
-
-			RowIterator it = result.getRows();
-			NodeIterator nodeIterator = result.getNodes();
+			QueryResult queryResult = query.execute();
+			result.setSize(queryResult.getNodes().getSize());
+			
+			RowIterator it = queryResult.getRows();
+			NodeIterator nodeIterator = queryResult.getNodes();
 			if (init != NO_PAGING) {
 				it.skip(init);
 				nodeIterator.skip(init);
@@ -189,12 +195,12 @@ public class JCRSearchService implements SearchService {
 			results = searchAlgorithm.filterSearchResults(results);
 		} catch (InvalidQueryException iqe) {
 			logger.error(iqe.getMessage());
-			return results;
+			return result;
 		} catch (javax.jcr.RepositoryException e) {
 			logger.error(e.getMessage(),e);
 			throw new SearchException(e);
 		}
 
-		return results;
+		return result;
 	}	
 }
