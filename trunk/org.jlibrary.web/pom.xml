@@ -97,7 +97,13 @@
       <groupId>fck-faces</groupId>
       <artifactId>fck-faces</artifactId>
       <version>1.7.26</version>
-    </dependency>    
+    </dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring</artifactId>
+		<version>2.0</version>
+		<scope>compile</scope>
+	</dependency>
     <!--  Maven 2 WAR overlay -->
     <dependency>
       <groupId>jlibrary</groupId>

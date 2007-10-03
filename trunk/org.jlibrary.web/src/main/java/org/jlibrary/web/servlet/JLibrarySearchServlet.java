@@ -1,10 +1,8 @@
 package org.jlibrary.web.servlet;
 
 import java.io.IOException;
-import java.util.Collection;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -23,7 +21,7 @@ import org.jlibrary.web.freemarker.RepositoryContext;
 import org.jlibrary.web.services.TicketService;
 
 @SuppressWarnings("serial")
-public class JLibrarySearchServlet extends HttpServlet {
+public class JLibrarySearchServlet extends JLibraryServlet {
 
 	private static Logger logger = Logger.getLogger(JLibrarySearchServlet.class);
 
@@ -123,10 +121,10 @@ public class JLibrarySearchServlet extends HttpServlet {
 								  SearchResult result) {
 		
 		try {
-			String templatesDirectory = 
-				"/software/apache-tomcat-6.0.13-pruebas/webapps/jlibrary/templates/terrafirma";
+//			String templatesDirectory = 
+//				"/software/apache-tomcat-6.0.13-pruebas/webapps/jlibrary/templates/terrafirma";
 			RepositoryContext context = 
-				new RepositoryContext(repository,templatesDirectory,null);
+				new RepositoryContext(repository,getTemplate(),null);
 			context.setTicket(ticket);
 			FreemarkerExporter exporter = new FreemarkerExporter();
 			

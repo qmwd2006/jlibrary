@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" 
+  "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+   <bean id="template" class="org.jlibrary.web.services.TemplateService">
+         <property name="templateDirectory" value="/javaconganas/jlibrary/org.jlibrary.web/src/main/webapp/templates/terrafirma"/>
+         <!-- <property name="templateDirectory" value="/software/apache-tomcat-6.0.13-pruebas/webapps/jlibrary/templates/terrafirma"/> -->
+   </bean>
+</beans>
