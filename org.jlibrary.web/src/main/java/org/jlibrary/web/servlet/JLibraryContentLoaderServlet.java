@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
 import org.apache.log4j.Logger;
+import org.jlibrary.core.config.JLibraryProperties;
 import org.jlibrary.core.entities.Category;
 import org.jlibrary.core.entities.Directory;
 import org.jlibrary.core.entities.Document;
@@ -30,10 +31,15 @@ import org.jlibrary.core.security.SecurityException;
 import org.jlibrary.core.util.FileUtils;
 import org.jlibrary.web.freemarker.FreemarkerExporter;
 import org.jlibrary.web.freemarker.RepositoryContext;
+import org.jlibrary.web.services.TemplateService;
 import org.jlibrary.web.services.TicketService;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 
 @SuppressWarnings("serial")
-public class JLibraryContentLoaderServlet extends HttpServlet {
+public class JLibraryContentLoaderServlet extends JLibraryServlet {
 
 	private static Logger logger = Logger.getLogger(JLibraryContentLoaderServlet.class);
 
@@ -183,10 +189,10 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 							      Node node) {
 		
 		try {
-			String templatesDirectory = 
-				"/software/apache-tomcat-6.0.13-pruebas/webapps/jlibrary/templates/terrafirma";
+//			String templatesDirectory = JLibraryProperties.getProperty(JLibraryProperties.JLIBRARY_TEMPLATES);
+//				"/javaconganas/jlibrary/org.jlibrary.web/src/main/webapp/templates/terrafirma";
 			RepositoryContext context = 
-				new RepositoryContext(repository,templatesDirectory,null);
+				new RepositoryContext(repository,getTemplate(),null);
 			context.setTicket(ticket);
 			FreemarkerExporter exporter = new FreemarkerExporter();
 			exporter.setRootURL(getRootURL(request));
@@ -218,10 +224,10 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 								   Node node) {
 		
 		try {
-			String templatesDirectory = 
-				"/software/apache-tomcat-6.0.13-pruebas/webapps/jlibrary/templates/terrafirma";
+//			String templatesDirectory = JLibraryProperties.getProperty(JLibraryProperties.JLIBRARY_TEMPLATES);
+//				"/javaconganas/jlibrary/org.jlibrary.web/src/main/webapp/templates/terrafirma";
 			RepositoryContext context = 
-				new RepositoryContext(repository,templatesDirectory,null);
+				new RepositoryContext(repository,getTemplate(),null);
 			context.setTicket(ticket);
 			FreemarkerExporter exporter = new FreemarkerExporter();
 			exporter.setRootURL(getRootURL(request));
@@ -240,10 +246,10 @@ public class JLibraryContentLoaderServlet extends HttpServlet {
 								  Category category) {
 		
 		try {
-			String templatesDirectory = 
-				"/software/apache-tomcat-6.0.13-pruebas/webapps/jlibrary/templates/terrafirma";
+//			String templatesDirectory = JLibraryProperties.getProperty(JLibraryProperties.JLIBRARY_TEMPLATES);
+//				"/javaconganas/jlibrary/org.jlibrary.web/src/main/webapp/templates/terrafirma";
 			RepositoryContext context = 
-				new RepositoryContext(repository,templatesDirectory,null);
+				new RepositoryContext(repository,getTemplate(),null);
 			context.setTicket(ticket);
 			FreemarkerExporter exporter = new FreemarkerExporter();
 			exporter.setRootURL(getRootURL(request));
