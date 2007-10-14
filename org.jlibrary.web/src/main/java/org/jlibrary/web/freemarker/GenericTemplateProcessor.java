@@ -38,6 +38,7 @@ public class GenericTemplateProcessor implements FreemarkerTemplateProcessor {
 	
 	private RepositoryContext context;
 	private FreemarkerExporter exporter;
+	private String template;
 
 	/**
 	 * Document template processor
@@ -46,15 +47,17 @@ public class GenericTemplateProcessor implements FreemarkerTemplateProcessor {
 	 * @param context Context repository for this processor
 	 */
 	public GenericTemplateProcessor(FreemarkerExporter exporter, 
-								   RepositoryContext context) {
+								    RepositoryContext context,
+								    String template) {
 
 		this.context = context;
 		this.exporter = exporter;
+		this.template = template;
 	}
 	
 	public String processTemplate(FreemarkerFactory factory) throws ExportException {
 
-		return processTemplate(factory,factory.getPage("search.ftl"));
+		return processTemplate(factory,factory.getPage(template));
 	}	
 	
 
@@ -73,7 +76,8 @@ public class GenericTemplateProcessor implements FreemarkerTemplateProcessor {
 		page.expose(FreemarkerVariables.REPOSITORY_URL,repositoryURL);
 		page.expose(FreemarkerVariables.CATEGORIES_ROOT_URL,repositoryURL+"/categories");
 		page.expose(FreemarkerVariables.LOCATION_URL, "");
-
+		page.expose(FreemarkerVariables.PAGE_KEYWORDS, "jlibrary");
+		
 		return page.getAsString();
 	}
 }
