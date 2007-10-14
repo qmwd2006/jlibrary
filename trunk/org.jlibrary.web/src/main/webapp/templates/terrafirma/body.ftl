@@ -16,7 +16,7 @@
 			<h3>Comments</h3>
 			<#if document.notes?size != 0>
       <#list document.notes as note>
-          <p><strong>${note.date?datetime} ${username(note.creator)} says:</strong><p>
+          <p><strong>${note.date?datetime} ${username(document.repository,note.creator)} says:</strong><p>
           <p>${note.note}</p>
       </#list>
   		</#if>
@@ -60,7 +60,7 @@
   	  <div id ="comments"></div>
       <h2>Comments</h2>
       <#list document.notes as note>
-          <p><strong>${note.date?date} ${username(note.creator)} says:</strong> ${note.note}</p>
+          <p><strong>${note.date?date} ${username(document.repository,note.creator)} says:</strong> ${note.note}</p>
           <br/>
       </#list>
   </#if>
