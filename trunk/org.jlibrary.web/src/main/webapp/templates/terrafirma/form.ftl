@@ -23,6 +23,40 @@
 	</div>			
 </#macro>
 
+<#macro register>
+  <div class="post">
+	  <div class="header">
+		  <h3>Registration form</h3>
+		</div>
+		<div class="content">
+  		<form class="sheet" action="${root_url}/forward">
+				<fieldset>
+					<legend>Enter your details</legend>						
+  				<label for="username">Username</label>				
+					<input type="text" name="username"/><br/>
+					<label for="password">Password</label>
+					<input type="password" name="password"/><br/>							
+  				<label for="email">Email address</label>				
+					<input type="text" name="email"/><br/>
+					<label for="name">First name</label>
+					<input type="text" name="name"/><br/>
+					<label for="surname">Surname</label>
+					<input type="text" name="surname"/><br/>			
+					
+					<label for="j_captcha_response">Enter the text below</label>
+					<input type='text' name='j_captcha_response' value=''>
+					<img src="${root_url}/jcaptcha">
+					<button type="submit">Send</button>
+					<button type="reset">Cancel</button>
+					<input type="hidden" name="repository" value="${repository.name}"/>
+					<input type="hidden" name="method" value="register"/>					
+				</fieldset>
+			</form>
+			<p>The password will be sent to your email address.</p>
+		</div>			
+	</div>			
+</#macro>
+
 <#macro directoryCreateForm>
   <div class="post">
 	  <div class="header">
