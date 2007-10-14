@@ -56,16 +56,22 @@ public class UserMethod implements TemplateMethodModel {
 	
 	public Object exec(List args) throws TemplateModelException {
 
-		if (args.size() != 1) {
-            throw new TemplateModelException("Wrong arguments");
+		if (args.size() != 2) {
+            throw new TemplateModelException("Wrong arguments. Correct usage is UserMethod(repositoryId,userId)");
         }
 
-		Object arg = args.get(0);
-		if (!(arg instanceof String)) {
-			throw new TemplateModelException("Argument should be a string");
+		Object arg1 = args.get(0);
+		if (!(arg1 instanceof String)) {
+			throw new TemplateModelException("First argument should be a string");
 		}
-		String id = (String)arg;
-		Member member = MembersRegistry.getInstance().getMember(id);
+		Object arg2 = args.get(1);
+		if (!(arg2 instanceof String)) {
+			throw new TemplateModelException("Second argument should be a string");
+		}
+
+		String id = (String)arg2;
+		String repositoryId = (String)arg1;
+		Member member = MembersRegistry.getInstance().getUser(repositoryId,id);
 		ResourceBundle bundle = ResourceBundle.getBundle("messages", Locale.getDefault());
 		if (member.equals(User.ADMIN_USER)) {
 			return bundle.getString(User.ADMIN_NAME);
