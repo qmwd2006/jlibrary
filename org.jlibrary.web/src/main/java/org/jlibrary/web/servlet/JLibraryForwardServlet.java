@@ -5,10 +5,10 @@ import java.util.Date;
 import java.util.HashSet;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.jackrabbit.util.Text;
 import org.apache.log4j.Logger;
 import org.jlibrary.core.entities.Author;
@@ -30,11 +30,17 @@ import org.jlibrary.core.profiles.LocalServerProfile;
 import org.jlibrary.core.properties.CategoryProperties;
 import org.jlibrary.core.properties.DirectoryProperties;
 import org.jlibrary.core.properties.DocumentProperties;
+import org.jlibrary.core.properties.UserProperties;
 import org.jlibrary.core.repository.RepositoryService;
 import org.jlibrary.core.repository.exception.AuthorNotFoundException;
+import org.jlibrary.core.security.SecurityException;
+import org.jlibrary.core.security.SecurityService;
+import org.jlibrary.web.captcha.CaptchaService;
 import org.jlibrary.web.freemarker.FreemarkerExporter;
 import org.jlibrary.web.freemarker.RepositoryContext;
 import org.jlibrary.web.services.TicketService;
+
+import com.octo.captcha.service.CaptchaServiceException;
 
 /**
  * This servlet will forward create/update requests to admin JSF application
@@ -92,6 +98,10 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 			addComment(req,resp);
 		} else if (method.equals("login")) {
 			login(req,resp);
+		} else if (method.equals("signin")) {
+			signin(req,resp);
+		} else if (method.equals("register")) {
+			register(req,resp);
 		} else if (method.equals("logout")) {
 			logout(req,resp);
 		} else if (method.equals("updateform")) {
@@ -104,6 +114,41 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 		}
 		
 		return;
+	}
+	
+	private void signin(HttpServletRequest req, HttpServletResponse resp) {
+		
+		String repositoryName;
+		try {
+			repositoryName = getField(req, resp, "repository");
+		} catch (FieldNotFoundException e) {
+			return;
+		}
+		
+		Ticket ticket = TicketService.getTicketService().getTicket(req, repositoryName);
+		RepositoryService repositoryService = 
+			JLibraryServiceFactory.getInstance(profile).getRepositoryService();
+				
+		try {
+			Repository repository = repositoryService.findRepository(repositoryName, ticket);
+			repository.setServerProfile(profile);
+
+			RepositoryContext context = 
+				new RepositoryContext(repository,getTemplate(),null);
+			context.setTicket(ticket);
+			FreemarkerExporter exporter = new FreemarkerExporter();
+			
+			exporter.setRootURL(getRootURL(req));
+			exporter.setRepositoryURL(getRepositoryURL(req, repositoryName));
+			
+			exporter.initExportProcess(context);
+			resp.getOutputStream().write(
+					exporter.export(context, "register.ftl").getBytes());
+			resp.getOutputStream().flush();
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		}		
 	}
 	
 	private void createform(HttpServletRequest req, HttpServletResponse resp) {
@@ -386,6 +431,86 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 		}
 	}
 
+	private void register(HttpServletRequest req, HttpServletResponse resp) {
+
+		String repositoryName;
+		String firstName;
+		String secondName;
+		String email;
+		String username;
+		String password;
+		
+		try {
+			repositoryName = getField(req, resp, "repository");
+			username = getField(req, resp, "username");
+			firstName = getField(req, resp, "name");
+			secondName = getField(req, resp, "surname");
+			email = getField(req,resp,"email");
+			password = getField(req,resp,"password");
+		} catch (FieldNotFoundException e) {
+			return;
+		}
+		
+		// handle captcha
+		boolean captchaOk = false;
+        String captchaId = req.getSession().getId();
+        String response = req.getParameter("j_captcha_response");
+        try {
+            captchaOk = CaptchaService.getInstance().validateResponseForID(captchaId,response);
+        } catch (CaptchaServiceException e) {
+             //should not happen, may be thrown if the id is not valid 
+        }
+        if (!captchaOk) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("Invalid captcha value.");
+				resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				return;
+			}
+        }
+		
+		RepositoryService repositoryService = 
+			JLibraryServiceFactory.getInstance(profile).getRepositoryService();
+		SecurityService securityService = 
+			JLibraryServiceFactory.getInstance(profile).getSecurityService();
+
+		Credentials credentials = new Credentials();
+		credentials.setUser(User.ADMIN_NAME);
+		credentials.setPassword(User.DEFAULT_PASSWORD);
+		Ticket adminTicket = null;
+
+		try {
+			adminTicket = securityService.login(credentials, repositoryName);
+			Repository repository = repositoryService.findRepository(repositoryName, adminTicket);
+			repository.setServerProfile(profile);
+			
+			UserProperties userProperties = new UserProperties();
+			userProperties.addProperty(UserProperties.USER_ID, username);
+			userProperties.addProperty(UserProperties.USER_NAME, username);
+			userProperties.addProperty(UserProperties.USER_EMAIL, email);
+			userProperties.addProperty(UserProperties.USER_FIRSTNAME, firstName);
+			userProperties.addProperty(UserProperties.USER_LASTNAME, secondName);
+			userProperties.addProperty(UserProperties.USER_PASSWORD, password);
+			userProperties.addProperty(UserProperties.USER_ADMIN, Boolean.FALSE);
+			userProperties.addProperty(UserProperties.USER_REPOSITORY, repository.getId());
+			securityService.createUser(adminTicket, userProperties);
+			
+			String url = getRepositoryURL(req, repositoryName);
+			resp.sendRedirect(resp.encodeRedirectURL(url));
+
+			resp.getOutputStream().flush();
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		} finally {
+			if (adminTicket != null) {
+				try {
+					securityService.disconnect(adminTicket);
+				} catch (SecurityException e) {
+					logger.error(e.getMessage(),e);
+				}
+			}
+		}
+	}
 	
 	private void create(HttpServletRequest req, HttpServletResponse resp) {
 

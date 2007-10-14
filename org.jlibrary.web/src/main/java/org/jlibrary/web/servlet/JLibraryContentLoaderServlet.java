@@ -29,6 +29,7 @@ import org.jlibrary.core.repository.exception.NodeNotFoundException;
 import org.jlibrary.core.repository.exception.RepositoryException;
 import org.jlibrary.core.security.SecurityException;
 import org.jlibrary.core.util.FileUtils;
+import org.jlibrary.web.RepositoryRegistry;
 import org.jlibrary.web.freemarker.FreemarkerExporter;
 import org.jlibrary.web.freemarker.RepositoryContext;
 import org.jlibrary.web.services.TemplateService;
@@ -84,6 +85,7 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 			//TODO: Check if we really need to have this instance. Perhaps some of the methods that 
 			// use a RepositoryContext object don't need to get a whole repository object
 			repository = repositoryService.findRepository(repositoryName, ticket);
+			RepositoryRegistry.getInstance().addRepository(repository, repositoryName);
 			repository.setServerProfile(new LocalServerProfile());
 			repository.setTicket(ticket);
 	
