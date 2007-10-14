@@ -466,6 +466,19 @@ vertical-align: middle;
 padding: 0px 0px 0px 0px;
 }
 
+#userinfo form a
+{
+background: #939B00 url('images/a8.gif') repeat-x;
+border: solid 1px #5F6800;
+font-weight: bold;
+font-size: 0.8em;
+width:40px;
+height:18px;
+color: #F2F3DE;
+vertical-align: middle;
+padding: 0px 5px 0px 5px;
+}
+
 #comments form textarea {
 	height:100px;
 	width:80%;
