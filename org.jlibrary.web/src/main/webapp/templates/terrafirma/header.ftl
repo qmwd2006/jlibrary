@@ -46,9 +46,10 @@
 				    <input type="password" class="text" maxlength="16" name="password" id="password" />
 						<input type="hidden" name="repository" value="${repository.name}"/>
 						<input class="submit" type="submit" value="log in"/>
+						<A href="${root_url}/forward?method=signin&repository=${repository.name}">sign in</A>
 				  </form>
 				<#else>
-					<p>Welcome ${username(ticket.user.id)} <A href="${root_url}/forward?method=logout&repository=${repository.name}">(log out)</A></p>
+					<p>Welcome ${username(ticket.repositoryId,ticket.user.id)} <A href="${root_url}/forward?method=logout&repository=${repository.name}">(log out)</A></p>
 				</#if>
 			</div>
     </div>
