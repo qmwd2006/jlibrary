@@ -104,6 +104,11 @@
 		<version>2.0</version>
 		<scope>compile</scope>
 	</dependency>
+	<dependency>
+		<groupId>com.octo.captcha</groupId>
+		<artifactId>jcaptcha-all</artifactId>
+		<version>1.0-RC6</version>
+	</dependency>	
     <!--  Maven 2 WAR overlay -->
     <dependency>
       <groupId>jlibrary</groupId>
