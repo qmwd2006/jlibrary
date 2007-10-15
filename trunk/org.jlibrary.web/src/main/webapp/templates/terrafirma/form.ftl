@@ -33,18 +33,19 @@
 				<fieldset>
 					<legend>Enter your details</legend>						
   				<label for="username">Username</label>				
-					<input type="text" name="username"/><br/>
+					<input type="text" name="username" id="username"/><br/>
 					<label for="password">Password</label>
-					<input type="password" name="password"/><br/>							
+					<input type="password" name="password" id="password"/><br/>							
   				<label for="email">Email address</label>				
-					<input type="text" name="email"/><br/>
+					<input type="text" name="email" id="email"/><br/>
 					<label for="name">First name</label>
-					<input type="text" name="name"/><br/>
+					<input type="text" name="name" id="name"/><br/>
 					<label for="surname">Surname</label>
-					<input type="text" name="surname"/><br/>			
+					<input type="text" name="surname" id="surname"/><br/>			
 					
 					<label for="j_captcha_response">Enter the text below</label>
-					<input type='text' name='j_captcha_response' value=''>
+					<input type="text" name="j_captcha_response" value="" id="j_captcha_response">
+					<br/>
 					<img src="${root_url}/jcaptcha">
 					<button type="submit">Send</button>
 					<button type="reset">Cancel</button>
@@ -54,7 +55,18 @@
 			</form>
 			<p>The password will be sent to your email address.</p>
 		</div>			
-	</div>			
+	</div>
+	<script type="text/javascript">
+		var username = new LiveValidation('username',{onlyOnSubmit:true});
+		var password = new LiveValidation('password',{onlyOnSubmit:true});
+		var email = new LiveValidation('email',{onlyOnSubmit:true});
+		var captcha= new LiveValidation('j_captcha_response',{onlyOnSubmit:true});
+		username.add(Validate.Presence);
+		password.add(Validate.Presence);
+		email.add(Validate.Presence);
+		email.add(Validate.Email);
+		captcha.add(Validate.Presence);
+	</script>
 </#macro>
 
 <#macro directoryCreateForm>
