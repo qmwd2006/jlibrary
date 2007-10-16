@@ -5,14 +5,12 @@ import java.util.Iterator;
 import java.util.Set;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
 import org.apache.log4j.Logger;
-import org.jlibrary.core.config.JLibraryProperties;
 import org.jlibrary.core.entities.Category;
 import org.jlibrary.core.entities.Directory;
 import org.jlibrary.core.entities.Document;
@@ -32,12 +30,7 @@ import org.jlibrary.core.util.FileUtils;
 import org.jlibrary.web.RepositoryRegistry;
 import org.jlibrary.web.freemarker.FreemarkerExporter;
 import org.jlibrary.web.freemarker.RepositoryContext;
-import org.jlibrary.web.services.TemplateService;
 import org.jlibrary.web.services.TicketService;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 
 @SuppressWarnings("serial")
 public class JLibraryContentLoaderServlet extends JLibraryServlet {
@@ -98,7 +91,7 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 						resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
 						resp.flushBuffer();
 					} else {
-						String output = exportCategory(req,ticket,repository,category);
+						String output = exportCategory(req,resp,ticket,repository,category);
 						resp.getOutputStream().write(output.getBytes());
 						resp.flushBuffer();
 					}
@@ -124,7 +117,7 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 					resp.flushBuffer();
 				} else if (node.isDirectory()) {
 					// Search for a root document (index.html)
-					String output = exportDirectory(req,ticket,repository,node);
+					String output = exportDirectory(req,resp,ticket,repository,node);
 					resp.getOutputStream().write(output.getBytes());
 					resp.flushBuffer();
 				} else if (node.isResource()) {
@@ -220,7 +213,8 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 		return getRootURL(request) + "/repositories/" + repositoryName;
 	}
 	
-	private String exportDirectory(HttpServletRequest request, 		
+	private String exportDirectory(HttpServletRequest request, 	
+								   HttpServletResponse response,
 								   Ticket ticket, 
 								   Repository repository, 
 								   Node node) {
@@ -235,7 +229,15 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 			exporter.setRootURL(getRootURL(request));
 			exporter.setRepositoryURL(getRepositoryURL(request));
 			exporter.initExportProcess(context);
-			return exporter.exportDirectory((Directory)node, context, "directory.ftl");				
+			
+			if ((request.getParameter("rss") != null) && 
+				(request.getParameter("rss").equals("true"))) {
+				response.setContentType("application/rss+xml");
+				return exporter.exportDirectory((Directory)node, context, "directory-rss.ftl");
+			} else {			
+				return exporter.exportDirectory((Directory)node, context, "directory.ftl");
+			}
+				
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 			return "";
@@ -243,6 +245,7 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 	}
 	
 	private String exportCategory(HttpServletRequest request, 
+								  HttpServletResponse response,
 								  Ticket ticket, 
 								  Repository repository, 
 								  Category category) {
@@ -257,7 +260,13 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 			exporter.setRootURL(getRootURL(request));
 			exporter.setRepositoryURL(getRepositoryURL(request));
 			exporter.initExportProcess(context);
-			return exporter.exportCategory(category, context, "category.ftl");
+			if ((request.getParameter("rss") != null) && 
+				(request.getParameter("rss").equals("true"))) {
+				response.setContentType("application/rss+xml");
+				return exporter.exportCategory(category, context, "category-rss.ftl");
+			} else {			
+				return exporter.exportCategory(category, context, "category.ftl");
+			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 			return "";
