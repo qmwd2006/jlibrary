@@ -36,7 +36,10 @@
   <div class="post">
 	  <div class="header">
 		  <h3>Directory: ${directory.name}</h3>
-			<div class="date">${directory.date?string("MMMM dd, yyyy")}</div>
+			<div class="date">
+			  ${directory.date?string("MMMM dd, yyyy")} 
+			  <A href="${repository_url}${directory.path}?rss=true" border=0><img border="0" src="${root_url}/templates/terrafirma/images/rss.png"></A>
+			</div>
 		</div>
 		<div class="content">
   		<#if directory_content="">
@@ -72,8 +75,11 @@
 <#macro listCategory>
   <div class="post">
 	  <div class="header">
-		  <h3>Category contents: ${category.name}</h3>
-			<div class="date">${category.date?string("MMMM dd, yyyy")}</div>
+		  <h3>Category contents: ${category.name}</h3>			
+			<div class="date">
+			${category.date?string("MMMM dd, yyyy")}
+			<A href="${categories_root_url}/${category.name}?rss=true" border=0><img border="0" src="${root_url}/templates/terrafirma/images/rss.png"></A>			
+			</div>
 		</div>
 		<div class="content">
 	  	<p>${category.description}</p>
