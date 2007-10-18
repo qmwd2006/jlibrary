@@ -24,6 +24,11 @@ highlight {
 background:#ffff00;
 }
 
+p.error {
+color:#ff0000;
+font-size: x-large;
+line-height: 140%;
+}
 
 a
 {

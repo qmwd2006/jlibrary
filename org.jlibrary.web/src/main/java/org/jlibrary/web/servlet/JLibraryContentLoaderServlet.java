@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -127,6 +128,20 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 			}			
 		} catch (NodeNotFoundException nnfe) {
 			resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+		} catch (SecurityException se) {
+			String refererURL = req.getHeader("referer");
+			if (refererURL == null) {
+				refererURL = getRepositoryURL(req);
+			}
+			req.setAttribute("refererURL", refererURL);
+			req.setAttribute("rootURL",getRootURL(req));
+			RequestDispatcher rd = getServletContext().getRequestDispatcher("/security-error.jsp");
+			try {
+				rd.forward(req, resp);
+			} catch (Exception e) {
+				logger.error(e.getMessage(),e);
+				resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
