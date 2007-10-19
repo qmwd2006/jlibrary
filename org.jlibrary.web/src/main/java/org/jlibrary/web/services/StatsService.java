@@ -10,6 +10,7 @@ public class StatsService {
 	private int loggedUsers;
 	private int totalUsers;
 	private static StatsService instance;
+	public static final String SESSION_LOGGED_USER = "logged_user";
 	
 	private StatsService(){
 		loggedUsers=0;

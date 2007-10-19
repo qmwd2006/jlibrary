@@ -38,6 +38,7 @@ import org.jlibrary.core.security.SecurityService;
 import org.jlibrary.web.captcha.CaptchaService;
 import org.jlibrary.web.freemarker.FreemarkerExporter;
 import org.jlibrary.web.freemarker.RepositoryContext;
+import org.jlibrary.web.services.StatsService;
 import org.jlibrary.web.services.TicketService;
 
 import com.octo.captcha.service.CaptchaServiceException;
@@ -268,7 +269,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 		
 		// Remove ticket from user's session
 		TicketService.getTicketService().removeTicket(req, repositoryName);
-		
+		req.getSession(true).setAttribute((StatsService.SESSION_LOGGED_USER+repositoryName).toLowerCase(),null);
 		String refererURL = req.getHeader("referer");
 		try {
 			resp.sendRedirect(resp.encodeRedirectURL(refererURL));
@@ -305,6 +306,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 		try {
 			Ticket userTicket = securityService.login(credentials, repositoryName);
 			TicketService.getTicketService().putTicket(req, repositoryName, userTicket);
+			req.getSession(true).setAttribute((StatsService.SESSION_LOGGED_USER+repositoryName).toLowerCase(),new LoggedUser());
 			String refererURL = req.getHeader("referer");
 			resp.sendRedirect(resp.encodeRedirectURL(refererURL));
 		} catch (Exception e) {
