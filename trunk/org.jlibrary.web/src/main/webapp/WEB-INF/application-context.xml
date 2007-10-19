@@ -6,4 +6,15 @@
          <property name="templateDirectory" value="/javaconganas/jlibrary/org.jlibrary.web/src/main/webapp/templates/terrafirma"/>
          <!-- <property name="templateDirectory" value="/software/apache-tomcat-6.0.13-pruebas/webapps/jlibrary/templates/terrafirma"/> -->
    </bean>
+   
+  <bean id="exporter" class="org.springframework.jmx.export.MBeanExporter" lazy-init="false">
+    <property name="beans">
+      <map>
+        <entry key="bean:name=jLibraryBean1" value-ref="jLibraryMBean"/>
+      </map>
+    </property>
+  </bean>
+  
+  <bean id="jLibraryMBean" class="org.jlibrary.web.mbeans.JLibraryMBean">
+  </bean>
 </beans>
