@@ -11,10 +11,10 @@
 					</#if>
 				</#if>	    	
 			</#list>
+			<#if !hasDirectories> 
+				<li>There are no directories.</li>
+			</#if>
 		</ul>
-		<#if !hasDirectories> 
-			<p>There are no directories.</p>
-		</#if>
 	</div>
 </#macro>
 
@@ -22,13 +22,16 @@
 	<h3>Actions</h3>
 	<div class="content">
 	  <#if ticket.user.admin>
-			<p><a href="${root_url}/forward?method=updateform&type=node&repository=${repository.name}&id=${directory.id}">Update directory</a></p>
-			<p><a href="${root_url}/forward?method=createform&type=directory&repository=${repository.name}&id=${directory.id}">Create directory</a></p>
-		  <p><A href="${root_url}/forward?method=delete&type=node&repository=${repository.name}&id=${directory.id}">Delete directory</A>
+			<a href="${root_url}/forward?method=updateform&amp;type=node&amp;repository=${repository.name}&amp;id=${directory.id}">Update directory</a>
+			<br/>
+			<a href="${root_url}/forward?method=createform&amp;type=directory&amp;repository=${repository.name}&amp;id=${directory.id}">Create directory</a>
+			<br/>
+		    <a href="${root_url}/forward?method=delete&amp;type=node&amp;repository=${repository.name}&amp;id=${directory.id}">Delete directory</a>
 			<#if !directory.parent??>
-				<p><a href="${root_url}/forward?method=createform&type=category&repository=${repository.name}&id=${directory.id}">Create category</a></p>
+				<br/><a href="${root_url}/forward?method=createform&amp;type=category&amp;repository=${repository.name}&amp;id=${directory.id}">Create category</a>
 			</#if>
-			<p><a href="${root_url}/forward?method=createform&type=document&repository=${repository.name}&id=${directory.id}">Create document</a></p>
+			<a href="${root_url}/forward?method=createform&amp;type=document&amp;repository=${repository.name}&amp;id=${directory.id}">Create document</a>
+			<br/>
 		</#if>
 	</div>
 </#macro>
@@ -37,8 +40,8 @@
 	<h3>Actions</h3>
 	<div class="content">
 	  <#if ticket.user.admin>
-		  <p><a href="${root_url}/forward?method=updateform&type=category&repository=${repository.name}&id=${category.id}">Update category</a></p>
-		  <p><A href="${root_url}/forward?method=delete&type=category&repository=${repository.name}&id=${category.id}">Delete category</A>
+		  <p><a href="${root_url}/forward?method=updateform&amp;type=category&amp;repository=${repository.name}&amp;id=${category.id}">Update category</a></p>
+		  <p><a href="${root_url}/forward?method=delete&amp;type=category&amp;repository=${repository.name}&amp;id=${category.id}">Delete category</a>
 		</#if>
 	</div>
 </#macro>
@@ -55,8 +58,8 @@
     <#if !ticket.user.name.equals("guest")>
 	  	<h3>Admin</h3>
 	  	<div class="content">
-		  	<p><A href="${root_url}/forward?method=updateform&type=node&repository=${repository.name}&id=${document.id}">Update document</A>
-		  	<p><A href="${root_url}/forward?method=delete&type=node&repository=${repository.name}&id=${document.id}">Delete document</A>
+		  	<p><a href="${root_url}/forward?method=updateform&amp;type=node&amp;repository=${repository.name}&amp;id=${document.id}">Update document</a>
+		  	<p><a href="${root_url}/forward?method=delete&amp;type=node&amp;repository=${repository.name}&amp;id=${document.id}">Delete document</a>
 			</div>  
 		</#if>
 </#macro>
@@ -74,7 +77,7 @@
 	<ul class="linklist">
 	  <#list directory.nodes as children>
 		  <#if children.document>
-            <li><A href="${repository_url}${children.path}">${children.name}</A></li>
+            <li><a href="${repository_url}${children.path}">${children.name}</a></li>
 		  </#if>
 	  </#list> 			         
     </ul>
@@ -112,7 +115,7 @@
 		    <p>Not categorized.</p>
 		  <#else>
 		    <#list document_categories as category>
-		      <p><A href="${categoryURL(category.id)}">${category.name}</A></p>
+		      <p><a href="${categoryURL(category.id)}">${category.name}</a></p>
 		     </#list>
 		  </#if> 
 	  </#if>
@@ -126,7 +129,7 @@
 	    <p>No attachments.</p>
 	  <#else>
 	    <#list document.resourceNodes as resource>
-	          <p><a href="${nodeURL(resource.id)}">${node(resource.id).name}</A></p>
+	          <p><a href="${nodeURL(resource.id)}">${node(resource.id).name}</a></p>
 	     </#list>
 	  </#if> 
 	</div>
@@ -139,7 +142,7 @@
 	    <p>No recommendations.</p>
 	  <#else>
 	    <#list document.relations as relation>
-	          <p><a href="${nodeURL(relation.id)}">${relation.name}</A></p>
+	          <p><a href="${nodeURL(relation.id)}">${relation.name}</a></p>
 	     </#list>
 	  </#if> 
 	</div>  

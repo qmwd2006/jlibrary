@@ -6,7 +6,7 @@
 		</div>
 		<div class="content">
 			<#if document_content="">
-				Download: <A href="${repository_url}${document.path}">${document.name}</A>
+				Download: <a href="${repository_url}${document.path}">${document.name}</a>
 			<#else>
 				${document_content}
 			</#if>
@@ -21,7 +21,7 @@
       </#list>
   		</#if>
   		<div id="comments">
-  			<form name="comment" method="post" action="${root_url}/forward?method=comment&repository=${repository.name}">				
+  			<form id="comment" method="post" action="${root_url}/forward?method=comment&amp;repository=${repository.name}">				
 				  <textarea name="text"></textarea>
 					<input type="hidden" name="repository" value="${repository.name}"/>
 					<input type="hidden" name="document" value="${document.id}"/>
@@ -46,8 +46,8 @@
   	  	<p>${directory.description}</p>
 	  		<#list directory.nodes as children>
 		  		<#if !children.directory>
-		  	  		<h2><A style="text-decoration:none" 
-		  	         href="${repository_url}${children.path}">${children.name}</A></h2>
+		  	  		<h2><a style="text-decoration:none" 
+		  	         href="${repository_url}${children.path}">${children.name}</a></h2>
 			  			<p>${children.description}</p>
 		  		</#if>
 	  		</#list>
@@ -68,7 +68,7 @@
       </#list>
   </#if>
   <br/>
-  <p><A href="${root_url}/forward?method=comment&repository=${repository.name}&id=${document.id}">Add new comment</A>
+  <a href="${root_url}/forward?method=comment&amp;repository=${repository.name}&amp;id=${document.id}">Add new comment</a>
 
 </#macro>
 
@@ -85,8 +85,8 @@
 	  	<p>${category.description}</p>
 		  <#list category_documents as children>
 			  <#if !children.directory>
-			  	  <h2><A style="text-decoration:none" 
-		  	         href="${nodeURL(children.id)}">${children.name}</A></h2>
+			  	  <h2><a style="text-decoration:none" 
+		  	         href="${nodeURL(children.id)}">${children.name}</a></h2>
 				  <p>${children.description}</p>
 			  </#if>	  
 		  </#list> 
