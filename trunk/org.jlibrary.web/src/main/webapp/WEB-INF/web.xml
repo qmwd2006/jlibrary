@@ -26,16 +26,19 @@
 		<param-value>/WEB-INF/application-context.xml</param-value>
 	</context-param>
 
+    <listener>
+		<listener-class>org.jlibrary.web.servlet.listener.StatsListener</listener-class>
+	</listener>
+	
+	<listener>
+		<listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>
+	</listener>
+	
 	<servlet>
   		<servlet-name>context</servlet-name>
   		<servlet-class>org.springframework.web.context.ContextLoaderServlet</servlet-class>
   		<load-on-startup>1</load-on-startup>
 	</servlet>
-    
-	
-	<listener>
-		<listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>
-	</listener>
 	
 	<servlet>
 		<servlet-name>Faces Servlet</servlet-name>
@@ -43,7 +46,7 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	
-		<servlet>
+	<servlet>
 		<servlet-name>SimpleUploader</servlet-name>
 		<servlet-class>com.fredck.FCKeditor.uploader.SimpleUploaderServlet</servlet-class>
 		<init-param>
@@ -85,7 +88,7 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	
-		<servlet>
+	<servlet>
 		<servlet-name>Connector</servlet-name>
 		<servlet-class>com.fredck.FCKeditor.connector.ConnectorServlet</servlet-class>
 		<init-param>
