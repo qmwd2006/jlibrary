@@ -75,6 +75,7 @@ import com.octo.captcha.service.CaptchaServiceException;
 public class JLibraryForwardServlet extends JLibraryServlet {
 
 	private static Logger logger = Logger.getLogger(JLibraryForwardServlet.class);
+	private StatsService statsService=StatsService.newInstance();
 
 	private ServerProfile profile = new LocalServerProfile();
 	
@@ -380,7 +381,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 					node.setDescription(description);
 					DirectoryProperties properties = ((Directory)node).dumpProperties();
 					node = repositoryService.updateDirectory(ticket, properties);
-					
+					statsService.incUpdatedDirectories();
 					String url = getRepositoryURL(req, repositoryName);
 					url+=node.getPath();
 					resp.sendRedirect(resp.encodeRedirectURL(url));
@@ -389,7 +390,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 					node.setDescription(description);
 					DocumentProperties properties = ((Document)node).dumpProperties();
 					node = repositoryService.updateDocument(ticket, properties);
-
+					statsService.incUpdatedDocuments();
 					String content = req.getParameter("FCKEditor");
 					repositoryService.updateContent(ticket, node.getId(), content.getBytes());
 					
@@ -405,7 +406,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 
 				CategoryProperties properties = category.dumpProperties();
 				category = repositoryService.updateCategory(ticket, id, properties);
-				
+				statsService.incUpdatedCategories();
 				String url = getRepositoryURL(req, repositoryName);
 				url+="/categories/"+category.getName();
 				resp.sendRedirect(resp.encodeRedirectURL(url));	
@@ -447,15 +448,17 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 					repositoryService.findNode(ticket, node.getParent());
 				if (node.isDirectory()) {
 					repositoryService.removeDirectory(ticket, node.getId());
+					statsService.incDeletedDirectories();
 				} else if (node.isDocument()) {
 					repositoryService.removeDocument(ticket, node.getId());
+					statsService.incDeletedDocuments();
 				}
 				String url = getRepositoryURL(req, repositoryName);
 				url+=parent.getPath();
 				resp.sendRedirect(resp.encodeRedirectURL(url));
 			} else if (type.equals("category")) {
 				repositoryService.deleteCategory(ticket, id);
-				
+				statsService.incDeletedCategories();
 				String url = getRepositoryURL(req, repositoryName);
 				resp.sendRedirect(resp.encodeRedirectURL(url));	
 			} else {
@@ -532,7 +535,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 			userProperties.addProperty(UserProperties.USER_ADMIN, Boolean.FALSE);
 			userProperties.addProperty(UserProperties.USER_REPOSITORY, repository.getId());
 			securityService.createUser(adminTicket, userProperties);
-			
+			statsService.incRegisteredUsers();
 			String url = getRepositoryURL(req, repositoryName);
 			resp.sendRedirect(resp.encodeRedirectURL(url));
 
@@ -589,7 +592,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 				directory.setPosition(new Integer(1));
 				DirectoryProperties properties = directory.dumpProperties();
 				directory = repositoryService.createDirectory(ticket, properties);
-				
+				statsService.incCreatedDirectories();
 				String url = getRepositoryURL(req, repositoryName);
 				url+=directory.getPath();
 				resp.sendRedirect(resp.encodeRedirectURL(url));
@@ -623,7 +626,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 				document.setMetaData(metaData);
 				DocumentProperties properties = document.dumpProperties();
 				document = repositoryService.createDocument(ticket, properties);	
-				
+				statsService.incCreatedDocuments();
 				String content = req.getParameter("FCKEditor");
 				repositoryService.updateContent(ticket, document.getId(), content.getBytes());
 				
@@ -638,7 +641,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 				category.setRepository(repository.getId());
 				CategoryProperties properties = category.dumpProperties();
 				category = repositoryService.createCategory(ticket, properties);
-				
+				statsService.incCreatedCategories();
 				String url = getRepositoryURL(req, repositoryName);
 				url+="/categories/"+category.getName();
 				resp.sendRedirect(resp.encodeRedirectURL(url));				
