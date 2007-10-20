@@ -310,19 +310,19 @@ public class SecurityManager {
 		}
 
 		for (int i = 0; i < ADMIN_ACTIONS.length; i++) {
-			if (ADMIN_ACTIONS[i] == action) {
+			if (ADMIN_ACTIONS[i].equals(action)) {
 				return isAdmin;
 			}
 		}
 
 		for (int i = 0; i < EDITOR_ACTIONS.length; i++) {
-			if (EDITOR_ACTIONS[i] == action) {
+			if (EDITOR_ACTIONS[i].equals(action)) {
 				return isAdmin || isEditor;
 			}
 		}
 
 		for (int i = 0; i < READER_ACTIONS.length; i++) {
-			if (READER_ACTIONS[i] == action) {
+			if (READER_ACTIONS[i].equals(action)) {
 				return isAdmin || isEditor || isReader;
 			}
 		}
