@@ -1,10 +1,31 @@
+/*
+* jLibrary, Open Source Document Management System
+* 
+* Copyright (c) 2003-2006, Martín Pérez Mariñán, and individual 
+* contributors as indicated by the @authors tag. See copyright.txt in the
+* distribution for a full listing of individual contributors.
+* All rights reserved.
+* 
+* This is free software; you can redistribute it and/or modify it
+* under the terms of the Modified BSD License as published by the Free 
+* Software Foundation.
+* 
+* This software is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the Modified
+* BSD License for more details.
+* 
+* You should have received a copy of the Modified BSD License along with 
+* this software; if not, write to the Free Software Foundation, Inc., 
+* 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the
+* FSF site: http://www.fsf.org.
+*/
 package org.jlibrary.web.servlet;
 
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Set;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,14 +54,19 @@ import org.jlibrary.web.freemarker.FreemarkerExporter;
 import org.jlibrary.web.freemarker.RepositoryContext;
 import org.jlibrary.web.services.TicketService;
 
+/**
+ * This servlet listens for content requests following a model very similar to REST. 
+ * Requests will have the format /webapp/repositories/URL and jLibrary will try to load 
+ * the content matching the given URL path.
+ * 
+ * @author mpermar
+ */
 @SuppressWarnings("serial")
 public class JLibraryContentLoaderServlet extends JLibraryServlet {
 
 	private static Logger logger = Logger.getLogger(JLibraryContentLoaderServlet.class);
 
 	private ServerProfile profile = new LocalServerProfile();
-
-	private String repositoryName;
 	
 	@Override
 	public void init() throws ServletException {
@@ -63,23 +89,14 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 	}
 
 	private void processContent(HttpServletRequest req, HttpServletResponse resp) {
-		
-		// Get the referer. We will use it in case of errors
-		String refererURL = req.getHeader("referer");
-		if (refererURL == null) {
-			refererURL = "/repositories/" + repositoryName;
-		} else {
-			int i = refererURL.indexOf("/repositories");
-			refererURL = refererURL.substring(i,refererURL.length());
-		}
-		
+				
 		String appURL = req.getContextPath();
 		String uri = req.getRequestURI();
 		String path = StringUtils.difference(appURL+"/repositories",uri);
 		
 		String[] pathElements = StringUtils.split(path,"/");
 		
-		repositoryName = pathElements[0];
+		String repositoryName = getRepositoryName(req);
 		Ticket ticket = TicketService.getTicketService().getTicket(req, repositoryName);
 		Repository repository = null;
 		try {
@@ -136,35 +153,11 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 				}
 			}			
 		} catch (NodeNotFoundException nnfe) {
-			if (logger.isDebugEnabled()) { logger.error(nnfe.getMessage(),nnfe);}
-			RequestDispatcher rd = getServletContext().getRequestDispatcher(refererURL);
-			req.setAttribute("error", "The requested page could not be found.");
-			try {
-				rd.forward(req, resp);
-			} catch (Exception e) {
-				logger.error(e.getMessage(),e);
-				resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			}
+			logErrorAndForward(req, resp, repositoryName, nnfe, "The requested page could not be found.");
 		} catch (SecurityException se) {
-			if (logger.isDebugEnabled()) { logger.error(se.getMessage(),se);}
-			RequestDispatcher rd = getServletContext().getRequestDispatcher(refererURL);
-			req.setAttribute("error", "You do not have enough rights for accessing to the requested page.");
-			try {
-				rd.forward(req, resp);
-			} catch (Exception e) {
-				logger.error(e.getMessage(),e);
-				resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			}
+			logErrorAndForward(req, resp, repositoryName, se, "You do not have enough rights for accessing to the requested page.");
 		} catch (Exception e) {
-			if (logger.isDebugEnabled()) { logger.error(e.getMessage(),e);}
-			RequestDispatcher rd = getServletContext().getRequestDispatcher(refererURL);
-			req.setAttribute("error", "Se ha producido un error en el servidor.");
-			try {
-				rd.forward(req, resp);
-			} catch (Exception fe) {
-				logger.error(fe.getMessage(),fe);
-				resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			}
+			logErrorAndForward(req, resp, repositoryName, e, "There was an error in the server.");
 		}
 	}
 
@@ -226,7 +219,7 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 			context.setTicket(ticket);
 			FreemarkerExporter exporter = new FreemarkerExporter();
 			exporter.setRootURL(getRootURL(request));
-			exporter.setRepositoryURL(getRepositoryURL(request));
+			exporter.setRepositoryURL(getRepositoryURL(request,repository.getName()));
 			exporter.setError((String)request.getAttribute("error"));
 			exporter.initExportProcess(context);
 			return exporter.exportDocument((Document)node, context, "document.ftl");
@@ -234,19 +227,6 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 			logger.error(e.getMessage(),e);
 			return "";
 		}
-	}
-	
-	private String getRootURL(HttpServletRequest request) {
-
-		return request.getScheme( ) + "://"
-				+ request.getLocalAddr( )  + ":"
-				+ request.getLocalPort( )
-				+ request.getContextPath( );
-	}
-
-	private String getRepositoryURL(HttpServletRequest request) {
-		
-		return getRootURL(request) + "/repositories/" + repositoryName;
 	}
 	
 	private String exportDirectory(HttpServletRequest request, 	
@@ -263,7 +243,7 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 			context.setTicket(ticket);
 			FreemarkerExporter exporter = new FreemarkerExporter();
 			exporter.setRootURL(getRootURL(request));
-			exporter.setRepositoryURL(getRepositoryURL(request));
+			exporter.setRepositoryURL(getRepositoryURL(request,repository.getName()));
 			exporter.setError((String)request.getAttribute("error"));
 			exporter.initExportProcess(context);
 			
@@ -295,7 +275,7 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 			context.setTicket(ticket);
 			FreemarkerExporter exporter = new FreemarkerExporter();
 			exporter.setRootURL(getRootURL(request));
-			exporter.setRepositoryURL(getRepositoryURL(request));
+			exporter.setRepositoryURL(getRepositoryURL(request,repository.getName()));
 			exporter.setError((String)request.getAttribute("error"));
 			exporter.initExportProcess(context);
 			if ((request.getParameter("rss") != null) && 
