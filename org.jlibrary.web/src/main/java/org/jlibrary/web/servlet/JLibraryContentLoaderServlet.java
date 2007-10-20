@@ -64,6 +64,12 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 
 	private void processContent(HttpServletRequest req, HttpServletResponse resp) {
 		
+		// Get the referer. We will use it in case of errors
+		String refererURL = req.getHeader("referer");
+		if (refererURL == null) {
+			refererURL = "/repositories/" + repositoryName;
+		}
+		
 		String appURL = req.getContextPath();
 		String uri = req.getRequestURI();
 		String path = StringUtils.difference(appURL+"/repositories",uri);
@@ -127,12 +133,17 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 				}
 			}			
 		} catch (NodeNotFoundException nnfe) {
-			resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-		} catch (SecurityException se) {
-			String refererURL = req.getHeader("referer");
-			if (refererURL == null) {
-				refererURL = getRepositoryURL(req);
+			RequestDispatcher rd = getServletContext().getRequestDispatcher(refererURL);
+			req.setAttribute("error", "The requested page could not be found.");
+			try {
+				rd.forward(req, resp);
+			} catch (Exception e) {
+				logger.error(e.getMessage(),e);
+				resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			}
+			//resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+		} catch (SecurityException se) {
+
 			req.setAttribute("refererURL", refererURL);
 			req.setAttribute("rootURL",getRootURL(req));
 			RequestDispatcher rd = getServletContext().getRequestDispatcher("/security-error.jsp");
@@ -207,6 +218,7 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 			FreemarkerExporter exporter = new FreemarkerExporter();
 			exporter.setRootURL(getRootURL(request));
 			exporter.setRepositoryURL(getRepositoryURL(request));
+			exporter.setError((String)request.getAttribute("error"));
 			exporter.initExportProcess(context);
 			return exporter.exportDocument((Document)node, context, "document.ftl");
 		} catch (Exception e) {
@@ -243,6 +255,7 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 			FreemarkerExporter exporter = new FreemarkerExporter();
 			exporter.setRootURL(getRootURL(request));
 			exporter.setRepositoryURL(getRepositoryURL(request));
+			exporter.setError((String)request.getAttribute("error"));
 			exporter.initExportProcess(context);
 			
 			if ((request.getParameter("rss") != null) && 
@@ -274,6 +287,7 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 			FreemarkerExporter exporter = new FreemarkerExporter();
 			exporter.setRootURL(getRootURL(request));
 			exporter.setRepositoryURL(getRepositoryURL(request));
+			exporter.setError((String)request.getAttribute("error"));
 			exporter.initExportProcess(context);
 			if ((request.getParameter("rss") != null) && 
 				(request.getParameter("rss").equals("true"))) {

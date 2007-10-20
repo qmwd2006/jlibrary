@@ -72,6 +72,7 @@ public class SearchTemplateProcessor implements FreemarkerTemplateProcessor {
 		page.expose(FreemarkerVariables.REPOSITORY,context.getRepository());
 		page.expose(FreemarkerVariables.SEARCH_RESULTS, result);
 		page.expose(FreemarkerVariables.TICKET, context.getTicket());
+		page.expose(FreemarkerVariables.ERROR_MESSAGE, exporter.getError());
 		
 		page.expose(FreemarkerVariables.DATE, new Date());
 

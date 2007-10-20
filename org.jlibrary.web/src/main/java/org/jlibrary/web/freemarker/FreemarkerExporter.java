@@ -48,6 +48,7 @@ public class FreemarkerExporter extends BaseExporter {
 	
 	private String rootURL;
 	private String repositoryURL;
+	private String error;
 	
 	public FreemarkerExporter() {
 
@@ -397,5 +398,13 @@ public class FreemarkerExporter extends BaseExporter {
 
 	public void setRepositoryURL(String repositoryURL) {
 		this.repositoryURL = repositoryURL;
+	}
+
+	public String getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
 	}
 }

@@ -5,6 +5,9 @@
 			<div class="date">${document.date?string("MMMM dd, yyyy")}</div>
 		</div>
 		<div class="content">
+		  <#if error??>
+		    <p class="error-header">${error}</p>
+		  </#if>
 			<#if document_content="">
 				Download: <a href="${repository_url}${document.path}">${document.name}</a>
 			<#else>
@@ -42,6 +45,9 @@
 			</div>
 		</div>
 		<div class="content">
+		  <#if error??>
+		    <p class="error-header">${error}</p>
+		  </#if>
   		<#if directory_content="">
   	  	<p>${directory.description}</p>
 	  		<#list directory.nodes as children>
@@ -82,6 +88,9 @@
 			</div>
 		</div>
 		<div class="content">
+		  <#if error??>
+		    <p class="error-header">${error}</p>
+		  </#if>		
 	  	<p>${category.description}</p>
 		  <#list category_documents as children>
 			  <#if !children.directory>

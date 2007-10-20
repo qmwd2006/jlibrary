@@ -30,6 +30,11 @@ package org.jlibrary.web.freemarker;
 public class FreemarkerVariables {
 	
 	/**
+	 * Error string
+	 */
+	public static final String ERROR_MESSAGE = "error";
+	
+	/**
 	 * Search results
 	 */
 	public static final String SEARCH_RESULTS = "results";

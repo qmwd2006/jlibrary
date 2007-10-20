@@ -95,6 +95,7 @@ public class DirectoryTemplateProcessor implements FreemarkerTemplateProcessor {
 		page.expose(FreemarkerVariables.REPOSITORY,context.getRepository());
 		page.expose(FreemarkerVariables.DIRECTORY, directory);		
 		page.expose(FreemarkerVariables.TICKET, context.getTicket());
+		page.expose(FreemarkerVariables.ERROR_MESSAGE, exporter.getError());
 		
 		page.expose(FreemarkerVariables.DATE, new Date());
 		if (context.getRepository().getTicket().getUser().equals(User.ADMIN_USER)) {
