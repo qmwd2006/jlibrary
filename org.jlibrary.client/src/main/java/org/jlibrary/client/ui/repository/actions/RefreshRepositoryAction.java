@@ -240,11 +240,14 @@ public class RefreshRepositoryAction extends SelectionDispatchAction {
 	}
     
     private void afterJobDone(Node node, Repository repository) {
-    	
-    	
-        
-        Node parent = EntityRegistry.getInstance().
+    	//fix for refreshing the repository node
+    	Node parent;
+        if (node.getPath().equals("/")) {
+        	parent = node;
+        } else {
+        	parent = EntityRegistry.getInstance().
         	getNode(node.getParent(),node.getRepository());
+        }
 		if (parent == null) {
 			RepositoryView.getRepositoryViewer().refresh(repository);
 			RepositoryView.getRepositoryViewer().expandToLevel(repository,1);		 		

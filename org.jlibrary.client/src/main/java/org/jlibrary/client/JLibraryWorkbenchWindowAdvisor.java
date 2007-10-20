@@ -25,7 +25,6 @@ package org.jlibrary.client;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.JFacePreferences;
-import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IDecoratorManager;
@@ -63,11 +62,11 @@ public class JLibraryWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 	public void postWindowOpen() {	
 		
 		super.postWindowOpen();
-		
-		if (!RepositoryRegistry.getInstance().isReopenedRepositories()) {
-			RepositoryRegistry.getInstance().reopenRepositories();
+		synchronized (RepositoryRegistry.getInstance()) {
+			if (!RepositoryRegistry.getInstance().isReopenedRepositories()) {
+				RepositoryRegistry.getInstance().reopenRepositories();
+			}
 		}
-		
 		IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
 		Window.setDefaultImage(SharedImages.getImage(SharedImages.IMAGE_JLIBRARY));
 

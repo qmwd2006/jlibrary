@@ -27,7 +27,6 @@ import java.net.MalformedURLException;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -81,24 +80,24 @@ import org.slf4j.LoggerFactory;
 
 	public IAdaptable createElement(IMemento memento)
 	{
-		
-		if (!RepositoryRegistry.getInstance().isReopenedRepositories()) {
-			RepositoryRegistry.getInstance().reopenRepositories();
-		}
-		
-		// Wait for all the repositories to be loaded until open editors
-		Job[] jobs = Platform.getJobManager().find(JobTask.LOADING_REPOSITORIES);
-		logger.debug("Found " + jobs.length + " jobs on the family '"+JobTask.LOADING_REPOSITORIES+"'");
-		if (jobs !=  null) {
-			for (int i = 0; i < jobs.length; i++) {
-				if (jobs[i].getState() == Job.RUNNING) {
-					try {
-						jobs[i].join();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
+		synchronized (RepositoryRegistry.getInstance()) {
+			if (!RepositoryRegistry.getInstance().isReopenedRepositories()) {
+				RepositoryRegistry.getInstance().reopenRepositories();
 			}
+			// Wait for all the repositories to be loaded until open editors
+			Job[] jobs = Job.getJobManager().find(JobTask.LOADING_REPOSITORIES);
+			logger.debug("Found " + jobs.length + " jobs on the family '"
+					+ JobTask.LOADING_REPOSITORIES + "'");
+			for (int i = 0; i < jobs.length; i++) {
+				// we're waiting for all jobs not only the running ones
+				try {
+					jobs[i].join();
+				} catch (InterruptedException e) {
+					logger.error(e.getMessage(), e);
+				}
+
+			}
+
 		}
 		
 		try
