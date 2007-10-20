@@ -68,6 +68,9 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 		String refererURL = req.getHeader("referer");
 		if (refererURL == null) {
 			refererURL = "/repositories/" + repositoryName;
+		} else {
+			int i = refererURL.indexOf("/repositories");
+			refererURL = refererURL.substring(i,refererURL.length());
 		}
 		
 		String appURL = req.getContextPath();
@@ -133,6 +136,7 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 				}
 			}			
 		} catch (NodeNotFoundException nnfe) {
+			if (logger.isDebugEnabled()) { logger.error(nnfe.getMessage(),nnfe);}
 			RequestDispatcher rd = getServletContext().getRequestDispatcher(refererURL);
 			req.setAttribute("error", "The requested page could not be found.");
 			try {
@@ -141,12 +145,10 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 				logger.error(e.getMessage(),e);
 				resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			}
-			//resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		} catch (SecurityException se) {
-
-			req.setAttribute("refererURL", refererURL);
-			req.setAttribute("rootURL",getRootURL(req));
-			RequestDispatcher rd = getServletContext().getRequestDispatcher("/security-error.jsp");
+			if (logger.isDebugEnabled()) { logger.error(se.getMessage(),se);}
+			RequestDispatcher rd = getServletContext().getRequestDispatcher(refererURL);
+			req.setAttribute("error", "You do not have enough rights for accessing to the requested page.");
 			try {
 				rd.forward(req, resp);
 			} catch (Exception e) {
@@ -154,8 +156,15 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 				resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			}
 		} catch (Exception e) {
-			logger.error(e.getMessage(),e);
-			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			if (logger.isDebugEnabled()) { logger.error(e.getMessage(),e);}
+			RequestDispatcher rd = getServletContext().getRequestDispatcher(refererURL);
+			req.setAttribute("error", "Se ha producido un error en el servidor.");
+			try {
+				rd.forward(req, resp);
+			} catch (Exception fe) {
+				logger.error(fe.getMessage(),fe);
+				resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			}
 		}
 	}
 
