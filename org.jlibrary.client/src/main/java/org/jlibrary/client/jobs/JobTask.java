@@ -40,7 +40,7 @@ public class JobTask {
 	/**
 	 * Loading repositories family
 	 */
-	public static String LOADING_REPOSITORIES = "LOADING_REPOSITORIES";
+	public static final String LOADING_REPOSITORIES = "LOADING_REPOSITORIES";
 	
 	private String taskName;
 	private boolean systemTask = false;
