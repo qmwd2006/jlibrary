@@ -148,14 +148,21 @@ public class DocumentTemplateProcessor implements FreemarkerTemplateProcessor {
 		page.expose(FreemarkerVariables.DOCUMENT_CONTENT, loadContent());
 		
 		loadDocumentInformation(page);
-		
+		FileOutputStream fos = null;
 		try {
-			FileOutputStream fos = new FileOutputStream(path);
+			fos = new FileOutputStream(path);
 			CopyUtils.copy(page.getAsString(), fos);
-			fos.close();
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 			throw new ExportException(e);
+		} finally {
+			if (fos != null) {
+				try {
+					fos.close();
+				} catch (IOException e) {
+					logger.error(e.getMessage(),e);
+				}
+			}
 		}
 	}
 	
@@ -211,6 +218,7 @@ public class DocumentTemplateProcessor implements FreemarkerTemplateProcessor {
 		}
 		
 		InputStream is = null;
+		FileOutputStream fos = null;
 		try {
 			if (document.getTypecode().equals(Types.HTML_DOCUMENT)) {
 				is = cache.getNodeContent(document);
@@ -220,22 +228,23 @@ public class DocumentTemplateProcessor implements FreemarkerTemplateProcessor {
 			} else {
 				is = cache.getNodeContent(document);
 				// Save the document to the disk and return a link
-				FileOutputStream fos = 
-					new FileOutputStream(getFilePath(document.getPath()));
+				fos = new FileOutputStream(getFilePath(document.getPath()));
 				IOUtils.copy(is, fos);
-				fos.close();
 				return "";			
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 			throw new ExportException(e);
 		} finally {
-			if (is != null) {
-				try {
+			try {
+				if (is != null) {
 					is.close();
-				} catch (IOException e) {
-					logger.error(e.getMessage(),e);
 				}
+				if (fos != null) {
+					fos.close();
+				}
+			} catch (IOException e) {
+				logger.error(e.getMessage(), e);
 			}
 		}
 	}

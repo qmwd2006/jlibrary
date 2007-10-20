@@ -105,8 +105,19 @@ public class SaveDocumentDelegate extends SavingDelegate {
 			updatedDocument = service.updateDocument(ticket,docProperties);
 			
 			if (dirty) {
-				InputStream is = ((FileEditorInput)editor.getEditorInput()).getFile().getContents();
-				service.updateContent(ticket, document.getId(), is);				
+				InputStream is = null;
+				try {
+					is = ((FileEditorInput) editor.getEditorInput()).getFile().getContents();
+					service.updateContent(ticket, document.getId(), is);
+				} finally {
+					if (is != null) {
+						try {
+							is.close();
+						} catch (Exception e) {
+							logger.error(e.getMessage(),e);
+						}
+					}
+				}
 			}
 			
 			// With this we update the node tree versions.
@@ -143,7 +154,7 @@ public class SaveDocumentDelegate extends SavingDelegate {
 		} catch (final SecurityException se) {
 			return new Status(Status.ERROR,"org.jlibrary.client",Status.OK,Messages.getMessage("not_enough_permissions"),se);
 		} catch (final Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(),e);
 			return new Status(Status.ERROR,"org.jlibrary.client",Status.OK,e.getMessage(),e);
 		}	
 		

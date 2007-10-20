@@ -31,7 +31,6 @@ import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.jlibrary.core.entities.DocumentMetaData;
@@ -84,13 +83,13 @@ public class LocaleService {
 		
 		bundleProperties = new Properties();
 		String messagesFile = "/resources/messages/messages.properties";		
-		
+		InputStream urlIs = null;
 		try {
 			Bundle rcpBundle = Platform.getBundle("org.jlibrary.client");
 			Path path = new Path("$nl$" + messagesFile);
 			URL url = FileLocator.find(rcpBundle,path,null);
-
-			bundleProperties.load(url.openStream());
+			urlIs = url.openStream();
+			bundleProperties.load(urlIs);
 		} catch (IOException e) {
 			logger.error(e.getMessage(),e);
 			
@@ -98,9 +97,24 @@ public class LocaleService {
 			InputStream is = ResourceLoader.getResourceAsStream(messagesFile);
 			try {
 				bundleProperties.load(is);
-				is.close();
 			} catch (IOException ioe) {
 				logger.error(e.getMessage(),e);
+			} finally {
+				if (is != null) {
+					try {
+						is.close();
+					} catch (IOException e1) {
+						logger.error(e.getMessage(), e);
+					}
+				}
+			}
+		} finally {
+			if (urlIs != null) {
+				try {
+					urlIs.close();
+				} catch (IOException e) {
+					logger.error(e.getMessage(),e);
+				}
 			}
 		}
 		

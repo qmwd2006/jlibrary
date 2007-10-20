@@ -55,9 +55,11 @@ import org.jlibrary.client.part.FileEditorInput;
 import org.jlibrary.client.ui.editor.JLibraryEditor;
 import org.jlibrary.client.ui.editor.URLEditorInput;
 import org.jlibrary.client.util.URL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SimpleDocumentProvider extends AbstractDocumentProvider {
-
+	static Logger logger = LoggerFactory.getLogger(SimpleDocumentProvider.class);
 	private IEditorPart editor;
 	
 	public SimpleDocumentProvider(IEditorPart editor) {
@@ -96,18 +98,19 @@ public class SimpleDocumentProvider extends AbstractDocumentProvider {
 	
 	private boolean setDocumentContent(IDocument document, IEditorInput input) throws CoreException {
 
-		Reader reader;
+		Reader reader = null;
+		InputStream is = null;
 		try {
 			if (input instanceof URLEditorInput) {
 				URL url = ((URLEditorInput)input).getURL();
 				if (url != null) {
-					InputStream is = url.getContents();
+					is = url.getContents();
 					reader = new InputStreamReader(is);
 				} else {
 					reader = new StringReader("");
 				}
 			} else if (input instanceof FileEditorInput) {
-				InputStream is = ((FileEditorInput)input).getFile().getContents();
+				is = ((FileEditorInput)input).getFile().getContents();
 				reader = new InputStreamReader(is);
 			} else if (input instanceof IPathEditorInput) {
 				reader= new FileReader(((IPathEditorInput)input).getPath().toFile());
@@ -117,6 +120,14 @@ public class SimpleDocumentProvider extends AbstractDocumentProvider {
 		} catch (FileNotFoundException e) {
 			// return empty document and save later
 			return true;
+		} finally {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+					logger.error(e.getMessage(),e);
+				}
+			}
 		}
 		
 		try {
@@ -124,6 +135,14 @@ public class SimpleDocumentProvider extends AbstractDocumentProvider {
 			return true;
 		} catch (IOException e) {
 			throw new CoreException(new Status(IStatus.ERROR, "org.eclipse.ui.examples.rcp.texteditor", IStatus.OK, "error reading file", e)); //$NON-NLS-1$ //$NON-NLS-2$
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException e) {
+					logger.error(e.getMessage(),e);
+				}
+			}
 		}
 	}
 

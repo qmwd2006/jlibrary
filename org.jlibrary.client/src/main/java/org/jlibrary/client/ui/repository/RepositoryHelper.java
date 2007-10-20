@@ -170,7 +170,7 @@ public class RepositoryHelper {
 											  parent,
 											  addedResources);
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(e.getMessage(),e);
 				}
 			}
 		}		
@@ -179,16 +179,24 @@ public class RepositoryHelper {
 
 		if (file.exists()) {
 			// Stream content
+			FileInputStream fis = null;
 			try {
-				FileInputStream fis = new FileInputStream(file);
+				fis = new FileInputStream(file);
 				service.updateContent(ticket, document.getId(), fis);
-				fis.close();
 				if (modifiedFile) {
 					file.delete();
 				}
 			} catch (Exception e) {
 				throw new RepositoryException(e);
-			}				
+			} finally {
+				if (fis != null) {
+					try {
+						fis.close();
+					} catch (IOException e) {
+						logger.error(e.getMessage(),e);
+					}
+				}
+			}
 		}
 		
 		EntityRegistry.getInstance().addNode(document);
@@ -616,7 +624,7 @@ public class RepositoryHelper {
 				try {
 					fis.close();
 				} catch (IOException ioe) {
-					ioe.printStackTrace();
+					logger.error(ioe.getMessage(),ioe);
 				}
 			}
 		}
@@ -707,9 +715,9 @@ public class RepositoryHelper {
 							DocumentProperties.DOCUMENT_ADD_CATEGORY,
 							unknownCategory.getId());
 				} catch (PropertyNotFoundException e) {
-					e.printStackTrace();
+					logger.error(e.getMessage(),e);
 				} catch (InvalidPropertyTypeException e) {
-					e.printStackTrace();
+					logger.error(e.getMessage(),e);
 				}
 			}
 		}
