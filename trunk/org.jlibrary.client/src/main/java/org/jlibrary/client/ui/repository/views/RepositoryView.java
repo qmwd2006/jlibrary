@@ -58,7 +58,7 @@ public class RepositoryView extends ViewPart implements IMenuListener {
 
 	private static RepositoryView instance;
 
-	public static String VIEW_ID = "org.jlibrary.client.ui.repository.views.repositoryView";
+	public static final String VIEW_ID = "org.jlibrary.client.ui.repository.views.repositoryView";
 
 	private RepositoryViewer viewer;
 

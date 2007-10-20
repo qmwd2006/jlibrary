@@ -23,8 +23,6 @@
 package org.jlibrary.client.ui.repository.actions;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
