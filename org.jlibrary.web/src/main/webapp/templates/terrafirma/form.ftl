@@ -80,7 +80,7 @@
 				<fieldset>
 					<legend>Directory details</legend>						
   				<label for="name">Name</label>				
-					<input type="text" name="name""/><br/>
+					<input type="text" id="name" name="name"/><br/>
 					<label for="description">Description</label>
 					<textarea name="description" rows="8" cols="auto" id="description"></textarea>						
 					<button type="submit">Create</button>
@@ -106,7 +106,7 @@
 				<fieldset>
 					<legend>Category details</legend>						
   				<label for="name">Name</label>				
-					<input type="text" name="name" value="${category.name}"/><br/>
+					<input type="text" id="name" name="name" value="${category.name}"/><br/>
 					<label for="description">Description</label>
 					<textarea name="description" rows="8" cols="auto" id="description">${category.description}</textarea>						
 					<button type="submit">Update</button>
@@ -131,7 +131,7 @@
 				<fieldset>
 					<legend>Category details</legend>						
   				<label for="name">Name</label>				
-					<input type="text" name="name""/><br/>
+					<input type="text" id="name" name="name"/><br/>
 					<label for="description">Description</label>
 					<textarea name="description" rows="8" cols="auto" id="description"></textarea>						
 					<button type="submit">Create</button>
@@ -156,11 +156,11 @@
 				<fieldset>
 					<legend>Document details</legend>						
   				<label for="name">Name</label>				
-					<input type="text" name="name"/><br/>
+					<input type="text" id="name" name="name"/><br/>
 					<label for="description">Description</label>
 					<textarea name="description" rows="8" cols="auto" id="description"></textarea>
   				<label for="keywords">Keywords</label>				
-					<input type="text" name="keywords"/><br/>
+					<input type="text" id="keywords" name="keywords"/><br/>
 					<label for="content">Content</label>
 					<script type="text/javascript">
 						var oFCKeditor = new FCKeditor( 'FCKEditor' ) ;
@@ -192,11 +192,11 @@
 				<fieldset>
 					<legend>Document details</legend>						
   				<label for="name">Name</label>				
-					<input type="text" name="name" value="${document.name}"/><br/>
+					<input type="text" id="name" name="name" value="${document.name}"/><br/>
 					<label for="description">Description</label>
 					<textarea name="description" rows="8" cols="auto" id="description">${document.description}</textarea>
   				<label for="keywords">Keywords</label>				
-					<input type="text" name="keywords" value="${document.metaData.keywords}"/><br/>
+					<input type="text" id="keywords" name="keywords" value="${document.metaData.keywords}"/><br/>
 					<label for="content">Content</label>
 					<script type="text/javascript">
 						var oFCKeditor = new FCKeditor( 'FCKEditor' ) ;

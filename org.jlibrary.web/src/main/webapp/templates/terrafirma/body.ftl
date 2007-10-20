@@ -41,7 +41,7 @@
 		  <h3>Directory: ${directory.name}</h3>
 			<div class="date">
 			  ${directory.date?string("MMMM dd, yyyy")} 
-			  <A href="${repository_url}${directory.path}?rss=true" border=0><img border="0" src="${root_url}/templates/terrafirma/images/rss.png"></A>
+			  <a href="${repository_url}${directory.path}?rss=true" border=0><img border="0" src="${root_url}/templates/terrafirma/images/rss.png"></a>
 			</div>
 		</div>
 		<div class="content">

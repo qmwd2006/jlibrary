@@ -517,9 +517,16 @@ padding: 0px 5px 0px 5px;
 	padding: 12px;
 	display: block;
 }
-fieldset.loginheader {magin:0px;
-padding:0px;}
-legend.loginheader{display:none;}
+
+fieldset.loginheader {
+	border: 0px;
+	magin:0px;
+	padding:0px;
+}
+
+legend.loginheader{
+	display:none;
+}
 
 #primarycontent .post .content form.sheet fieldset legend
 {
