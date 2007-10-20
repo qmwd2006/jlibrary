@@ -247,7 +247,7 @@ public class CategoryPaster implements Paster {
 
 			if (document.isDeletedDocument() ||
 				((document.getLock() != null) && 
-				 (document.getLock().getUserId() == ticket.getUser().getId()))) {
+				 (document.getLock().getUserId().equals(ticket.getUser().getId())))) {
 				notCopied.add(document);
 				continue;
 			}

@@ -42,7 +42,7 @@ public class DNDItems {
 	public final static String SEARCH_VIEW = "Roles";
 	
 	
-	public static ArrayList items = new ArrayList();
+	public static final ArrayList items = new ArrayList();
 	
 	public static void setItems(Object[] elements) {
 		
