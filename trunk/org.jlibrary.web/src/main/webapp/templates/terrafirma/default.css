@@ -30,6 +30,11 @@ font-size: x-large;
 line-height: 140%;
 }
 
+p.error-header {
+background-color:#ff2020;
+color:#ffffff;
+}
+
 a
 {
 color: #FF7800;

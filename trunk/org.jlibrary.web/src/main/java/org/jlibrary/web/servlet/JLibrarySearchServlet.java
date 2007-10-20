@@ -130,6 +130,7 @@ public class JLibrarySearchServlet extends JLibraryServlet {
 			
 			exporter.setRootURL(getRootURL(request));
 			exporter.setRepositoryURL(getRepositoryURL(request));
+			exporter.setError((String)request.getAttribute("error"));
 			
 			exporter.initExportProcess(context);
 			return exporter.exportSearchResults(result, context);
