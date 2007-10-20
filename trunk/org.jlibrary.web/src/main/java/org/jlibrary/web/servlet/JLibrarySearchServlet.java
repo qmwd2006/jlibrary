@@ -1,3 +1,25 @@
+/*
+* jLibrary, Open Source Document Management System
+* 
+* Copyright (c) 2003-2006, Martín Pérez Mariñán, and individual 
+* contributors as indicated by the @authors tag. See copyright.txt in the
+* distribution for a full listing of individual contributors.
+* All rights reserved.
+* 
+* This is free software; you can redistribute it and/or modify it
+* under the terms of the Modified BSD License as published by the Free 
+* Software Foundation.
+* 
+* This software is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the Modified
+* BSD License for more details.
+* 
+* You should have received a copy of the Modified BSD License along with 
+* this software; if not, write to the Free Software Foundation, Inc., 
+* 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the
+* FSF site: http://www.fsf.org.
+*/
 package org.jlibrary.web.servlet;
 
 import java.io.IOException;
@@ -26,8 +48,6 @@ public class JLibrarySearchServlet extends JLibraryServlet {
 	private static Logger logger = Logger.getLogger(JLibrarySearchServlet.class);
 
 	private ServerProfile profile = new LocalServerProfile();
-
-	private String repositoryName;
 	
 	@Override
 	public void init() throws ServletException {
@@ -54,7 +74,7 @@ public class JLibrarySearchServlet extends JLibraryServlet {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Received search request");
 		}
-		repositoryName = req.getParameter("repository");
+		String repositoryName = req.getParameter("repository");
 		String text = req.getParameter("text");
 		if ((repositoryName == null) || (text == null)) {
 			if (logger.isDebugEnabled()) {
@@ -109,8 +129,7 @@ public class JLibrarySearchServlet extends JLibraryServlet {
 			resp.getOutputStream().write(output.getBytes());
 			resp.flushBuffer();
 		} catch (Exception e) {
-			logger.error(e.getMessage(),e);
-			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			logErrorAndForward(req, resp, repositoryName, e, "There was an error in the server.");
 		}
 		
 		return;
@@ -129,7 +148,7 @@ public class JLibrarySearchServlet extends JLibraryServlet {
 			FreemarkerExporter exporter = new FreemarkerExporter();
 			
 			exporter.setRootURL(getRootURL(request));
-			exporter.setRepositoryURL(getRepositoryURL(request));
+			exporter.setRepositoryURL(getRepositoryURL(request, repository.getName()));
 			exporter.setError((String)request.getAttribute("error"));
 			
 			exporter.initExportProcess(context);
@@ -138,18 +157,5 @@ public class JLibrarySearchServlet extends JLibraryServlet {
 			logger.error(e.getMessage(),e);
 			return "";
 		}
-	}
-	
-	private String getRootURL(HttpServletRequest request) {
-
-		return request.getScheme( ) + "://"
-				+ request.getLocalAddr( )  + ":"
-				+ request.getLocalPort( )
-				+ request.getContextPath( );
-	}
-
-	private String getRepositoryURL(HttpServletRequest request) {
-		
-		return getRootURL(request) + "/repositories/" + repositoryName;
 	}
 }
