@@ -317,7 +317,7 @@ public class SimpleLocalCache implements LocalCache {
 
 		XStream xstream = new XStream();		
 		try {
-			xstream.toXML(this,new FileWriter(new File(localCacheConfigPath.toString())));
+			xstream.toXML(this,new FileWriter(new File(localCacheConfigPath)));
 		} catch (IOException e) {
 			throw new LocalCacheException("Error saving the local cache");
 		}
