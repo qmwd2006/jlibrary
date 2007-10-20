@@ -215,7 +215,7 @@ public class FreemarkerPage implements Page {
    *@since
    */
   public void expose(String key, long value) {
-    expose(key, new Long(value));
+    expose(key, Long.valueOf(value));
   }
 
 
@@ -227,7 +227,7 @@ public class FreemarkerPage implements Page {
    *@since
    */
   public void expose(String key, int value) {
-    expose(key, new Integer(value));
+    expose(key, Integer.valueOf(value));
   }
 
 
