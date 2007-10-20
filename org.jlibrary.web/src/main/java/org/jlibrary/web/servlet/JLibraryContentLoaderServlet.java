@@ -52,6 +52,7 @@ import org.jlibrary.core.util.FileUtils;
 import org.jlibrary.web.RepositoryRegistry;
 import org.jlibrary.web.freemarker.FreemarkerExporter;
 import org.jlibrary.web.freemarker.RepositoryContext;
+import org.jlibrary.web.services.StatsService;
 import org.jlibrary.web.services.TicketService;
 
 /**
@@ -67,6 +68,7 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 	private static Logger logger = Logger.getLogger(JLibraryContentLoaderServlet.class);
 
 	private ServerProfile profile = new LocalServerProfile();
+	private StatsService statsService=StatsService.newInstance();
 	
 	@Override
 	public void init() throws ServletException {
@@ -222,6 +224,7 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 			exporter.setRepositoryURL(getRepositoryURL(request,repository.getName()));
 			exporter.setError((String)request.getAttribute("error"));
 			exporter.initExportProcess(context);
+			statsService.incServedDocuments();
 			return exporter.exportDocument((Document)node, context, "document.ftl");
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
@@ -246,7 +249,7 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 			exporter.setRepositoryURL(getRepositoryURL(request,repository.getName()));
 			exporter.setError((String)request.getAttribute("error"));
 			exporter.initExportProcess(context);
-			
+			statsService.incServedDirectories();
 			if ((request.getParameter("rss") != null) && 
 				(request.getParameter("rss").equals("true"))) {
 				response.setContentType("application/rss+xml");
@@ -278,6 +281,7 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 			exporter.setRepositoryURL(getRepositoryURL(request,repository.getName()));
 			exporter.setError((String)request.getAttribute("error"));
 			exporter.initExportProcess(context);
+			statsService.incServedCategories();
 			if ((request.getParameter("rss") != null) && 
 				(request.getParameter("rss").equals("true"))) {
 				response.setContentType("application/rss+xml");
@@ -303,6 +307,7 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 			resp.setContentType(mime);  
 			repositoryService.loadResourceNodeContent(ticket, node.getId(), resp.getOutputStream());
 			resp.getOutputStream().flush();
+			statsService.incAttachments();
 		} catch (Exception e) {
 			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			logger.error(e.getMessage(),e);

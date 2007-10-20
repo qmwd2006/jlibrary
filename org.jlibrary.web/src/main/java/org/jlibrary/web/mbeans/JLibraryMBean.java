@@ -24,7 +24,7 @@ package org.jlibrary.web.mbeans;
 
 import org.jlibrary.web.services.StatsService;
 /**
- * 
+ * MBean para monitorizar la aplicación.
  * @author dlatorre
  *
  */
@@ -44,5 +44,65 @@ public class JLibraryMBean {
 	
 	public Integer getTotalUsers() {
 		return statsService.getTotalUsers();
+	}
+	
+	public Integer getRegisteredUsers() {
+		return statsService.getRegisteredUsers();
+	}
+
+	public Integer getCreatedDocuments() {
+		return statsService.getCreatedDocuments();
+	}
+
+	public Integer getUpdatedDocuments() {
+		return statsService.getUpdatedDocuments();
+	}
+
+	public Integer getDeletedDocuments() {
+		return statsService.getDeletedDocuments();
+	}
+
+	public Integer getServedDocuments() {
+		return statsService.getServedDocuments();
+	}
+
+	public Integer getCreatedDirectories() {
+		return statsService.getCreatedDirectories();
+	}
+
+	public Integer getUpdatedDirectories() {
+		return statsService.getUpdatedDirectories();
+	}
+
+	public Integer getDeletedDirectories() {
+		return statsService.getDeletedDirectories();
+	}
+
+	public Integer getServedDirectories() {
+		return statsService.getServedDirectories();
+	}
+
+	public Integer getCreatedCategories() {
+		return statsService.getCreatedCategories();
+	}
+
+	public Integer getUpdatedCategories() {
+		return statsService.getUpdatedCategories();
+	}
+
+	public Integer getDeletedCategories() {
+		return statsService.getDeletedCategories();
+	}
+
+	public Integer getServedCategories() {
+		return statsService.getServedCategories();
+	}
+
+	public Integer getAttachments() {
+		return statsService.getAttachments();
+	}
+
+	public Integer getErrors() {
+		return statsService.getErrors();
 	}
 }
