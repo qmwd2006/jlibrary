@@ -26,9 +26,9 @@
 			<br/>
 			<a href="${root_url}/forward?method=createform&amp;type=directory&amp;repository=${repository.name}&amp;id=${directory.id}">Create directory</a>
 			<br/>
-		    <a href="${root_url}/forward?method=delete&amp;type=node&amp;repository=${repository.name}&amp;id=${directory.id}">Delete directory</a>
+		    <a href="${root_url}/forward?method=delete&amp;type=node&amp;repository=${repository.name}&amp;id=${directory.id}">Delete directory</a><br/>
 			<#if !directory.parent??>
-				<br/><a href="${root_url}/forward?method=createform&amp;type=category&amp;repository=${repository.name}&amp;id=${directory.id}">Create category</a>
+				<a href="${root_url}/forward?method=createform&amp;type=category&amp;repository=${repository.name}&amp;id=${directory.id}">Create category</a><br/>
 			</#if>
 			<a href="${root_url}/forward?method=createform&amp;type=document&amp;repository=${repository.name}&amp;id=${directory.id}">Create document</a>
 			<br/>
@@ -40,8 +40,8 @@
 	<h3>Actions</h3>
 	<div class="content">
 	  <#if ticket.user.admin>
-		  <p><a href="${root_url}/forward?method=updateform&amp;type=category&amp;repository=${repository.name}&amp;id=${category.id}">Update category</a></p>
-		  <p><a href="${root_url}/forward?method=delete&amp;type=category&amp;repository=${repository.name}&amp;id=${category.id}">Delete category</a>
+		  <a href="${root_url}/forward?method=updateform&amp;type=category&amp;repository=${repository.name}&amp;id=${category.id}">Update category</a><br/>
+		  <a href="${root_url}/forward?method=delete&amp;type=category&amp;repository=${repository.name}&amp;id=${category.id}">Delete category</a><br/>
 		</#if>
 	</div>
 </#macro>
@@ -49,8 +49,8 @@
 <#macro infoDirectory>
   <h3>Directory Information</h3>
 	<div class="content">
-  	<p><strong>Added:</strong> ${directory.date?string("yyyy-MM-dd HH:mm:ss")}</p>
-  	<p><strong>From:</strong> ${node_creator}</p>
+	  	<strong>Added:</strong> ${directory.date?string("yyyy-MM-dd HH:mm:ss")}<br/>
+	  	<strong>From:</strong> ${node_creator}<br/>
   </div>
 </#macro>
 
@@ -58,8 +58,8 @@
     <#if !ticket.user.name.equals("guest")>
 	  	<h3>Admin</h3>
 	  	<div class="content">
-		  	<p><a href="${root_url}/forward?method=updateform&amp;type=node&amp;repository=${repository.name}&amp;id=${document.id}">Update document</a>
-		  	<p><a href="${root_url}/forward?method=delete&amp;type=node&amp;repository=${repository.name}&amp;id=${document.id}">Delete document</a>
+			  	<a href="${root_url}/forward?method=updateform&amp;type=node&amp;repository=${repository.name}&amp;id=${document.id}">Update document</a><br/>
+			  	<a href="${root_url}/forward?method=delete&amp;type=node&amp;repository=${repository.name}&amp;id=${document.id}">Delete document</a><br/>
 			</div>  
 		</#if>
 </#macro>
