@@ -93,7 +93,7 @@ public class WorkspaceCache implements LocalCache {
 				projects[i].delete(true,true,null);				
 			}
 		} catch (CoreException e) {			
-			e.printStackTrace();
+			logger.error(e.getMessage(),e);
 			throw new LocalCacheException(e);
 		}		
 	}
@@ -155,7 +155,7 @@ public class WorkspaceCache implements LocalCache {
 			InputStream stream = file.getContents();
 			return stream;
 		} catch (CoreException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(),e);
 			throw new LocalCacheException(e);
 		}
 	}
@@ -216,7 +216,7 @@ public class WorkspaceCache implements LocalCache {
 		try {
 			project.delete(true,true,null);
 		} catch (CoreException e) {			
-			e.printStackTrace();
+			logger.error(e.getMessage(),e);
 			throw new LocalCacheException(e);
 		}
 	}
@@ -236,7 +236,7 @@ public class WorkspaceCache implements LocalCache {
 		
 			return workspace;
 		} catch (CoreException e) {			
-			e.printStackTrace();
+			logger.error(e.getMessage(),e);
 			throw new LocalCacheException(e);
 		}
 	}
@@ -264,7 +264,7 @@ public class WorkspaceCache implements LocalCache {
 
 			return folder;
 		} catch (CoreException e) {			
-			e.printStackTrace();
+			logger.error(e.getMessage(),e);
 			throw new LocalCacheException(e);
 		}
 	}
@@ -274,7 +274,6 @@ public class WorkspaceCache implements LocalCache {
 							 Node node, 
 							 NodeContentHandler handler) throws LocalCacheException {
 
-		FileOutputStream fos = null;
 		try {
 			String filename = FileUtils.getFileName(node.getPath());
 			IFile file = null;
@@ -287,24 +286,27 @@ public class WorkspaceCache implements LocalCache {
 			if (!file.exists()) {
 				file.create(new ByteArrayInputStream(new byte[]{}), 
 							IResource.NONE, null);
+				FileOutputStream fos = null;
 				fos = new FileOutputStream(getNodePath(node));
-				handler.copyTo(fos);
+				try {
+					handler.copyTo(fos); } 
+				finally {
+					if (fos != null) {
+						try {
+							fos.close();
+						} catch (IOException e) {
+							logger.error(e.getMessage(),e);
+						}
+					}
+				}
 				file.refreshLocal(IResource.DEPTH_ZERO, null);
 			}
 			
 			return file;
 		} catch (Exception e) {			
-			e.printStackTrace();
+			logger.error(e.getMessage(),e);
 			throw new LocalCacheException(e);
-		} finally {
-			if (fos != null) {
-				try {
-					fos.close();
-				} catch (IOException e) {
-					logger.error(e.getMessage(),e);
-				}
-			}
-		}
+		} 
 		
 	}
 	
@@ -330,7 +332,12 @@ public class WorkspaceCache implements LocalCache {
 		String filename = FileUtils.getFileName(node.getPath());
 		IFile file = null;
 		if (folder == null) {
-			file = project.getFile(filename);
+		    //fix for the refreshing repository node
+			if (node.getPath().equals("/")) {
+				file = project.getFile(project.getFullPath());
+			} else {
+				file = project.getFile(filename);
+			}
 		} else {
 			file = folder.getFile(filename);
 		}
@@ -352,7 +359,7 @@ public class WorkspaceCache implements LocalCache {
 		try {
 			file.delete(true,null);
 		} catch (CoreException e) {			
-			e.printStackTrace();
+			logger.error(e.getMessage(),e);
 			throw new LocalCacheException(e);
 		}			
 	}	
