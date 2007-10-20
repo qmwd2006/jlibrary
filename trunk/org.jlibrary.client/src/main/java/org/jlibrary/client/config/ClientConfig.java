@@ -190,9 +190,16 @@ public class ClientConfig {
 	private void loadConfig() throws FileNotFoundException, IOException {
 		
 		properties = new Properties();
-		FileInputStream fis = new FileInputStream(f);
-		properties.load(fis);
-		fis.close();
+		FileInputStream fis = null;
+		try {
+			fis = new FileInputStream(f);
+			properties.load(fis);
+		}
+		finally{
+			if (fis != null) {
+				fis.close();
+			}
+		}
 	}
 	
 	/**
@@ -204,10 +211,15 @@ public class ClientConfig {
 		ClassLoader clientClassLoader = 
 			JLibraryPlugin.getDefault().getClass().getClassLoader();
 		xstream.setClassLoader(clientClassLoader);
-		
-		FileReader reader = new FileReader(fProfiles);
-		profileProperties = (ArrayList)xstream.fromXML(reader);
-		reader.close();
+		FileReader reader = null;
+		try {
+			reader = new FileReader(fProfiles);
+			profileProperties = (ArrayList)xstream.fromXML(reader);
+		} finally {
+			if (reader != null) {
+				reader.close();
+			}
+		}
 	}
 
 	/**
@@ -231,10 +243,15 @@ public class ClientConfig {
 		properties.put(EXPORT_WEB, config.getJLibraryRepositoriesHome());
 		
 		logger.info("Writing config file : " + f.getAbsolutePath());
-		
-		FileOutputStream fos = new FileOutputStream(f);
-		properties.store(fos,"JLibrary Preferences");
-		fos.close();
+		FileOutputStream fos = null;
+		try {
+			fos = new FileOutputStream(f);
+			properties.store(fos,"JLibrary Preferences");
+		} finally {
+			if (fos != null) {
+				fos.close();
+			}
+		}
 	}
 
 	/**
@@ -250,9 +267,15 @@ public class ClientConfig {
 			JLibraryPlugin.getDefault().getClass().getClassLoader();
 		xstream.setClassLoader(clientClassLoader);
 		
-		FileWriter writer = new FileWriter(fProfiles);
-		xstream.toXML(profileProperties, writer);
-		writer.close();
+		FileWriter writer = null;
+		try {
+			writer = new FileWriter(fProfiles);
+			xstream.toXML(profileProperties, writer);
+		} finally {
+			if (writer != null) {
+				writer.close();
+			}
+		}
 	}
 	
 	/**
@@ -270,16 +293,25 @@ public class ClientConfig {
 			JLibraryPlugin.getDefault().getClass().getClassLoader();
 		xstream.setClassLoader(clientClassLoader);
 		
-		FileWriter writer = new FileWriter(fProfiles);
-		xstream.toXML(profileProperties, writer);
-		writer.close();
-		
+		FileWriter writer = null;
 		try {
-			FileOutputStream fos = new FileOutputStream(f);
+			writer = new FileWriter(fProfiles);
+			xstream.toXML(profileProperties, writer);
+		} finally {
+			if (writer != null) {
+				writer.close();
+			}
+		}
+		FileOutputStream fos = null;
+		try {
+			fos = new FileOutputStream(f);
 			properties.store(fos, "JLibrary Preferences");
-			fos.close();
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
+		} finally {
+			if (fos != null) {
+				fos.close();
+			}
 		}
 	}
 

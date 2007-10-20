@@ -107,20 +107,24 @@ public class ResourceTemplateProcessor implements FreemarkerTemplateProcessor {
 		}
 		
 		InputStream is = null;
+		FileOutputStream fos = null;
 		try {
 			// Save the document to the disk and return a link
-			FileOutputStream fos = 
-				new FileOutputStream(getFilePath(resource.getPath()));
+			fos = new FileOutputStream(getFilePath(resource.getPath()));
 			is = cache.getNodeContent(resource);
-			IOUtils.copy(is, fos);
-			fos.close();
+			IOUtils.copy(is, fos);	
 			return "";
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 			throw new ExportException(e);
 		} finally {
 			try {
-				is.close();
+				if (is != null) {
+					is.close();
+				}
+				if (fos != null) {
+					fos.close();
+				}
 			} catch (Exception e) {
 				logger.error(e.getMessage(),e);
 			}

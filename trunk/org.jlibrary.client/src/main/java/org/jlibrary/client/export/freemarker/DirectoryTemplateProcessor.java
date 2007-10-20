@@ -24,6 +24,7 @@ package org.jlibrary.client.export.freemarker;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -166,14 +167,21 @@ public class DirectoryTemplateProcessor implements FreemarkerTemplateProcessor {
 								getUser(repository.getId(),userId);
 			page.expose(FreemarkerVariables.NODE_CREATOR, user.getName());
 		}
-		
+		FileOutputStream fos = null;
 		try {
-			FileOutputStream fos = new FileOutputStream(path);
+			fos = new FileOutputStream(path);
 			CopyUtils.copy(page.getAsString(), fos);
-			fos.close();
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 			throw new ExportException(e);
+		} finally {
+			if (fos != null) {
+				try {
+					fos.close();
+				} catch (IOException e) {
+					logger.error(e.getMessage(),e);
+				}
+			}
 		}
 	}
 	

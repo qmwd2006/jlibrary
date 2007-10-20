@@ -96,9 +96,20 @@ public class SaveResourceDelegate extends SavingDelegate {
 
 			boolean dirty = isEditorDirty(editor);
 			if (dirty) {
-				InputStream is = ((FileEditorInput) editor.getEditorInput())
+				InputStream is = null;
+				try {
+				is = ((FileEditorInput) editor.getEditorInput())
 						.getFile().getContents();
 				service.updateContent(ticket, resource.getId(), is);
+				} finally {
+					if (is != null) {
+						try {
+							is.close();
+						} catch (Exception e) {
+							logger.error(e.getMessage(),e);
+						}
+					}
+				}
 			}
 			
 			monitor.worked(1);
@@ -110,7 +121,7 @@ public class SaveResourceDelegate extends SavingDelegate {
 		} catch (final SecurityException se) {
 			return new Status(Status.ERROR,"org.jlibrary.client",Status.OK,Messages.getMessage("not_enough_permissions"),se);
 		} catch (final Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(),e);
 			return new Status(Status.ERROR,"org.jlibrary.client",Status.OK,e.getMessage(),e);
 		}	
 		

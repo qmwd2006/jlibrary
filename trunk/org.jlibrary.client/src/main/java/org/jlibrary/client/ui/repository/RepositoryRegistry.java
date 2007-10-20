@@ -432,16 +432,27 @@ public class RepositoryRegistry {
 		xstream.setClassLoader(clientClassLoader);
 		
 		String str = xstream.toXML(repository);
+		PrintWriter pw = null;
+		FileOutputStream fos = null;
 		try {
 			new File("c:/tmp/" + repository.getName()).createNewFile();
-			PrintWriter pw = new PrintWriter(new FileOutputStream("c:/tmp/" + repository.getName()));
+			fos = new FileOutputStream("c:/tmp/" + repository.getName());
+			pw = new PrintWriter(fos);
 			pw.print(str);
-			pw.close();
-			
 			logger.debug("Repository info on /tmp/"+repository.getName());
 		} catch (Exception e) {
-			
             logger.error(e.getMessage(),e);
+		} finally {
+			try {
+			if (pw != null) {
+				pw.close();
+			}
+			if (fos != null) {
+				fos.close();
+			}
+			} catch (Exception e) {
+				logger.error(e.getMessage(),e);
+			}
 		}
 		
 	}
