@@ -1,14 +1,36 @@
+/*
+* jLibrary, Open Source Document Management System
+* 
+* Copyright (c) 2003-2006, Martín Pérez Mariñán, and individual 
+* contributors as indicated by the @authors tag. See copyright.txt in the
+* distribution for a full listing of individual contributors.
+* All rights reserved.
+* 
+* This is free software; you can redistribute it and/or modify it
+* under the terms of the Modified BSD License as published by the Free 
+* Software Foundation.
+* 
+* This software is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the Modified
+* BSD License for more details.
+* 
+* You should have received a copy of the Modified BSD License along with 
+* this software; if not, write to the Free Software Foundation, Inc., 
+* 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the
+* FSF site: http://www.fsf.org.
+*/
 package org.jlibrary.web.servlet;
 
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.RandomStringUtils;
 import org.apache.jackrabbit.util.Text;
 import org.apache.log4j.Logger;
 import org.jlibrary.core.entities.Author;
@@ -110,8 +132,17 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 		} else if (method.equals("createform")) {
 			createform(req,resp);
 		} else {
-			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return;
+			try {
+				if (logger.isDebugEnabled()) { logger.error("The operation " + method + " is not supported.");}
+				String repositoryName = getField(req, resp, "repository");
+				String refererURL = getRefererURL(req, repositoryName);
+				RequestDispatcher rd = getServletContext().getRequestDispatcher(refererURL);
+				req.setAttribute("error", "The operation specified is not supported.");
+				rd.forward(req, resp);
+			} catch (Exception fe) {
+				logger.error(fe.getMessage(),fe);
+				resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			}
 		}
 		
 		return;
@@ -147,8 +178,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 					exporter.export(context, "register.ftl").getBytes());
 			resp.getOutputStream().flush();
 		} catch (Exception e) {
-			logger.error(e.getMessage(),e);
-			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			logErrorAndForward(req, resp, repositoryName, e, "There was a problem signing in.");
 		}		
 	}
 	
@@ -195,11 +225,13 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 			} else if (type.equals("category")) {
 				resp.getOutputStream().write(
 						exporter.exportDirectory((Directory)node, context, "category-create.ftl").getBytes());
+			} else {
+				String error = "Invalid operation : " + type;
+				logErrorAndForward(req, resp, repositoryName, new InvalidOperationException(error), error);
 			}
 			resp.getOutputStream().flush();
 		} catch (Exception e) {
-			logger.error(e.getMessage(),e);
-			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			logErrorAndForward(req, resp, repositoryName, e, "There was a problem trying to creating the object.");
 		}		
 	}
 	
@@ -250,11 +282,13 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 				Category category = repositoryService.findCategoryById(ticket, id);
 				resp.getOutputStream().write(
 						exporter.exportCategory(category, context, "category-update.ftl").getBytes());				
+			} else {
+				String error = "Invalid operation : " + type;
+				logErrorAndForward(req, resp, repositoryName, new InvalidOperationException(error), error);
 			}
 			resp.getOutputStream().flush();
 		} catch (Exception e) {
-			logger.error(e.getMessage(),e);
-			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			logErrorAndForward(req, resp, repositoryName, e, "There was a problem trying to updating the object.");
 		}		
 	}
 	
@@ -274,8 +308,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 		try {
 			resp.sendRedirect(resp.encodeRedirectURL(refererURL));
 		} catch (IOException e) {
-			logger.error(e.getMessage(),e);
-			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			logErrorAndForward(req, resp, repositoryName, e, "There was a problem trying to log out.");
 		}
 	}	
 	
@@ -310,8 +343,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 			String refererURL = req.getHeader("referer");
 			resp.sendRedirect(resp.encodeRedirectURL(refererURL));
 		} catch (Exception e) {
-			logger.error(e.getMessage(),e);
-			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			logErrorAndForward(req, resp, repositoryName, e, "There was a problem trying to log in.");
 		}
 	}
 	
@@ -377,12 +409,14 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 				String url = getRepositoryURL(req, repositoryName);
 				url+="/categories/"+category.getName();
 				resp.sendRedirect(resp.encodeRedirectURL(url));	
+			} else {
+				String error = "Invalid operation : " + type;
+				logErrorAndForward(req, resp, repositoryName, new InvalidOperationException(error), error);
 			}
 
 			resp.getOutputStream().flush();
 		} catch (Exception e) {
-			logger.error(e.getMessage(),e);
-			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			logErrorAndForward(req, resp, repositoryName, e, "There was a problem trying to updating the object.");
 		}
 	}
 
@@ -424,12 +458,14 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 				
 				String url = getRepositoryURL(req, repositoryName);
 				resp.sendRedirect(resp.encodeRedirectURL(url));	
+			} else {
+				String error = "Invalid operation : " + type;
+				logErrorAndForward(req, resp, repositoryName, new InvalidOperationException(error), error);
 			}
 
 			resp.getOutputStream().flush();
 		} catch (Exception e) {
-			logger.error(e.getMessage(),e);
-			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			logErrorAndForward(req, resp, repositoryName, e, "There was a problem trying to delete the object.");
 		}
 	}
 
@@ -464,8 +500,9 @@ public class JLibraryForwardServlet extends JLibraryServlet {
         }
         if (!captchaOk) {
 			if (logger.isDebugEnabled()) {
-				logger.debug("Invalid captcha value.");
-				resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				logErrorAndForward(req, resp, repositoryName, 
+						new InvalidOperationException("Invalid captcha value"), 
+						"Invalid captcha value");
 				return;
 			}
         }
@@ -501,8 +538,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 
 			resp.getOutputStream().flush();
 		} catch (Exception e) {
-			logger.error(e.getMessage(),e);
-			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			logErrorAndForward(req, resp, repositoryName, e, "There was a problem trying to register the user.");
 		} finally {
 			if (adminTicket != null) {
 				try {
@@ -606,12 +642,14 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 				String url = getRepositoryURL(req, repositoryName);
 				url+="/categories/"+category.getName();
 				resp.sendRedirect(resp.encodeRedirectURL(url));				
+			} else {
+				String error = "Invalid operation : " + type;
+				logErrorAndForward(req, resp, repositoryName, new InvalidOperationException(error), error);
 			}
 
 			resp.getOutputStream().flush();
 		} catch (Exception e) {
-			logger.error(e.getMessage(),e);
-			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			logErrorAndForward(req, resp, repositoryName, e, "There was a problem trying to create the object.");
 		}
 	}
 
@@ -645,42 +683,12 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 			resp.sendRedirect(resp.encodeRedirectURL(refererURL));
 
 		} catch (Exception e) {
-			logger.error(e.getMessage(),e);
-			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			logErrorAndForward(req, resp, repositoryName, e, "There was a problem adding the comment.");
 		}	
 	}
 	
 	private String processNote(String text) {
 
 		return text.replaceAll("\n", "<br/>");
-	}
-
-
-	private String getRootURL(HttpServletRequest request) {
-
-		return request.getScheme( ) + "://"
-				+ request.getLocalAddr( )  + ":"
-				+ request.getLocalPort( )
-				+ request.getContextPath( );
-	}
-
-	private String getRepositoryURL(HttpServletRequest request, String repositoryName) {
-		
-		return getRootURL(request) + "/repositories/" + repositoryName;
-	}
-	
-	private String getField(HttpServletRequest req, 
-							HttpServletResponse resp, 
-							String fieldName) throws FieldNotFoundException {
-		
-		String field = req.getParameter(fieldName);
-		if (field == null) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("Invalid update request. Field '" + fieldName + "' not found.");
-				resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-				throw new FieldNotFoundException();
-			}
-		}
-		return field;
 	}
 }
