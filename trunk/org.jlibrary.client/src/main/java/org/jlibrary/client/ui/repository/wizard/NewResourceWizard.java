@@ -24,14 +24,11 @@ package org.jlibrary.client.ui.repository.wizard;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
 
-import org.apache.commons.io.IOUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -42,10 +39,6 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.jlibrary.cache.CacheUtils;
-import org.jlibrary.cache.LocalCache;
-import org.jlibrary.cache.LocalCacheException;
-import org.jlibrary.cache.LocalCacheService;
-import org.jlibrary.cache.NodeContentHandler;
 import org.jlibrary.client.Messages;
 import org.jlibrary.client.config.ClientConfig;
 import org.jlibrary.client.ui.StatusLine;
@@ -246,7 +239,7 @@ public class NewResourceWizard extends Wizard {
 		resource.setDescription(descriptionDataPage.getDocumentDescription());
 		resource.setPath(FileUtils.buildPath(parent,file.getName()));
 		resource.setDate(new Date());
-		resource.setImportance(new Integer(descriptionDataPage.getImportance()));
+		resource.setImportance(Integer.valueOf(descriptionDataPage.getImportance()));
 		
 		
 		User user = ticket.getUser();
