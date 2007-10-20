@@ -37,7 +37,7 @@ import org.jlibrary.core.entities.Node;
  */
 public class SystemGenericEditor extends GenericEditor {
 	
-	public static String EDITOR_ID = "org.jlibrary.client.ui.editor.impl.SystemGenericEditor";
+	public static final String EDITOR_ID = "org.jlibrary.client.ui.editor.impl.SystemGenericEditor";
 	
 	/**
 	 * @see org.jlibrary.client.ui.editor.GenericEditor#createContentsPage()
