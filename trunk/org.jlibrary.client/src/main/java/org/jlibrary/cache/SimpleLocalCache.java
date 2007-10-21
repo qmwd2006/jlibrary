@@ -327,30 +327,25 @@ public class SimpleLocalCache implements LocalCache {
 		
         String home = JLibraryProperties.getProperty(JLibraryProperties.JLIBRARY_HOME); 
 		//String home = System.getProperty("user.home");
-		String separator = System.getProperty("file.separator");
+
 		
-		File f = new File(home + separator + ".jlibrary");
+		File f = new File(home,".jlibrary");
                 f.mkdirs();
 
-		f = new File(f.getAbsolutePath() + separator + ".local-cache");
+		f = new File(f.getAbsolutePath(),".local-cache");
 		if (!f.exists()) {
 			if (!f.mkdirs()) {
 				throw new ConfigException("Can't create local-cache subdirectory");				
 			}
 		}
-		
-		StringBuffer path = new StringBuffer(f.getAbsolutePath());
-		path.append(separator);
-		path.append("local-cache.xml");
-		
 		XStream xstream = new XStream();
 		
 		try {
-			File file = new File(path.toString());
+			File file = new File(f,"local-cache.xml");
 			if (!file.exists()) {
 				instance = new SimpleLocalCache();
 				
-				instance.localCacheConfigPath = path.toString();
+				instance.localCacheConfigPath = f.getAbsolutePath();
 				instance.localCacheDirectoryPath = 
 					file.getParentFile().getAbsolutePath();
 				instance.time = System.currentTimeMillis();

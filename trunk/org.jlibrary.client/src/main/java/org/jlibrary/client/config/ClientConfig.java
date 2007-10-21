@@ -117,12 +117,8 @@ public class ClientConfig {
 
         String home = JLibraryProperties.getProperty(JLibraryProperties.JLIBRARY_HOME); 
         logger.info("Using home : " + home);
-        
-		String separator = System.getProperty("file.separator");
-
-		f = new File(home + separator + ".jlibrary");
-		logger.info("Creating directory : " + 
-		f.getAbsolutePath());
+		f = new File(home,".jlibrary");
+		logger.info("Creating directory : " + f.getAbsolutePath());
 		
 		f.mkdirs();
                 
@@ -132,13 +128,9 @@ public class ClientConfig {
 		
 		String jLibraryHome = f.getAbsolutePath();
 		logger.info("Using config home: " + jLibraryHome);
-		
-		StringBuffer path = new StringBuffer(f.getAbsolutePath());
-		path.append(separator);
-		path.append(".jlibrary-client.cfg");
-		
+
 		// create and load standard configuration
-		f = new File(path.toString());
+		f = new File(f,".jlibrary-client.cfg");
 		try {
 			if (!f.exists()) {
 				createConfig();
@@ -152,13 +144,9 @@ public class ClientConfig {
 		}
 		
 		// create and load profiles configuration
-		fProfiles = new File(home + separator + ".jlibrary");
-		
-		path = new StringBuffer(fProfiles.getAbsolutePath());
-		path.append(separator);
-		path.append(".jlibrary-profiles.cfg");		
+		fProfiles = new File(home,".jlibrary");	
 		// create and load standard configuration
-		fProfiles = new File(path.toString());
+		fProfiles = new File(fProfiles,".jlibrary-profiles.cfg");
 		if (!fProfiles.exists()) {
 			try {
 				createProfilesConfig();
