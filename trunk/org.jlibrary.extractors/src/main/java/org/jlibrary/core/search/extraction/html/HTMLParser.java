@@ -92,7 +92,7 @@ public final class HTMLParser {
         // we must make sure that the content passed to the parser always is 
         // a "valid" HTML page, i.e. is surrounded by <html><body>...</body></html> 
         // otherwise you will get strange results for some specific HTML constructs
-        StringBuffer newContent = new StringBuffer(content.length() + 32);
+        StringBuilder newContent = new StringBuilder(content.length() + 32);
         
         newContent.append("<html><body>");
         newContent.append(content);
@@ -100,9 +100,19 @@ public final class HTMLParser {
 
         // make sure the Lexer uses the right encoding
         InputStream in = new ByteArrayInputStream(newContent.toString().getBytes(encoding));
-
+        try {
         // use the stream based version to process the results
         return extractText(in, encoding);
+        } finally {
+        	if (in != null) {
+        		try {
+					in.close();
+				} catch (IOException e) {
+					logger.error(e.getMessage(),e);
+					throw new ParserException(e);
+				}
+        	}
+        }
     }
     
     /**
@@ -331,10 +341,10 @@ public final class HTMLParser {
     	while (it.hasNext()) {
 			ResourceNode resource = (ResourceNode) it.next();
 			if (resource.getPath().endsWith(locationName)) {
-				StringBuffer buffer = new StringBuffer();
+				StringBuilder buffer = new StringBuilder();
 				
-				StringBuffer docPath = new StringBuffer(directory.getPath());
-				StringBuffer resPath = new StringBuffer(resource.getPath());
+				StringBuilder docPath = new StringBuilder(directory.getPath());
+				StringBuilder resPath = new StringBuilder(resource.getPath());
 				
 				int k2 = resPath.lastIndexOf("/");
 				resPath.delete(k2+1,resPath.length());
