@@ -133,7 +133,7 @@ public class FreemarkerExporter extends BaseExporter {
 	 */
 	public String getRootURL(Document document) {
 
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		String[] parts = StringUtils.split(document.getPath(),"/");
 		for (int i = 0; i<parts.length-1; i++) {
 			buffer.append("../");
