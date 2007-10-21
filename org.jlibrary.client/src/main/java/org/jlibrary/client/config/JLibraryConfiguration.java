@@ -45,7 +45,7 @@ public class JLibraryConfiguration {
 	public static JLibraryConfiguration loadConfig() {
 
 		String home = JLibraryProperties.getProperty(JLibraryProperties.JLIBRARY_HOME); 
-		File configHome = new File(home+"/conf");
+		File configHome = new File(home,"conf");
 		if (!(configHome.exists())) {
 			configHome.mkdir();
 		}
@@ -76,11 +76,8 @@ public class JLibraryConfiguration {
 		return jLibraryRepositoriesHome;
 	}
 
-	public void setInternalServerRepositoriesHome(String value) {
+	public void setInternalServerRepositoriesHome(String newHome) {
 		
-		String newHome = value;
-		String newRepositoriesHome = value + "/" + "repositories";
-
 		File f = new File(newHome);
 		if (!f.exists()) {
 			if (!f.mkdirs()) {
@@ -88,7 +85,7 @@ public class JLibraryConfiguration {
 			}
 		}
 		
-		f = new File(newRepositoriesHome);
+		f = new File(newHome,"repositories");
 		if (!f.exists()) {
 			if (!f.mkdirs()) {
 				return;
@@ -100,6 +97,6 @@ public class JLibraryConfiguration {
 									   newRepositoriesHome);
 		*/
 		jLibraryHome = newHome;
-		jLibraryRepositoriesHome = newRepositoriesHome;
+		jLibraryRepositoriesHome = f.getAbsolutePath();
 	}
 }

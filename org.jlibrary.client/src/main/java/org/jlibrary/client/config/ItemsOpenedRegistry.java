@@ -112,17 +112,12 @@ public class ItemsOpenedRegistry {
                 
 		String home = JLibraryProperties.getProperty(JLibraryProperties.JLIBRARY_HOME); 
 		//String home = System.getProperty("user.home");
-		String separator = System.getProperty("file.separator");
 		
-		File f = new File(home + separator + ".jlibrary");
-                f.mkdirs();
+		File f = new File(home,".jlibrary");
+        f.mkdirs();
 		if (!f.exists()) {
 			throw new ConfigException(".jlibrary directory don't found");
 		}
-
-		StringBuffer path = new StringBuffer(f.getAbsolutePath());
-		path.append(separator);
-		path.append(".registry.xml");
 
 		XStream xstream = new XStream();
 		ClassLoader clientClassLoader = 
@@ -130,7 +125,7 @@ public class ItemsOpenedRegistry {
 		xstream.setClassLoader(clientClassLoader);
 		
 		try {
-			xstream.toXML(this,new FileWriter(new File(path.toString())));
+			xstream.toXML(this,new FileWriter(new File(f,".registry.xml")));
 		} catch (IOException e) {
 			throw new ConfigException("Error saving the config");
 		}
@@ -143,17 +138,12 @@ public class ItemsOpenedRegistry {
 		}
 		String home = JLibraryProperties.getProperty(JLibraryProperties.JLIBRARY_HOME); 
 		//String home = System.getProperty("user.home");
-		String separator = System.getProperty("file.separator");
 		
-		File f = new File(home + separator + ".jlibrary");
-                f.mkdirs();
+		File f = new File(home, ".jlibrary");
+        f.mkdirs();
 		if (!f.exists()) {
 			throw new ConfigException(".jlibrary directory don't found");
 		}
-
-		StringBuffer path = new StringBuffer(f.getAbsolutePath());
-		path.append(separator);
-		path.append(".registry.xml");
 
 		XStream xstream = new XStream();
 		ClassLoader clientClassLoader = 
@@ -161,7 +151,7 @@ public class ItemsOpenedRegistry {
 		xstream.setClassLoader(clientClassLoader);
 		
 		try {
-			File file = new File(path.toString());
+			File file = new File(f,".registry.xml");
 			if (!file.exists()) {
 				return;
 			}
@@ -231,7 +221,7 @@ public class ItemsOpenedRegistry {
 				ticket.setRepositoryId(item.getRepositoryId());
 				ticket.setAutoConnect(true);
 			} catch (final ConnectException ce) {
-				ce.printStackTrace();
+				logger.error(ce.getMessage(),ce);
 				save = true;
 				
 				// The server isn't available
