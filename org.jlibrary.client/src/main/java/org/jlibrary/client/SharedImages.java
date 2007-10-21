@@ -285,9 +285,7 @@ public class SharedImages {
 
 	protected static URL makeIconFileURL(String name) throws MalformedURLException
 	{
-		StringBuffer buffer = new StringBuffer('/');
-		buffer.append(name);
-		return new URL(fgIconBaseURL, buffer.toString());
+		return new URL(fgIconBaseURL, name);
 	}
 
 	/**

@@ -422,7 +422,7 @@ public class FileEditorInput
 		// We have to correct document's path for local caching of versions
 		String[] partsPath = StringUtils.split(document.getPath(),"/");
 		
-		StringBuffer bufferPath = new StringBuffer("/");
+		StringBuilder bufferPath = new StringBuilder("/");
 		if (partsPath.length > 1) {
 			for (int i = 0; i < partsPath.length-1; i++) {
 				bufferPath.append(partsPath[i]);

@@ -318,7 +318,7 @@ public class ToolTipHandler {
 
 	private String loadLockTooltip(Document document) {
 
-		StringBuffer description = new StringBuffer(document.getDescription());
+		StringBuilder description = new StringBuilder(document.getDescription());
 
 		String username = NodeUtils.getCreatorName(document);
 		if (username != null) {

@@ -72,7 +72,7 @@ public class MetaDataExtractor {
 						}
 						
 						String text = extractor.extractText(new File(file));
-						StringBuffer buffer = new StringBuffer();
+						StringBuilder buffer = new StringBuilder();
 			            List palabras = WordCounter.busca(locale,text);
 			            //logger.debug("Listado de palabras y sus frecuencias:");
 			            if (palabras.size() > 0) {

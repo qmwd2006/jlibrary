@@ -76,15 +76,6 @@ public class EditorConfigEntry implements Serializable {
 	}
 	
 	public String toString() {
-		
-		StringBuffer buffer = new StringBuffer("[");
-		buffer.append(repositoryId);
-		buffer.append(",");
-		buffer.append(id);
-		buffer.append(",");
-		buffer.append(entityClass);
-		buffer.append("]");
-		
-		return buffer.toString();
+		return '['+repositoryId+','+id+','+entityClass+']';
 	}
 }
