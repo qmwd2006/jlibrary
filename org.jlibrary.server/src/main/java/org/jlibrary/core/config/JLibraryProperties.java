@@ -86,8 +86,9 @@ public class JLibraryProperties {
 	private synchronized static void init() {
 		
 		properties = new Properties();
+		InputStream is = null;
 		try {
-		    InputStream is = JLibraryProperties.class.getClassLoader().getResourceAsStream("jlibrary.properties");
+		    is = JLibraryProperties.class.getClassLoader().getResourceAsStream("jlibrary.properties");
 			if (is == null) {
 				// If null, that means that we are using -Djlibrary.home 
 				if (System.getProperty("jlibrary.home") == null) {
@@ -95,10 +96,17 @@ public class JLibraryProperties {
 				}
 			} else {
 			    properties.load(is);
-				is.close();
 			}
 		} catch (IOException e) {				
 			logger.error(e.getMessage(),e);
+		} finally {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+					logger.error(e.getMessage(),e);
+				}
+			}
 		}
 	}
 }

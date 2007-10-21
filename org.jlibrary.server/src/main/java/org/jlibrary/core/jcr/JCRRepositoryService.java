@@ -832,17 +832,22 @@ public class JCRRepositoryService implements RepositoryService {
 
 		SessionManager manager = SessionManager.getInstance();
 		Session session = manager.getSession(ticket);
-
+		ByteArrayOutputStream baos = null;
 		try {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			baos = new ByteArrayOutputStream();
 			loadDocumentContent(docId, ticket, baos);
-			baos.close();
 			return baos.toByteArray();
-			
-		} catch (IOException ioe) {
-			logger.error(ioe.getMessage(),ioe);
-			throw new RepositoryException(ioe);
-		}			
+
+		} finally {
+			if (baos != null) {
+				try {
+					baos.close();
+				} catch (IOException ioe) {
+					logger.error(ioe.getMessage(), ioe);
+					throw new RepositoryException(ioe);
+				}
+			}
+		}
 	}
 
 	public Category findCategoryByPath(Ticket ticket, 
@@ -1768,9 +1773,21 @@ public class JCRRepositoryService implements RepositoryService {
 											throws RepositoryException, 
 												   SecurityException {
 
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		loadVersionContent(ticket, versionId, baos);
-		return baos.toByteArray();
+		ByteArrayOutputStream baos = null;
+		try {
+			baos = new ByteArrayOutputStream();
+			loadVersionContent(ticket, versionId, baos);
+			return baos.toByteArray();
+		} finally {
+			if (baos != null) {
+				try {
+					baos.close();
+				} catch (IOException e) {
+					logger.error(e.getMessage(), e);
+					throw new RepositoryException(e);
+				}
+			}
+		}
 	}
 
 
@@ -2397,15 +2414,22 @@ public class JCRRepositoryService implements RepositoryService {
 			  				  byte[] content) throws SecurityException, 
 			  						 				 RepositoryException {
 		
-		ByteArrayInputStream bais = new ByteArrayInputStream(content);
-		Node updatedNode = updateContent(ticket,nodeId,bais);
+		ByteArrayInputStream bais = null;
 		try {
-			bais.close();
-		} catch (IOException e) {
-			logger.error(e.getMessage(),e);
-			throw new RepositoryException(e);
+			bais = new ByteArrayInputStream(content);
+			Node updatedNode = updateContent(ticket, nodeId, bais);
+			return updatedNode;
+		} finally {
+			try {
+			    if (bais != null) {
+					bais.close();
+				}
+			} catch (IOException e) {
+				logger.error(e.getMessage(), e);
+				throw new RepositoryException(e);
+			}
 		}
-		return updatedNode;
+		
 	}
 	
 	public Node updateContent(Ticket ticket, 

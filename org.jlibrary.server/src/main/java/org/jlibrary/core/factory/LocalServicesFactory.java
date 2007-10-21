@@ -32,11 +32,17 @@ public class LocalServicesFactory implements ServicesFactory {
 				logger.error("Could not find properties for the given server profile");
 				return;
 			}
-			InputStream is = 
-				JLibraryServiceFactory.class.getClassLoader().getResourceAsStream(propertiesFile);
 			Properties factoryProperties = new Properties();
-			factoryProperties.load(is);
-		
+			InputStream is = null;
+			try {
+				is = JLibraryServiceFactory.class.getClassLoader()
+						.getResourceAsStream(propertiesFile);
+				factoryProperties.load(is);
+			} finally {
+				if (is != null) {
+					is.close();
+				}
+			}
 			String repositoryService = factoryProperties.getProperty("RepositoryService");
 			Class repositoryServiceClass = Class.forName(repositoryService);
 			this.repositoryService = (RepositoryService)repositoryServiceClass.newInstance();
@@ -47,9 +53,7 @@ public class LocalServicesFactory implements ServicesFactory {
 		
 			String searchService = factoryProperties.getProperty("SearchService");
 			Class searchServiceClass = Class.forName(searchService);
-			this.searchService = (SearchService)searchServiceClass.newInstance();
-			
-			is.close();
+			this.searchService = (SearchService)searchServiceClass.newInstance();		
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 		}
