@@ -264,9 +264,22 @@ public class JCRResourcesModule {
 												throws RepositoryException, 
 													   SecurityException {
 
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		loadResourceNodeContent(ticket, resourceId, baos);
-		return baos.toByteArray();
+		ByteArrayOutputStream baos = null;
+		try {
+			baos = new ByteArrayOutputStream();
+			loadResourceNodeContent(ticket, resourceId, baos);
+			return baos.toByteArray();
+		} finally {
+			if (baos != null) {
+				try {
+					baos.close();
+				} catch (IOException ioe) {
+					logger.error(ioe.getMessage(),ioe);
+					throw new RepositoryException(ioe);
+				}
+			}
+		}
+		
 	}
 
 	public void loadResourceNodeContent(Ticket ticket, 

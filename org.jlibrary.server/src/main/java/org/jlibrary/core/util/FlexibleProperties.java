@@ -169,17 +169,27 @@ public class FlexibleProperties extends Properties {
         }
 
         if (in == null) throw new IOException("Could not open resource URL " + url);
-
-        super.load(in);
-        in.close();
+        try {
+        	super.load(in);
+        } finally {
+        	in.close();
+        }
 
         if (defaults instanceof FlexibleProperties) ((FlexibleProperties) defaults).reload();
         if (getDoPropertyExpansion()) interpolateProperties();
     }
 
     public synchronized void store(String header) throws IOException {
-        super.store(url.openConnection().getOutputStream(), header);
-    }
+    	OutputStream stream = null;
+		try {
+			stream = url.openConnection().getOutputStream();
+			super.store(stream, header);
+		} finally {
+			if (stream != null) {
+				stream.close();
+			}
+		}
+	}
 
     public synchronized void reload() throws IOException {
         //Debug.log("Reloading the resource: " + url);

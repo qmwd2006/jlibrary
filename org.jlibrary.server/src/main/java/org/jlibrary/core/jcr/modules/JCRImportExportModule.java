@@ -98,23 +98,31 @@ public class JCRImportExportModule {
 			if (!JCRSecurityService.canRead(root, ticket.getUser().getId())) {
 				throw new SecurityException(SecurityException.NOT_ENOUGH_PERMISSIONS);
 			}
-			
-			
-			ByteArrayOutputStream baos1 = new ByteArrayOutputStream();
-			session.exportSystemView(JCRUtils.getRootNode(session).getPath(),
-									 baos1,
-									 false,
-									 false);
-			byte[] rootContent = baos1.toByteArray();
-			baos1.close();
-
-			ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
-			session.exportSystemView(JCRUtils.getSystemNode(session).getPath(),
-									 baos2,
-									 false,
-									 false);
-			byte[] systemContent = baos2.toByteArray();
-			baos2.close();
+				
+			ByteArrayOutputStream baos1 = null;
+			byte[] rootContent;
+			try {
+				baos1 = new ByteArrayOutputStream();
+				session.exportSystemView(JCRUtils.getRootNode(session)
+						.getPath(), baos1, false, false);
+				rootContent = baos1.toByteArray();
+			} finally {
+				if (baos1 != null) {
+					baos1.close();
+				}
+			}
+			byte[] systemContent;
+			ByteArrayOutputStream baos2 = null;
+			try {
+				baos2 = new ByteArrayOutputStream();
+				session.exportSystemView(JCRUtils.getSystemNode(session)
+						.getPath(), baos2, false, false);
+				systemContent = baos2.toByteArray();
+			} finally {
+				if (baos2 != null) {
+					baos2.close();
+				}
+			}
 			
 			String tag = String.valueOf(rootContent.length)+"*";
 			byte[] header = tag.getBytes();
@@ -159,46 +167,59 @@ public class JCRImportExportModule {
 				throw new SecurityException(SecurityException.NOT_ENOUGH_PERMISSIONS);
 			}
 			
-			// Will wrap compression around the given stream			
-			ZipOutputStream zos = new ZipOutputStream(stream);			
-			zos.setComment("jLibrary ZIP archive");
-			zos.setMethod(ZipOutputStream.DEFLATED);
-			zos.setEncoding("UTF-8");
-			zos.setLevel(Deflater.DEFAULT_COMPRESSION);			
-
-			// create and initialize a zipentry for it
-			ZipEntry entry =  new ZipEntry("jlibrary");
-			entry.setTime(System.currentTimeMillis());
-			zos.putNextEntry(entry);
-			
 			// Create a temporary file with content
 			File tempRoot = File.createTempFile("tmp", "jlib");
-			FileOutputStream fos = new FileOutputStream(tempRoot);
-			session.exportSystemView(JCRUtils.getRootNode(session).getPath(),
-	 				 fos,
-	 				 false,
-	 				 false);			
-			fos.close();
-			
-			// write header
-			String tag = String.valueOf(tempRoot.length())+"*";
-			byte[] header = tag.getBytes();
-			zos.write(header);
-			
-			// write root
-			FileInputStream fis = new FileInputStream(tempRoot);
-			IOUtils.copy(fis, zos);
-			fis.close();			
-			// Delete root file
-			tempRoot.delete();
+			FileOutputStream fos = null;
+			try {
+				fos = new FileOutputStream(tempRoot);
+				session.exportSystemView(JCRUtils.getRootNode(session)
+						.getPath(), fos, false, false);
+			} finally {
+				if (fos != null) {
+					fos.close();	
+				}
+			}
+				
+			// Will wrap compression around the given stream			
+			ZipOutputStream zos = null;
+			try {
+				zos = new ZipOutputStream(stream);
+				zos.setComment("jLibrary ZIP archive");
+				zos.setMethod(ZipOutputStream.DEFLATED);
+				zos.setEncoding("UTF-8");
+				zos.setLevel(Deflater.DEFAULT_COMPRESSION);
 
-			session.exportSystemView(JCRUtils.getSystemNode(session).getPath(),
-					 				 zos,
-					 				 false,
-					 				 false);
+				// create and initialize a zipentry for it
+				ZipEntry entry = new ZipEntry("jlibrary");
+				entry.setTime(System.currentTimeMillis());
+				zos.putNextEntry(entry);
+				// write header
+				String tag = String.valueOf(tempRoot.length()) + "*";
+				byte[] header = tag.getBytes();
+				zos.write(header);
+
+				// write root
+				FileInputStream fis = null;
+				try {
+					fis = new FileInputStream(tempRoot);
+					IOUtils.copy(fis, zos);
+				} finally {
+					if (fis != null) {
+						fis.close();
+					}
+				}
+				// Delete root file
+				tempRoot.delete();
+
+				session.exportSystemView(JCRUtils.getSystemNode(session)
+						.getPath(), zos, false, false);
+			} finally {
+				if (zos != null) {
+					zos.closeEntry();
+					zos.close();
+				}
+			}
 			
-			zos.closeEntry();				
-			zos.close();
 		} catch (PathNotFoundException e) {
 			logger.error(e.getMessage(),e);
 			throw new RepositoryException(e);

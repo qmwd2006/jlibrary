@@ -57,9 +57,16 @@ public class PropertiesTestSynchronizer extends SynchronizerTemplate {
 		List users = new ArrayList();
 		try {			
 			Properties userProperties = new Properties();
-			InputStream stream = ResourceLoader.getResourceAsStream(
-					"org/jlibrary/core/jcr/security/test/users.xml");
-			userProperties.loadFromXML(stream);
+			InputStream stream = null;
+			try {
+				stream = ResourceLoader
+						.getResourceAsStream("org/jlibrary/core/jcr/security/test/users.xml");
+				userProperties.loadFromXML(stream);
+			} finally {
+				if (stream != null) {
+					stream.close();
+				}
+			}
 			
 			Iterator it = userProperties.entrySet().iterator();
 			while (it.hasNext()) {
@@ -76,7 +83,7 @@ public class PropertiesTestSynchronizer extends SynchronizerTemplate {
 				
 				users.add(user);
 			}
-			stream.close();
+
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 			throw new SecurityException(e);
@@ -95,10 +102,16 @@ public class PropertiesTestSynchronizer extends SynchronizerTemplate {
 		List groups = new ArrayList();
 		try {			
 			Properties userProperties = new Properties();
-			InputStream stream = ResourceLoader.getResourceAsStream(
-					"org/jlibrary/core/jcr/security/test/groups.xml");
-			userProperties.loadFromXML(stream);
-			
+			InputStream stream = null;
+			try {
+				stream = ResourceLoader
+						.getResourceAsStream("org/jlibrary/core/jcr/security/test/groups.xml");
+				userProperties.loadFromXML(stream);
+			} finally {
+				if (stream != null) {
+					stream.close();
+				}
+			}
 			Iterator it = userProperties.entrySet().iterator();
 			while (it.hasNext()) {
 				Map.Entry entry = (Map.Entry)it.next();
@@ -110,8 +123,7 @@ public class PropertiesTestSynchronizer extends SynchronizerTemplate {
 				group.setDescription(attributes[1]);
 				
 				groups.add(group);
-			}
-			stream.close();
+			}			
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 			throw new SecurityException(e);
