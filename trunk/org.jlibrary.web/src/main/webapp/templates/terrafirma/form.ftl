@@ -9,9 +9,9 @@
 				<fieldset>
 					<legend>Directory details</legend>						
   				<label for="name">Name</label>				
-					<input type="text" name="name" value="${directory.name}"/><br/>
+					<input id="name" type="text" name="name" value="${directory.name}"/><br/>
 					<label for="description">Description</label>
-					<textarea name="description" rows="8" cols="auto" id="description">${directory.description}</textarea>						
+					<textarea id="description" name="description" rows="8" cols="auto">${directory.description}</textarea>						
 					<button type="submit">Update</button>
 					<button type="reset">Cancel</button>
 					<input type="hidden" name="repository" value="${repository.name}"/>
@@ -19,6 +19,9 @@
 					<input type="hidden" name="id" value="${directory.id}"/>
 				</fieldset>
 			</form>
+			<script type="text/javascript">
+				directoryFormValidation();
+			</script>
 		</div>			
 	</div>			
 </#macro>
@@ -57,15 +60,7 @@
 		</div>			
 	</div>
 	<script type="text/javascript">
-		var username = new LiveValidation('username',{onlyOnSubmit:true});
-		var password = new LiveValidation('password',{onlyOnSubmit:true});
-		var email = new LiveValidation('email',{onlyOnSubmit:true});
-		var captcha= new LiveValidation('j_captcha_response',{onlyOnSubmit:true});
-		username.add(Validate.Presence);
-		password.add(Validate.Presence);
-		email.add(Validate.Presence);
-		email.add(Validate.Email);
-		captcha.add(Validate.Presence);
+		registerValidation();
 	</script>
 </#macro>
 
@@ -91,6 +86,9 @@
 					<input type="hidden" name="type" value="directory"/>
 				</fieldset>
 			</form>
+			<script type="text/javascript">
+				directoryFormValidation();
+			</script>
 		</div>			
 	</div>			
 </#macro>
@@ -117,6 +115,9 @@
 					<input type="hidden" name="type" value="category"/>
 				</fieldset>
 			</form>
+			<script type="text/javascript">
+				categoryFormValidation();
+			</script>
 		</div>			
 	</div>			
 </#macro>
@@ -141,6 +142,9 @@
 					<input type="hidden" name="type" value="category"/>
 				</fieldset>
 			</form>
+			<script type="text/javascript">
+				categoryFormValidation();
+			</script>
 		</div>			
 	</div>			
 </#macro>
@@ -177,6 +181,9 @@
 					<input type="hidden" name="type" value="document"/>
 				</fieldset>
 			</form>
+			<script type="text/javascript">
+				documentFormValidation();
+			</script>
 		</div>			
 	</div>			
 </#macro>
@@ -213,6 +220,9 @@
 					<input type="hidden" name="type" value="node"/>
 				</fieldset>
 			</form>
+			<script type="text/javascript">
+				documentFormValidation();
+			</script>
 		</div>			
 	</div>			
 </#macro>
