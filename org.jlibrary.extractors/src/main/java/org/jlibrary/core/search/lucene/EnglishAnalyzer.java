@@ -66,7 +66,7 @@ public class EnglishAnalyzer extends Analyzer {
 			try {
 				is = ResourceLoader.getResourceAsStream("org/jlibrary/core/search/lucene/indexers/english.stop");
 				if (is != null) {
-					StringBuffer words = new StringBuffer(IOUtils.toString(is,"iso_8859_1"));
+					StringBuilder words = new StringBuilder(IOUtils.toString(is,"iso_8859_1"));
 					ENGLISH_STOP_WORDS = words.toString().split("\r\n");
 				} else {
 					ENGLISH_STOP_WORDS = new String[]{};
