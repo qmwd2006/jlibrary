@@ -109,12 +109,12 @@ public class NewRepositoryWizard extends Wizard {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, 
 															 InterruptedException {
 
-				monitor.beginTask(Messages.getMessage("new_repository_wizard_creating"),2);
+				monitor.beginTask(Messages.getMessage("new_repository_wizard_creating"),5);
 				monitor.internalWorked(1);
 				try {
 					RepositoryService service = 
 						JLibraryServiceFactory.getInstance(serverProfile).getRepositoryService();
-					
+					monitor.internalWorked(1);
 					repository = service.createRepository(ticket,name,description,creator);
 					
 					// Now log in in that repository with estándar admin credentials
@@ -125,13 +125,14 @@ public class NewRepositoryWizard extends Wizard {
 						JLibraryServiceFactory.getInstance(serverProfile).getSecurityService().login(
 												credentials,
 												repository.getName());
+					monitor.internalWorked(1);
 					newTicket.setAutoConnect(ticket.isAutoConnect());
 					repository = service.findRepository(repository.getName(), 
 														newTicket);
 					repository.setConnected(true);
 					repository.setServerProfile(serverProfile);
 					repository.setTicket(newTicket);
-					
+					monitor.internalWorked(1);
 				 	// Add repository to repository registry
 				 	RepositoryRegistry.getInstance().addRepository(
 				 			repository,repository.getName());
@@ -176,7 +177,7 @@ public class NewRepositoryWizard extends Wizard {
 
 		WizardDialog wd = (WizardDialog)getContainer();
 		try {
-			wd.run(false,true,runnable);
+			wd.run(true,true,runnable);
 		} catch (InvocationTargetException e) {
 			
             logger.error(e.getMessage(),e);
