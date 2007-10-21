@@ -214,10 +214,8 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 							      Node node) {
 		
 		try {
-//			String templatesDirectory = JLibraryProperties.getProperty(JLibraryProperties.JLIBRARY_TEMPLATES);
-//				"/javaconganas/jlibrary/org.jlibrary.web/src/main/webapp/templates/terrafirma";
 			RepositoryContext context = 
-				new RepositoryContext(repository,getTemplate(),null);
+				new RepositoryContext(repository,getContext());
 			context.setTicket(ticket);
 			FreemarkerExporter exporter = new FreemarkerExporter();
 			exporter.setRootURL(getRootURL(request));
@@ -239,10 +237,8 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 								   Node node) {
 		
 		try {
-//			String templatesDirectory = JLibraryProperties.getProperty(JLibraryProperties.JLIBRARY_TEMPLATES);
-//				"/javaconganas/jlibrary/org.jlibrary.web/src/main/webapp/templates/terrafirma";
 			RepositoryContext context = 
-				new RepositoryContext(repository,getTemplate(),null);
+				new RepositoryContext(repository,getContext());
 			context.setTicket(ticket);
 			FreemarkerExporter exporter = new FreemarkerExporter();
 			exporter.setRootURL(getRootURL(request));
@@ -271,10 +267,9 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 								  Category category) {
 		
 		try {
-//			String templatesDirectory = JLibraryProperties.getProperty(JLibraryProperties.JLIBRARY_TEMPLATES);
-//				"/javaconganas/jlibrary/org.jlibrary.web/src/main/webapp/templates/terrafirma";
+
 			RepositoryContext context = 
-				new RepositoryContext(repository,getTemplate(),null);
+				new RepositoryContext(repository,getContext());
 			context.setTicket(ticket);
 			FreemarkerExporter exporter = new FreemarkerExporter();
 			exporter.setRootURL(getRootURL(request));

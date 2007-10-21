@@ -22,8 +22,25 @@
 */
 package org.jlibrary.web.services;
 
-public class TemplateService {
+/**
+ * This Spring service will hold several configuration values.
+ * 
+ * @author dlatorre
+ * @author mpermar
+ *
+ */
+public class ConfigurationService {
+	
 	private String templateDirectory;
+	private Boolean registrationEnabled;
+
+	public Boolean isRegistrationEnabled() {
+		return registrationEnabled;
+	}
+
+	public void setRegistrationEnabled(Boolean isRegistrationEnabled) {
+		this.registrationEnabled = isRegistrationEnabled;
+	}
 
 	public String getTemplateDirectory() {
 		return templateDirectory;

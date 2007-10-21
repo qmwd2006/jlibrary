@@ -24,7 +24,6 @@ package org.jlibrary.web.freemarker;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -46,16 +45,12 @@ import org.slf4j.LoggerFactory;
  *
  * Template processor for document entities
  */
-public class DocumentTemplateProcessor implements FreemarkerTemplateProcessor {
+public class DocumentTemplateProcessor extends BaseTemplateProcessor {
 
 	static Logger logger = LoggerFactory.getLogger(DocumentTemplateProcessor.class);
 	
 	private Document document;
-	private RepositoryContext context;
-	private FreemarkerExporter exporter;
-
 	private ResourceBundle bundle;
-	private String ftl;
 	
 
 	/**
@@ -71,52 +66,20 @@ public class DocumentTemplateProcessor implements FreemarkerTemplateProcessor {
 									 RepositoryContext context,
 									 String ftl) {
 
+		super(exporter,context,ftl);
 		this.document = document;
-		this.context = context;
-		this.exporter = exporter;
-		this.ftl = ftl;
 	}
 	
-	public String processTemplate(FreemarkerFactory factory) throws ExportException {
-				
-		return processTemplate(factory,factory.getPage(ftl));
-		
-	}
-	
-	private String processTemplate(FreemarkerFactory factory, 
-								   Page page) throws ExportException {
-		
-		/*
-		if (Types.isImageFile(document.getTypecode())) {
-			loadContent();
-			return;
-		}
-		*/
+	@Override
+	protected void exportContent(Page page) throws ExportException {
+
 		bundle = ResourceBundle.getBundle("messages", Locale.getDefault());
 		page.expose("loc",bundle);  
 		
-		page.expose(FreemarkerVariables.REPOSITORY,context.getRepository());
-		page.expose(FreemarkerVariables.DOCUMENT, document);
-		page.expose(FreemarkerVariables.TICKET, context.getTicket());
-		page.expose(FreemarkerVariables.ERROR_MESSAGE, exporter.getError());
-		
-		page.expose(FreemarkerVariables.DATE, new Date());
-		if (context.getRepository().getTicket().getUser().equals(User.ADMIN_USER)) {
-			page.expose(FreemarkerVariables.USER, bundle.getString(User.ADMIN_NAME));
-		} else {
-			String userName = context.getRepository().getTicket().getUser().getName();
-			if (userName.equals(WebConstants.ANONYMOUS_WEB_USERNAME)) {
-				userName = bundle.getString(WebConstants.ANONYMOUS_WEB_USERNAME);
-			}
-			page.expose(FreemarkerVariables.USER, userName);
-		}
-		
+		page.expose(FreemarkerVariables.DOCUMENT, document);		
 		String rootURL = exporter.getRootURL(document);
-		String repositoryURL = exporter.getRepositoryURL();
 		
 		page.expose(FreemarkerVariables.ROOT_URL,rootURL);
-		page.expose(FreemarkerVariables.REPOSITORY_URL,repositoryURL);
-		page.expose(FreemarkerVariables.CATEGORIES_ROOT_URL,repositoryURL+"/categories");
 		page.expose(FreemarkerVariables.LOCATION_URL, exporter.getLocationURL(document));
 		page.expose(FreemarkerVariables.PRINT_FILE, getPrintFile(document));
 		
@@ -126,8 +89,6 @@ public class DocumentTemplateProcessor implements FreemarkerTemplateProcessor {
 		page.expose(FreemarkerVariables.DOCUMENT_CONTENT, loadContent());
 		
 		loadDocumentInformation(page);
-		
-		return page.getAsString();
 	}
 	
 	public void loadDocumentInformation(Page page) throws ExportException {
@@ -182,11 +143,6 @@ public class DocumentTemplateProcessor implements FreemarkerTemplateProcessor {
 		return Collections.EMPTY_LIST;
 		//CategoryHelper helper = exporter.getCategoryHelper();
 		//return helper.findCategoriesForNode(document.getId());
-	}
-
-	private String getFilePath(String path) {
-		
-		return context.getOutputDirectory() + path;
 	}
 	
 	public String getPrintFile(Document document) {

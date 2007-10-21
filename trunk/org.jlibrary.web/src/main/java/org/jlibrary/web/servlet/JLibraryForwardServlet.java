@@ -167,7 +167,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 			repository.setServerProfile(profile);
 
 			RepositoryContext context = 
-				new RepositoryContext(repository,getTemplate(),null);
+				new RepositoryContext(repository, getContext());
 			context.setTicket(ticket);
 			FreemarkerExporter exporter = new FreemarkerExporter();
 			
@@ -206,10 +206,8 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 			Node node = 
 				repositoryService.findNode(ticket, id);
 
-//			String templatesDirectory = 
-//				"/software/apache-tomcat-6.0.13-pruebas/webapps/jlibrary/templates/terrafirma";
 			RepositoryContext context = 
-				new RepositoryContext(repository,getTemplate(),null);
+				new RepositoryContext(repository,getContext());
 			context.setTicket(ticket);
 			FreemarkerExporter exporter = new FreemarkerExporter();
 			
@@ -257,10 +255,8 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 			Repository repository = repositoryService.findRepository(repositoryName, ticket);
 			repository.setServerProfile(profile);
 
-//			String templatesDirectory = 
-//				"/software/apache-tomcat-6.0.13-pruebas/webapps/jlibrary/templates/terrafirma";
 			RepositoryContext context = 
-				new RepositoryContext(repository,getTemplate(),null);
+				new RepositoryContext(repository,getContext());
 			context.setTicket(ticket);
 			FreemarkerExporter exporter = new FreemarkerExporter();
 			

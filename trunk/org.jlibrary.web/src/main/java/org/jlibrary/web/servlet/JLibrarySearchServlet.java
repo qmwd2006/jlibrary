@@ -140,10 +140,8 @@ public class JLibrarySearchServlet extends JLibraryServlet {
 								  SearchResult result) {
 		
 		try {
-//			String templatesDirectory = 
-//				"/software/apache-tomcat-6.0.13-pruebas/webapps/jlibrary/templates/terrafirma";
 			RepositoryContext context = 
-				new RepositoryContext(repository,getTemplate(),null);
+				new RepositoryContext(repository,getContext());
 			context.setTicket(ticket);
 			FreemarkerExporter exporter = new FreemarkerExporter();
 			

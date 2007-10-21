@@ -24,6 +24,8 @@ package org.jlibrary.web.freemarker;
 
 import org.jlibrary.core.entities.Repository;
 import org.jlibrary.core.entities.Ticket;
+import org.jlibrary.web.services.ConfigurationService;
+import org.springframework.context.ApplicationContext;
 
 /**
  * @author martin
@@ -34,25 +36,18 @@ public class RepositoryContext {
 
 	private Repository repository;
 	private String templatesDirectory;
-	private String outputDirectory;
 	private Ticket ticket;
+	private boolean registrationEnabled;
 	
-	/**
-	 * Constructor
-	 * 
-	 * @param repository Repository for this context
-	 * @param templatesDirectory Directory where the templates are stored
-	 * @param outputDirectory Output directory for the export process
-	 */	
-	public RepositoryContext(Repository repository, 
-							 String templatesDirectory,
-							 String outputDirectory) {
-		
+	public RepositoryContext(Repository repository, ApplicationContext context) {
+
 		this.repository = repository;
-		this.templatesDirectory = templatesDirectory;
-		this.outputDirectory = outputDirectory;
+		
+		ConfigurationService service=(ConfigurationService) context.getBean("template");
+		registrationEnabled = service.isRegistrationEnabled();
+		templatesDirectory = service.getTemplateDirectory();
 	}
-	
+
 	public Repository getRepository() {
 		return repository;
 	}
@@ -64,17 +59,9 @@ public class RepositoryContext {
 	public String getTemplatesDirectory() {
 		return templatesDirectory;
 	}
-	
-	public String getOutputDirectory() {
-		return outputDirectory;
-	}
 
 	public void setTemplatesDirectory(String templatesDirectory) {
 		this.templatesDirectory = templatesDirectory;
-	}
-	
-	public void setOutputDirectory(String outputDirectory) {
-		this.outputDirectory = outputDirectory;
 	}
 	
 	/**
@@ -94,5 +81,9 @@ public class RepositoryContext {
 
 	public void setTicket(Ticket ticket) {
 		this.ticket = ticket;
+	}
+
+	public boolean isRegistrationEnabled() {
+		return registrationEnabled;
 	}	
 }

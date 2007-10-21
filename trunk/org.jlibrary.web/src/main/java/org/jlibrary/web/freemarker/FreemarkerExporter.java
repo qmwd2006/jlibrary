@@ -22,8 +22,6 @@
 */
 package org.jlibrary.web.freemarker;
 
-import java.io.File;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
 import org.jlibrary.core.entities.Category;
@@ -32,7 +30,6 @@ import org.jlibrary.core.entities.Document;
 import org.jlibrary.core.entities.Node;
 import org.jlibrary.core.entities.ResourceNode;
 import org.jlibrary.core.entities.SearchResult;
-import org.jlibrary.core.util.FileUtils;
 
 /**
  * @author martin
@@ -62,19 +59,7 @@ public class FreemarkerExporter extends BaseExporter {
 	public void initExportProcess(RepositoryContext context) throws ExportException {
 
 		setRepositoryContext(context);
-		factory.setTemplateCache(context.getTemplatesDirectory());
-		
-		copyResources(context);
-		/*		
-		helper = new CategoryHelper(context.getRepository());
-	
-		try {
-			helper.loadData();
-		} catch (RepositoryException e) {
-			throw new ExportException(e);
-		}
-		*/
-		
+		factory.setTemplateCache(context.getTemplatesDirectory());		
 	}
 	
 	public void endExportProcess(RepositoryContext context) throws ExportException {
@@ -337,40 +322,6 @@ public class FreemarkerExporter extends BaseExporter {
 		}
 		path.insert(0,"/");
 		return path.toString();
-	}
-	
-	/**
-	 * Copy all the resources of the template resources directory to a similar 
-	 * directory in the output destination
-	 * 
-	 * @throws ExportException If the files can't be copied
-	 */
-	private void copyResources(RepositoryContext context) 
-							   throws ExportException {
-		
-		File sourceDir = new File(context.getTemplatesDirectory() + 
-								  File.separator + 
-								  "resources");
-		if (!sourceDir.exists()) {
-			return;
-		}
-		
-		File destinationDir = new File(context.getOutputDirectory() + 
-									   File.separator + 
-									   "resources");
-		
-		if (!destinationDir.mkdir()) {
-			return;
-		}
-		
-		try {
-			File[] files = sourceDir.listFiles();
-			for (int i = 0; i < files.length; i++) {
-				FileUtils.copyFile(files[i],destinationDir, false);
-			}
-		} catch (Exception e) {
-			throw new ExportException(e);
-		}
 	}
 	
 	public Page getCurrentPage() {

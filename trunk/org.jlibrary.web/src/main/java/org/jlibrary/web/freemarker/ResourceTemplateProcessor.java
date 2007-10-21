@@ -63,9 +63,4 @@ public class ResourceTemplateProcessor implements FreemarkerTemplateProcessor {
 		//TODO: Implement resource loading
 		return "";
 	}
-		
-	private String getFilePath(String path) {
-		
-		return context.getOutputDirectory() + path;
-	}
 }
