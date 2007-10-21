@@ -54,7 +54,7 @@ public class JLibraryEditorPartListener implements IPartListener {
 	
 	static Logger logger = LoggerFactory.getLogger(JLibraryEditorPartListener.class);
 	
-	StringBuffer buffer = new StringBuffer();
+	StringBuilder buffer = new StringBuilder();
 	
 	public void partActivated(IWorkbenchPart part) {
 
