@@ -184,18 +184,11 @@ public class HistoryBook implements Serializable{
 		
 		// Load history from disk
         String home = JLibraryProperties.getProperty(JLibraryProperties.JLIBRARY_HOME);  
-		String separator = System.getProperty("file.separator");
-		
-		File f = new File(home + separator + ".jlibrary");
-                f.mkdirs();
+		File f = new File(home,".jlibrary");
+        f.mkdirs();
 		if (!f.exists()) {
 			throw new ConfigException(".jlibrary directory don't found");
 		}
-
-		StringBuffer path = new StringBuffer(f.getAbsolutePath());
-		path.append(separator);
-		path.append(".history-registry.xml");
-
 		XStream xstream = new XStream();
 		ClassLoader clientClassLoader = 
 			JLibraryPlugin.getDefault().getClass().getClassLoader();
@@ -204,32 +197,39 @@ public class HistoryBook implements Serializable{
 		File file = null;
 		FileReader reader = null;
 		try {
-			file = new File(path.toString());
+			file = new File(f, ".history-registry.xml");
 			if (!file.exists()) {
 				instance = new HistoryBook().createHistoryBook();
 				instance.saveHistory();
 				return instance;
 			}
 			reader = new FileReader(file);
-			instance = (HistoryBook)xstream.fromXML(reader);
+			instance = (HistoryBook) xstream.fromXML(reader);
 			instance.updateDates();
 			return instance;
 		} catch (Exception e) {
 			// Backup the corrupted file and remove it
 			String backupName = file.getName();
 			String extension = FileUtils.getExtension(file.getName());
-			backupName = StringUtils.replace(backupName,extension,"");
-			backupName += new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".bak";
+			backupName = StringUtils.replace(backupName, extension, "");
+			backupName += new SimpleDateFormat("yyyy-MM-dd").format(new Date())
+					+ ".bak";
 			File backupFile = new File(backupName);
 			try {
-				org.apache.commons.io.FileUtils.copyFile(file,backupFile);
-				reader.close();
+				org.apache.commons.io.FileUtils.copyFile(file, backupFile);
 				file.delete();
 			} catch (IOException e1) {
-				e1.printStackTrace();
+				logger.error(e1.getMessage(), e);
 			}
-
 			throw new ConfigException(e);
+		} finally {
+			try {
+				if (reader != null) {
+					reader.close();
+				}
+			} catch (IOException e) {
+				logger.error(e.getMessage(), e);
+			}
 		}
 	}
 	
@@ -237,19 +237,14 @@ public class HistoryBook implements Serializable{
 
 		//String home = System.getProperty("user.home");
 		String home = JLibraryProperties.getProperty(JLibraryProperties.JLIBRARY_HOME);  
-		String separator = System.getProperty("file.separator");
 		
-		File f = new File(home + separator + ".jlibrary");
-                f.mkdirs();
+		File f = new File(home,".jlibrary");
+        f.mkdirs();
 		if (!f.exists()) {
 			
 			logger.info(".jlibrary directory don't found");
 			return;
 		}
-
-		StringBuffer path = new StringBuffer(f.getAbsolutePath());
-		path.append(separator);
-		path.append(".history-registry.xml");
 
 		XStream xstream = new XStream();
 		ClassLoader clientClassLoader = 
@@ -257,9 +252,8 @@ public class HistoryBook implements Serializable{
 		xstream.setClassLoader(clientClassLoader);
 		
 		try {
-			xstream.toXML(this,new FileWriter(new File(path.toString())));
+			xstream.toXML(this,new FileWriter(new File(f,".history-registry.xml")));
 		} catch (IOException e) {
-			
             logger.error(e.getMessage(),e);
 		}
 	}
