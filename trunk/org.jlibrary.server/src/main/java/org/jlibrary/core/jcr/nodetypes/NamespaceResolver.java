@@ -52,15 +52,26 @@ public class NamespaceResolver {
 	 */
 	public void registerAvailableNamespaces(Workspace wsp) throws RepositoryException {
 		
-		InputStream stream = getClass().getClassLoader().getResourceAsStream(NAMESPACES_FILE);
-		if (stream == null) {
-			logger.error("Could not read namespaces file: " + NAMESPACES_FILE);
-		}
 		Properties properties = new Properties();
+		InputStream stream = null;
 		try {
+			stream = getClass().getClassLoader().getResourceAsStream(
+					NAMESPACES_FILE);
+			if (stream == null) {
+				logger.error("Could not read namespaces file: "
+						+ NAMESPACES_FILE);
+			}
 			properties.load(stream);
 		} catch (IOException e) {
 			logger.error("Error loading properties file", e);
+		} finally {
+			if (stream != null) {
+				try {
+					stream.close();
+				} catch (IOException e) {
+					logger.error(e.getMessage(), e);
+				}
+			}
 		}
 
 		for (Object key: properties.keySet()) {
