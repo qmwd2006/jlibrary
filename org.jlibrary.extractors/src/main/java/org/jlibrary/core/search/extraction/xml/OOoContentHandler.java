@@ -34,12 +34,12 @@ import org.xml.sax.helpers.DefaultHandler;
 public class OOoContentHandler extends DefaultHandler
 {
 
-	private StringBuffer content;
+	private StringBuilder content;
 	private boolean appendChar;
 	
 	public OOoContentHandler()
 	{
-		content = new StringBuffer();
+		content = new StringBuilder();
 		appendChar = false;
 	}
 	

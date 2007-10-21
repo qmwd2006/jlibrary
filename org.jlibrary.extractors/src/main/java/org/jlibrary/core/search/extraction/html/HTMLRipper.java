@@ -181,12 +181,11 @@ public class HTMLRipper {
                     dir.mkdirs ();
                 file = new File (dir, file.getName ());
             }
-            
+            FileOutputStream fos = null;
             // If the file is known we will download it with html crawler
             if (Types.isBrowsable(Types.getTypeForFile(file.getAbsolutePath()))) {
 	            try
 	            {
-	            	
 	                // fetch the page and gather the list of nodes
 	                mParser.setURL (url);
 	                try
@@ -205,37 +204,49 @@ public class HTMLRipper {
 	                    for (NodeIterator e = mParser.elements (); e.hasMoreNodes (); )
 	                        list.add (e.nextNode ());
 	                }	            	
-	            	
-	                out = new PrintWriter (new FileOutputStream (file));
+	                fos = new FileOutputStream (file);
+	                out = new PrintWriter (fos);
 	                for (int i = 0; i < list.size (); i++)
 	                    out.print (list.elementAt (i).toHtml ());
-	                out.close ();
 	            }
 	            catch (FileNotFoundException fnfe)
 	            {
 	            	logger.error(fnfe.getMessage(),fnfe);
 	            }
+	            finally {
+            		try {
+						if (fos != null) {
+							fos.close();
+						}
+						if (out != null) {
+							out.close();
+						}
+					} catch (IOException ioe) {
+						logger.error(ioe.getMessage(), ioe);
+						throw new ParserException(ioe);
+					}
+	            }
             } else {
-            	FileOutputStream fos = null;
+            	InputStream stream = null;
             	try {
-                	InputStream stream = new URL(url).openStream();
+                	stream = new URL(url).openStream();
                 	fos = new FileOutputStream(file);
-                	IOUtils.copy(stream, fos);
-                	fos.close();
-                	stream.close();
-            		
+                	IOUtils.copy(stream, fos);   		
             	} catch (IOException ioe) {
             		logger.error(ioe.getMessage(),ioe);
             		throw new ParserException(ioe);            		
             	} finally {
-            		if (fos != null) {
-            			try {
+            		try {
+						if (fos != null) {
 							fos.close();
-						} catch (IOException ioe) {
-		            		logger.error(ioe.getMessage(),ioe);
-		            		throw new ParserException(ioe); 
 						}
-            		}
+						if (stream != null) {
+							stream.close();
+						}
+					} catch (IOException ioe) {
+						logger.error(ioe.getMessage(), ioe);
+						throw new ParserException(ioe);
+					}
             	}
             }
         }

@@ -151,7 +151,7 @@ public class ExcelExtractor extends MSOfficeExtractor implements POIFSReaderList
     protected String extractTableContent(InputStream in) throws IOException {
 
         HSSFWorkbook excelWb = new HSSFWorkbook(in);
-        StringBuffer result = new StringBuffer(4096);
+        StringBuilder result = new StringBuilder(4096);
 
         int numberOfSheets = excelWb.getNumberOfSheets();
 

@@ -117,7 +117,7 @@ public class HeaderMetaData {
 	 */
 	public String toString() {
 		
-		StringBuffer header = new StringBuffer("[");
+		StringBuilder header = new StringBuilder("[");
 		header.append("Title : ");
 		header.append(title);
 		header.append(", Description : ");
