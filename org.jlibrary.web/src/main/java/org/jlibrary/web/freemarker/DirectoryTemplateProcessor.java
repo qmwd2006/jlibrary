@@ -23,7 +23,6 @@
 package org.jlibrary.web.freemarker;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
@@ -49,15 +48,12 @@ import org.slf4j.LoggerFactory;
  *
  * Template processor for directory entities
  */
-public class DirectoryTemplateProcessor implements FreemarkerTemplateProcessor {
+public class DirectoryTemplateProcessor extends BaseTemplateProcessor {
 
 	static Logger logger = LoggerFactory.getLogger(DirectoryTemplateProcessor.class);
 	
 	private Directory directory;
-	private RepositoryContext context;
-	private FreemarkerExporter exporter;
 	private Document indexDocument;
-	private String ftl;
 
 	/**
 	 * Document template processor
@@ -71,43 +67,19 @@ public class DirectoryTemplateProcessor implements FreemarkerTemplateProcessor {
 									  Directory directory, 
 									  RepositoryContext context,
 									  String ftl) {
-
+		
+		super(exporter,context,ftl);
+		
 		this.directory = directory;
-		this.context = context;
-		this.exporter = exporter;
-		this.ftl = ftl;
 	}
-	
-	public String processTemplate(FreemarkerFactory factory) throws ExportException {
 
-		return processTemplate(factory,factory.getPage(ftl));
-	}	
-	
-
-	public String processTemplate(FreemarkerFactory factory,
-								  Page page) throws ExportException {
+	@Override
+	protected void exportContent(Page page) throws ExportException {
 
 		loadChildren();
 		
-		ResourceBundle bundle = ResourceBundle.getBundle("messages", Locale.getDefault());
-		page.expose("loc",bundle);  
-		
-		page.expose(FreemarkerVariables.REPOSITORY,context.getRepository());
 		page.expose(FreemarkerVariables.DIRECTORY, directory);		
-		page.expose(FreemarkerVariables.TICKET, context.getTicket());
-		page.expose(FreemarkerVariables.ERROR_MESSAGE, exporter.getError());
 		
-		page.expose(FreemarkerVariables.DATE, new Date());
-		if (context.getRepository().getTicket().getUser().equals(User.ADMIN_USER)) {
-			page.expose(FreemarkerVariables.USER, bundle.getString(User.ADMIN_NAME));
-		} else {
-			String userName = context.getRepository().getTicket().getUser().getName();
-			if (userName.equals(WebConstants.ANONYMOUS_WEB_USERNAME)) {
-				userName = bundle.getString(WebConstants.ANONYMOUS_WEB_USERNAME);
-			}
-			page.expose(FreemarkerVariables.USER, userName);
-		}
-
 		if (hasIndexDocument()) {
 			page.expose(FreemarkerVariables.DIRECTORY_CONTENT, 
 						getDirectoryContent());
@@ -121,14 +93,9 @@ public class DirectoryTemplateProcessor implements FreemarkerTemplateProcessor {
 		}
 
 		String rootURL = exporter.getRootURL(directory);
-		String repositoryURL = exporter.getRepositoryURL();
-		
 		page.expose(FreemarkerVariables.ROOT_URL,rootURL);
-		page.expose(FreemarkerVariables.REPOSITORY_URL,repositoryURL);
-		page.expose(FreemarkerVariables.CATEGORIES_ROOT_URL,repositoryURL+"/categories");
 		page.expose(FreemarkerVariables.LOCATION_URL, exporter.getLocationURL(directory));
-		page.expose(FreemarkerVariables.PRINT_FILE, "");
-		
+		page.expose(FreemarkerVariables.PRINT_FILE, "");		
 		page.expose(FreemarkerVariables.PAGE_AUTHOR,"");
 	
 		Repository repository = context.getRepository();
@@ -143,7 +110,8 @@ public class DirectoryTemplateProcessor implements FreemarkerTemplateProcessor {
 		User user = null;
 		try {
 			user = ss.findUserById(ticket,userId);
-			
+			ResourceBundle bundle = ResourceBundle.getBundle("messages", Locale.getDefault());
+
 			if (user.getName().equals(User.ADMIN_NAME) || 
 				user.getName().equals(WebConstants.ANONYMOUS_WEB_USERNAME)) {
 				page.expose(FreemarkerVariables.NODE_CREATOR, bundle.getString(user.getName()));
@@ -153,8 +121,6 @@ public class DirectoryTemplateProcessor implements FreemarkerTemplateProcessor {
 		} catch (Exception e) {
 		   logger.error(e.getMessage(),e);
 		}
-		
-		return page.getAsString();
 	}
 	
 	private void loadChildren() throws ExportException {

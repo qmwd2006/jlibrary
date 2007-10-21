@@ -30,7 +30,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jlibrary.web.services.TemplateService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -50,19 +49,9 @@ public class JLibraryServlet extends HttpServlet{
 	
 	@Override
 	public void init() throws ServletException {
+		
 		context=WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
 		super.init();
-	}
-	
-	/**
-	 * Returns the web template used for this webapp
-	 * 
-	 * @return String web template path
-	 */
-	public String getTemplate(){
-		
-		TemplateService templ=(TemplateService) context.getBean("template");
-		return templ.getTemplateDirectory();		
 	}
 	
 	/**
@@ -206,5 +195,10 @@ public class JLibraryServlet extends HttpServlet{
 			logErrorAndForward(req, resp, repositoryName, fnfe, fnfe.getMessage());
 		}
 		return field;
+	}
+
+	public ApplicationContext getContext() {
+	
+		return context;
 	}
 }

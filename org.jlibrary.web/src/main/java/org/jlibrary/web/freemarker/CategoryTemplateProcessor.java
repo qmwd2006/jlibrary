@@ -23,20 +23,12 @@
 package org.jlibrary.web.freemarker;
 
 import java.util.Collection;
-import java.util.Date;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 import org.jlibrary.core.entities.Category;
 import org.jlibrary.core.entities.Repository;
-import org.jlibrary.core.entities.User;
 import org.jlibrary.core.factory.JLibraryServiceFactory;
 import org.jlibrary.core.repository.RepositoryService;
-import org.jlibrary.core.repository.exception.CategoryNotFoundException;
-import org.jlibrary.core.repository.exception.RepositoryException;
-import org.jlibrary.web.WebConstants;
 import org.jlibrary.web.content.WordCounter;
-import org.jlibrary.web.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,14 +37,11 @@ import org.slf4j.LoggerFactory;
  *
  * Template processor for category entities
  */
-public class CategoryTemplateProcessor implements FreemarkerTemplateProcessor {
+public class CategoryTemplateProcessor extends BaseTemplateProcessor {
 
 	static Logger logger = LoggerFactory.getLogger(CategoryTemplateProcessor.class);
 	
 	private Category category;
-	private RepositoryContext context;
-	private FreemarkerExporter exporter;
-	private String ftl;
 
 	/**
 	 * Document template processor
@@ -60,63 +49,30 @@ public class CategoryTemplateProcessor implements FreemarkerTemplateProcessor {
 	 * @param exporter Main freemarker template exporter
 	 * @param category Category to process
 	 * @param context Context repository for this processor
+	 * @param ftl Template used
 	 */
 	public CategoryTemplateProcessor(FreemarkerExporter exporter,
 									 Category category, 
 									 RepositoryContext context,
 									 String ftl) {
 
+		super(exporter,context,ftl);
+		
 		this.category = category;
-		this.context = context;
-		this.exporter = exporter;
-		this.ftl = ftl;
 	}
 	
-	public String processTemplate(FreemarkerFactory factory) throws ExportException {
+	@Override
+	protected void exportContent(Page page) throws ExportException {
 
-
-		return processTemplate(factory,factory.getPage(ftl));		
-	}	
-	
-	public String processTemplate(FreemarkerFactory factory,
-								  Page page) throws ExportException {
-			
-		ResourceBundle bundle = ResourceBundle.getBundle("messages", Locale.getDefault());
-		page.expose("loc",bundle);  
-		
-		page.expose(FreemarkerVariables.REPOSITORY,context.getRepository());
 		page.expose(FreemarkerVariables.CATEGORY, category);	
-		page.expose(FreemarkerVariables.TICKET, context.getTicket());
-		page.expose(FreemarkerVariables.ERROR_MESSAGE, exporter.getError());
-		
-		page.expose(FreemarkerVariables.DATE, new Date());
-		if (context.getRepository().getTicket().getUser().equals(User.ADMIN_USER)) {
-			page.expose(FreemarkerVariables.USER, bundle.getString(User.ADMIN_NAME));
-		} else {
-			String userName = context.getRepository().getTicket().getUser().getName();
-			if (userName.equals(WebConstants.ANONYMOUS_WEB_USERNAME)) {
-				userName = bundle.getString(WebConstants.ANONYMOUS_WEB_USERNAME);
-			}
-			page.expose(FreemarkerVariables.USER, userName);
-		}
-
 		String rootURL = exporter.getRootURL(category);
-		String repositoryURL = exporter.getRepositoryURL();
-		
-		String categoriesRootURL = repositoryURL+"/categories";
 		page.expose(FreemarkerVariables.ROOT_URL,rootURL);		
-		page.expose(FreemarkerVariables.REPOSITORY_URL,repositoryURL);
-		page.expose(FreemarkerVariables.CATEGORIES_ROOT_URL,categoriesRootURL);
 		page.expose(FreemarkerVariables.LOCATION_URL, exporter.getLocationURL(category));
 		page.expose(FreemarkerVariables.PRINT_FILE, "");
 		
 		page.expose(FreemarkerVariables.PAGE_AUTHOR,"");
 		page.expose(FreemarkerVariables.PAGE_KEYWORDS,
 				WordCounter.buildKeywords(category.getDescription(),5));
-
-
-		//CategoryHelper helper = exporter.getCategoryHelper();		
-		//Collection nodes = helper.findNodesForCategory(category.getId());
 		
 		Repository repository = context.getRepository();
 		RepositoryService repositoryService = 
@@ -130,7 +86,5 @@ public class CategoryTemplateProcessor implements FreemarkerTemplateProcessor {
 		ExportFilter filter = exporter.getFilter();
 		page.expose(FreemarkerVariables.CATEGORY_DOCUMENTS,
 					filter.filterCategoryNodes(category, nodes));
-		
-		return page.getAsString();		
 	}
 }

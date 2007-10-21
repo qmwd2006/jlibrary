@@ -30,6 +30,10 @@ package org.jlibrary.web.freemarker;
 public class FreemarkerVariables {
 	
 	/**
+	 * Registration enabled
+	 */
+	public static final String REGISTRATION_ENABLED = "registrationEnabled";
+	/**
 	 * Error string
 	 */
 	public static final String ERROR_MESSAGE = "error";

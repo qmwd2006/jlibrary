@@ -22,8 +22,6 @@
 */
 package org.jlibrary.web.freemarker;
 
-import java.util.Date;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,14 +30,10 @@ import org.slf4j.LoggerFactory;
  *
  * Template processor for generic pages
  */
-public class GenericTemplateProcessor implements FreemarkerTemplateProcessor {
+public class GenericTemplateProcessor extends BaseTemplateProcessor {
 
 	static Logger logger = LoggerFactory.getLogger(GenericTemplateProcessor.class);
 	
-	private RepositoryContext context;
-	private FreemarkerExporter exporter;
-	private String template;
-
 	/**
 	 * Document template processor
 	 * 
@@ -50,34 +44,13 @@ public class GenericTemplateProcessor implements FreemarkerTemplateProcessor {
 								    RepositoryContext context,
 								    String template) {
 
-		this.context = context;
-		this.exporter = exporter;
-		this.template = template;
+		super(exporter,context,template);
 	}
-	
-	public String processTemplate(FreemarkerFactory factory) throws ExportException {
 
-		return processTemplate(factory,factory.getPage(template));
-	}	
-	
-
-	public String processTemplate(FreemarkerFactory factory,
-								  Page page) throws ExportException {
+	@Override
+	protected void exportContent(Page page) throws ExportException {
 		
-		page.expose(FreemarkerVariables.REPOSITORY,context.getRepository());	
-		page.expose(FreemarkerVariables.TICKET, context.getTicket());
-		
-		page.expose(FreemarkerVariables.DATE, new Date());
-
 		String rootURL = exporter.getRootURL(context.getRepository().getRoot());
-		String repositoryURL = exporter.getRepositoryURL();
-		
 		page.expose(FreemarkerVariables.ROOT_URL,rootURL);
-		page.expose(FreemarkerVariables.REPOSITORY_URL,repositoryURL);
-		page.expose(FreemarkerVariables.CATEGORIES_ROOT_URL,repositoryURL+"/categories");
-		page.expose(FreemarkerVariables.LOCATION_URL, "");
-		page.expose(FreemarkerVariables.PAGE_KEYWORDS, "jlibrary");
-		
-		return page.getAsString();
 	}
 }

@@ -25,9 +25,18 @@ package org.jlibrary.web.freemarker;
 /**
  * @author martin
  *
- * Interfaces that define operations for template processment
+ * Interface that define operations for template processment
  */
 public interface FreemarkerTemplateProcessor {
 
+	/**
+	 * Processes a freemarker template. 
+	 * 
+	 * @param factory Freemarer factory
+	 * 
+	 * @return String Freemarker template processing output. 
+	 * 
+	 * @throws ExportException If there is any problem processing the template
+	 */
 	public String processTemplate(FreemarkerFactory factory) throws ExportException;
 }
