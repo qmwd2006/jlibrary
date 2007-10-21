@@ -23,6 +23,7 @@
 package org.jlibrary.core.entities;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -202,12 +203,14 @@ public final class Types {
         private Map mimes;
 
         protected FileTypes(){  
+
+        	InputStream is = null;
         	try {
 	            XStream xstream = new XStream();
 	            xstream.alias("file-types", ArrayList.class);
 	            xstream.alias("file", FileType.class);
-	            BufferedReader br = new BufferedReader(new InputStreamReader(
-	            		getClass().getClassLoader().getResourceAsStream("filetypes.xml")));
+	            is = getClass().getClassLoader().getResourceAsStream("filetypes.xml");
+	            BufferedReader br = new BufferedReader(new InputStreamReader(is));
 	            List fileContent = (List)xstream.fromXML(br);
 	            mimes = new HashMap();        
 	            FileType mime;
@@ -217,6 +220,14 @@ public final class Types {
 	            }
         	} catch (Exception e) {
         		logger.error("[Error] Could not load filetypes.xml");
+        	} finally {
+        		if (is != null) {
+        			try {
+						is.close();
+					} catch (Exception e) {
+						logger.error(e.getMessage(),e);
+					}
+        		}
         	}
         }
 

@@ -65,11 +65,19 @@ public class JLibraryServiceFactory {
 					logger.error("Could not find factory properties file");
 					return null;
 				}
-				InputStream is = 
-					JLibraryServiceFactory.class.getClassLoader().getResourceAsStream(propertiesFile);
+				InputStream is = null;
 				Properties factoryProperties = new Properties();
-				factoryProperties.load(is);
-				is.close();
+				try {
+					is = JLibraryServiceFactory.class.getClassLoader()
+							.getResourceAsStream(propertiesFile);
+					factoryProperties = new Properties();
+					factoryProperties.load(is);
+				} finally {
+					if (is != null) {
+						is.close();
+					}
+				}
+				
 			
 				factory = factoryProperties.getProperty(FACTORY_SERVICES);
 			}
