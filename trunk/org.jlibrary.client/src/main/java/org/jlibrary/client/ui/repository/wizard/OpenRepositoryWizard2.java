@@ -199,7 +199,7 @@ public class OpenRepositoryWizard2 extends Wizard {
 
 		WizardDialog wd = (WizardDialog)getContainer();
 		try {
-			wd.run(false,true,runnable);			
+			wd.run(true,true,runnable);			
 		} catch (Exception e) {
 			
             logger.error(e.getMessage(),e);

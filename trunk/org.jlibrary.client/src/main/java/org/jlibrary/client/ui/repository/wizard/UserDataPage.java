@@ -273,7 +273,7 @@ public class UserDataPage extends WizardPage {
 		
 		WizardDialog wd = (WizardDialog)getWizard().getContainer();
 		try {
-			wd.run(false,true,runnable);
+			wd.run(true,true,runnable);
 			
 			if (connected){
 				setMessage(nextMessage,IMessageProvider.INFORMATION);
@@ -318,8 +318,11 @@ public class UserDataPage extends WizardPage {
 			ClientConfig.moveToFirst(serverProfile);
 		
 			connected = true;
-			setErrorMessage(null);
-			setMessage(nextMessage,IMessageProvider.INFORMATION);
+			
+			getShell().getDisplay().asyncExec(showError(null));
+			getShell().getDisplay().asyncExec(showMessage(nextMessage,IMessageProvider.INFORMATION));
+
+			
 		} catch (ConnectException ce) {
 			getShell().getDisplay().asyncExec(showError(Messages.getMessage("connection_refused")));			
 		} catch (UserNotFoundException e1) {
@@ -345,6 +348,15 @@ public class UserDataPage extends WizardPage {
 		};
 	}
 
+	private Runnable showMessage(final String message,final int type) {
+		
+		return new Runnable() {
+			public void run() {
+				setMessage(message,type);
+			}
+		};
+	}
+	
 	private void checkButtonsEnabled() {
         
         connectButton.setEnabled(false);

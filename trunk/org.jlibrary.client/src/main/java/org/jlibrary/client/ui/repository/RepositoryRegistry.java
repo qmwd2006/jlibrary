@@ -35,6 +35,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.jlibrary.client.JLibraryPlugin;
 import org.jlibrary.client.Messages;
@@ -96,11 +97,17 @@ public class RepositoryRegistry {
 	 	if (DEBUG) {debug(repository);};
 		
 		repositories.put(repository.getId(), repository);
-		RepositoryViewer viewer = 
-			RepositoryView.getRepositoryViewer();
-		if (viewer != null) {
-			viewer.addRepository(repository);
-		}
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				RepositoryViewer viewer = RepositoryView.getRepositoryViewer();
+				if (viewer != null) {
+					viewer.addRepository(repository);
+				}
+
+			}
+		});
+		
+
 		
 		// Update locks registry
 		LockRegistry.getInstance().addRepository(repository);
