@@ -64,11 +64,11 @@ public class DecoratorNode extends LabelProvider implements ILightweightLabelDec
 	 */
 	public Image decorateImage(Image image, Object element) {
 		
-		StringBuffer keyCode = null;
+		StringBuilder keyCode = null;
 		if (element instanceof Node) {
 			
 			Node node = (Node)element;
-			keyCode = new StringBuffer(node.getTypecode().toString());
+			keyCode = new StringBuilder(node.getTypecode().toString());
 			
 			boolean decorated = false;
 			if (node.isResource() == true) {

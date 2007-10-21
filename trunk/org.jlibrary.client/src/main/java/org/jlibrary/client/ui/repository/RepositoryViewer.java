@@ -172,7 +172,7 @@ public class RepositoryViewer extends TreeViewer {
 
 	private void updateStatusBar(SelectionChangedEvent event) {
 
-		StringBuffer buffer = new StringBuffer();		
+		StringBuilder buffer = new StringBuilder();		
 		buffer.delete(0,buffer.length());
 		
 		Object selectedObject = ((StructuredSelection)event.getSelection()).getFirstElement();

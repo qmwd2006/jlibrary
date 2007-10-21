@@ -40,7 +40,7 @@ public class CategoryUtils {
 
 	public static String pathOf(Category category) {
 		
-		StringBuffer path = new StringBuffer();
+		StringBuilder path = new StringBuilder();
 		while (category != null) {
 			path.insert(0,relativePathOf(category));
 			path.insert(0,"/");
