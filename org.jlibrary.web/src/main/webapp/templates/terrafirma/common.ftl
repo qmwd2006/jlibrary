@@ -9,7 +9,8 @@
     <meta name="keywords" content="${page_keywords}" />
     <meta name="description" content="jLibrary Web Browser" />
     <link rel="stylesheet" type="text/css" href="${root_url}/templates/terrafirma/default.css" />
-    <script type="text/javascript" src="${root_url}/livevalidation_standalone.compressed.js"></script>
+    <script type="text/javascript" src="${root_url}/js/livevalidation_standalone.compressed.js"></script>
+    <script type="text/javascript" src="${root_url}/js/jlibrary_validation.js"></script>
   </head>
  
   <body>
@@ -31,6 +32,7 @@
     <link rel="stylesheet" type="text/css" href="${root_url}/templates/terrafirma/default.css" />
     <script type="text/javascript" src="${root_url}/livevalidation_standalone.compressed.js"></script>
     <script type="text/javascript" src="${root_url}/FCKEditor/fckeditor.js"></script>
+    <script type="text/javascript" src="${root_url}/js/jlibrary_validation.js"></script>
   </head>
  
   <body>
