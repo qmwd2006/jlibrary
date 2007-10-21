@@ -141,7 +141,7 @@ public class ExceptionsHelper {
 		if (t instanceof ResourceLockedException) {
 			ResourceLockedException e = (ResourceLockedException)t;
 			Lock lock = e.getLock();
-			StringBuffer buffer = new StringBuffer();
+			StringBuilder buffer = new StringBuilder();
 			
 			buffer.append(Messages.getMessage("locking_exception_detail_rn"));
 			if (lock != null) {

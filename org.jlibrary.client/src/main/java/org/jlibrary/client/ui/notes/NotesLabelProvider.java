@@ -48,7 +48,7 @@ public class NotesLabelProvider extends LabelProvider  {
 		
 		Note note = (Note)element;
 		
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		buffer.append("[");
 		
 		User user = (User)

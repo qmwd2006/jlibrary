@@ -45,7 +45,7 @@ public class RepositoryLabelProvider extends LabelProvider {
 		
 		if (element instanceof Repository) {
 			Repository repository = (Repository)element; 
-			StringBuffer buffer = new StringBuffer(repository.getName());
+			StringBuilder buffer = new StringBuilder(repository.getName());
 			buffer.append(" (");
 			if ((repository.getServerProfile().isLocal())) {
 				buffer.append(Messages.getMessage(
