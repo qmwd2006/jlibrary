@@ -203,11 +203,7 @@ public class JCRResourcesModule {
 				javax.jcr.Node userNode = 
 					JCRSecurityService.getUserNode(session,
 												   ticket.getUser().getId());
-				
-				JCRUtils.addNodeToProperty(userNode,
-										   child,
-										   JLibraryConstants.JLIBRARY_RESTRICTIONS);
-	
+				JCRRepositoryService.addRestrictionsToNode(child,parent,userNode);
 				
 				if (ticket.isAutocommit()) {
 					session.save();

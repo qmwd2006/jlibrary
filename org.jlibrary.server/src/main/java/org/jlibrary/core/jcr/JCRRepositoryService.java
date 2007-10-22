@@ -218,10 +218,7 @@ public class JCRRepositoryService implements RepositoryService {
 				javax.jcr.Node userNode = 
 					JCRSecurityService.getUserNode(session,
 												   ticket.getUser().getId());
-				JCRUtils.addNodeToProperty(userNode,
-										   child,
-										   JLibraryConstants.JLIBRARY_RESTRICTIONS);
-				
+				addRestrictionsToNode(child,parent,userNode);
 				if (ticket.isAutocommit()) {
 					session.save();
 				}
@@ -235,6 +232,19 @@ public class JCRRepositoryService implements RepositoryService {
 		}
 	}
 
+	public static void addRestrictionsToNode(javax.jcr.Node node, 
+			   						   		 javax.jcr.Node parent, 
+			   						   		 javax.jcr.Node userNode) throws javax.jcr.RepositoryException {
+
+		List restrictions = JCRAdapter.obtainRestrictions(parent);
+		if (!restrictions.contains(userNode.getUUID())) {
+			restrictions.add(userNode.getUUID());
+		}
+		for (Object id: restrictions) {
+			JCRUtils.addNodeToProperty((String)id,node,JLibraryConstants.JLIBRARY_RESTRICTIONS);
+		}
+	}
+	
 	public String getPath(javax.jcr.Node node) throws RepositoryException {
 		
 		try {
@@ -694,10 +704,8 @@ public class JCRRepositoryService implements RepositoryService {
 			javax.jcr.Node userNode = 
 				JCRSecurityService.getUserNode(session,
 											   ticket.getUser().getId());
-			JCRUtils.addNodeToProperty(userNode,
-									   child,
-									   JLibraryConstants.JLIBRARY_RESTRICTIONS);
-			
+			addRestrictionsToNode(child,parent,userNode);
+
 			// Handle document resources. 
 			child.setProperty(JLibraryConstants.JLIBRARY_RESOURCES, 
 							  new Value[]{});

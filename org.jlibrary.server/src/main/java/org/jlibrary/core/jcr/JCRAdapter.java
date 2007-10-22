@@ -668,7 +668,7 @@ public class JCRAdapter {
 	 * 
 	 * @throws RepositoryException If the restrictions cannot be loaded
 	 */
-	private static List obtainRestrictions(javax.jcr.Node node) 
+	public static List obtainRestrictions(javax.jcr.Node node) 
 													throws RepositoryException {
 		
 		List restrictions = new ArrayList();
