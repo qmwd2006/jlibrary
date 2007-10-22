@@ -24,6 +24,7 @@ package org.jlibrary.core.jcr;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.InvalidItemStateException;
@@ -43,6 +44,7 @@ import org.apache.jackrabbit.core.nodetype.InvalidNodeTypeDefException;
 import org.apache.jackrabbit.name.QName;
 import org.jlibrary.core.entities.Author;
 import org.jlibrary.core.entities.Category;
+import org.jlibrary.core.entities.Group;
 import org.jlibrary.core.entities.Node;
 import org.jlibrary.core.entities.Repository;
 import org.jlibrary.core.entities.Ticket;
@@ -247,6 +249,12 @@ public class JCRRepositoryBuilder {
 								   node,
 								   JLibraryConstants.JLIBRARY_RESTRICTIONS);
 				
+		// Every reader will be able to access to new created repositories
+		javax.jcr.Node readersGroup = JCRSecurityService.findReadersGroup(session);
+		JCRUtils.addNodeToProperty(readersGroup,
+				   				   node,
+				   				   JLibraryConstants.JLIBRARY_RESTRICTIONS);		
+		
 		javax.jcr.Node unknownCategoryNode = 
 			categoriesNode.addNode(
 					JLibraryConstants.JLIBRARY_CATEGORY,
@@ -269,7 +277,7 @@ public class JCRRepositoryBuilder {
 		session.save();
 		return node;
 	}	
-	
+		
 	public void registerCustomProperty(Ticket ticket, 
 									   CustomPropertyDefinition property) throws RepositoryException {
 		
