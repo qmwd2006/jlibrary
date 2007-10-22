@@ -192,26 +192,6 @@ public class JCRSecurityService implements SecurityService {
         			securityRoot.addNode(JLibraryConstants.JLIBRARY_ROLES,
         								 JLibraryConstants.INTERNAL_MIXIN);
         
-	        // Create a default admin user on the repository
-	    	UserProperties properties = new UserProperties();
-	    	properties.setProperty(UserProperties.USER_NAME,
-	    						   User.ADMIN_NAME);
-	    	properties.setProperty(UserProperties.USER_FIRSTNAME,
-					   			   User.ADMIN_NAME);
-	    	properties.setProperty(UserProperties.USER_LASTNAME,
-					   			   User.ADMIN_NAME);
-	    	properties.setProperty(UserProperties.USER_PASSWORD,
-	    						   User.DEFAULT_PASSWORD);
-	    	properties.setProperty(UserProperties.USER_ADMIN,
-					   			   Boolean.TRUE);
-	    	
-	    	javax.jcr.Node adminNode = 
-	    		internalCreateUser(null,usersNode,properties,true,true);
-	    	
-	    	securityRoot.setProperty(
-	    			JLibraryConstants.JLIBRARY_ADMIN_USER,
-					adminNode);  
-	    	
 	    	// Create default groups
         	GroupProperties groupProperties = new GroupProperties();
         	groupProperties.setProperty(GroupProperties.GROUP_NAME,
@@ -269,7 +249,27 @@ public class JCRSecurityService implements SecurityService {
     		
     		addRoleToGroup(readersGroup,readerRole);
     		addRoleToGroup(publishersGroup,publisherRole);
-    		addRoleToGroup(adminsGroup,adminRole);
+    		addRoleToGroup(adminsGroup,adminRole);	        
+	        
+	        // Create a default admin user on the repository
+	    	UserProperties properties = new UserProperties();
+	    	properties.setProperty(UserProperties.USER_NAME,
+	    						   User.ADMIN_NAME);
+	    	properties.setProperty(UserProperties.USER_FIRSTNAME,
+					   			   User.ADMIN_NAME);
+	    	properties.setProperty(UserProperties.USER_LASTNAME,
+					   			   User.ADMIN_NAME);
+	    	properties.setProperty(UserProperties.USER_PASSWORD,
+	    						   User.DEFAULT_PASSWORD);
+	    	properties.setProperty(UserProperties.USER_ADMIN,
+					   			   Boolean.TRUE);
+	    	
+	    	javax.jcr.Node adminNode = 
+	    		internalCreateUser(null,usersNode,properties,true,true);
+	    	
+	    	securityRoot.setProperty(
+	    			JLibraryConstants.JLIBRARY_ADMIN_USER,
+					adminNode);  
 	    	
 		} catch (LoginException e) {			
 			logger.error(e.getMessage(),e);
@@ -485,6 +485,10 @@ public class JCRSecurityService implements SecurityService {
 			
 			userNode.setProperty(JLibraryConstants.JLIBRARY_GROUPS,new Value[]{});
 			userNode.setProperty(JLibraryConstants.JLIBRARY_ROLES,new Value[]{});
+			Rol readersRole = findRolByName(ticket, usersNode.getSession(), Rol.READER_ROLE_NAME);
+			JCRUtils.addNodeToProperty(readersRole.getId(),
+	   				   				   userNode,
+	   				   				   JLibraryConstants.JLIBRARY_ROLES);				
 			
 			if (sysAdmin) {
 				userNode.setProperty(JLibraryConstants.JLIBRARY_SYSADMIN,true);				
@@ -494,10 +498,10 @@ public class JCRSecurityService implements SecurityService {
 			
 			if (!sysAdmin) {
 				// A new user will automatically be given the readers rol
-				javax.jcr.Node readersRol = findReadersRol(userNode.getSession());
-				JCRUtils.addNodeToProperty(readersRol,
+				javax.jcr.Node readersGroup = findReadersGroup(userNode.getSession());
+				JCRUtils.addNodeToProperty(readersGroup,
 										   userNode,
-										   JLibraryConstants.JLIBRARY_ROLES);
+										   JLibraryConstants.JLIBRARY_GROUPS);
 			}			
 			return userNode;
 		} catch (javax.jcr.RepositoryException e) {
@@ -1948,14 +1952,14 @@ public class JCRSecurityService implements SecurityService {
 	}	
 
 	/**
-	 * Return the readers rol
+	 * Return the readers group
 	 * 
 	 * @param session Session
-	 * @return Node Readers rol or <code>null</code> if it can't be found
+	 * @return Node Readers group or <code>null</code> if it can't be found
 	 * 
 	 * @throws RepositoryException If some error happens
 	 */
-	private javax.jcr.Node findReadersRol(javax.jcr.Session session) 
+	static javax.jcr.Node findReadersGroup(javax.jcr.Session session) 
 											throws RepositoryException {
 
 		try {
@@ -1964,14 +1968,14 @@ public class JCRSecurityService implements SecurityService {
 			javax.jcr.Node securityRoot = systemNode.getNode(
 					JLibraryConstants.JLIBRARY_SECURITY);
 
-			javax.jcr.Node rolesNode = securityRoot.getNode(
-					JLibraryConstants.JLIBRARY_ROLES);
-			NodeIterator it = rolesNode.getNodes();
+			javax.jcr.Node groupsNode = securityRoot.getNode(
+					JLibraryConstants.JLIBRARY_GROUPS);
+			NodeIterator it = groupsNode.getNodes();
 			while (it.hasNext()) {
-				javax.jcr.Node rolNode = (javax.jcr.Node) it.next();
-				if (rolNode.getProperty(JLibraryConstants.JLIBRARY_NAME).
-						getString().equals(Rol.READER_ROLE_NAME)) {
-					return rolNode;
+				javax.jcr.Node groupNode = (javax.jcr.Node) it.next();
+				if (groupNode.getProperty(JLibraryConstants.JLIBRARY_NAME).
+						getString().equals(Group.READERS_GROUP_NAME)) {
+					return groupNode;
 				}
 			}
 
