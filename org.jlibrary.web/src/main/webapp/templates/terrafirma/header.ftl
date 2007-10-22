@@ -55,7 +55,9 @@
 				    <input type="password" class="text" maxlength="16" name="password" id="passwordheader" />
 						<input type="hidden" name="repository" value="${repository.name}"/>
 						<input class="submit" type="submit" value="log in"/>
-						
+						<#if registrationEnabled>
+							<a href="${root_url}/forward?method=signin&amp;repository=${repository.name}">sign in</a>
+						</#if>						
 					</fieldset>
 				  </form>
 				  <script type="text/javascript">
