@@ -10,6 +10,7 @@
 		<module>org.jlibrary.server</module>
 		<module>org.jlibrary.extractors</module>		
 		<module>org.jlibrary.war</module>
+		<module>org.jlibrary.server.web</module>
 		<module>org.jlibrary.server.httpdelegate</module>
 		<module>org.jlibrary.server.axis</module>
 		<module>org.jlibrary.server.axisdelegate</module>
