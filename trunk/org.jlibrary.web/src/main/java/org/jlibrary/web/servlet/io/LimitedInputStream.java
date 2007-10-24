@@ -38,8 +38,8 @@ import org.apache.commons.io.input.ProxyInputStream;
  */
 public class LimitedInputStream extends ProxyInputStream {
 
-	private int byteCount;
-	private int byteLimit;
+	private long byteCount;
+	private long byteLimit;
 	
 	/**
 	 * Creates a limited input stream. This stream will just proxy all the calls to the 
@@ -50,7 +50,7 @@ public class LimitedInputStream extends ProxyInputStream {
 	 * @param proxy
 	 * @param byteLimit
 	 */
-	public LimitedInputStream(InputStream proxy, int byteLimit) {
+	public LimitedInputStream(InputStream proxy, long byteLimit) {
 		
 		super(proxy);
 		this.byteLimit = byteLimit;
@@ -86,5 +86,14 @@ public class LimitedInputStream extends ProxyInputStream {
 		if (byteCount > byteLimit) {
 			throw new IOException("This service is limited to " + byteLimit + " bytes. The maximum allowed throughput has been exceeded.");
 		}
+	}
+
+	/**
+	 * Returns the number of bytes that have been read through this Input Stream
+	 *  
+	 * @return long Number of bytes read
+	 */
+	public long getByteCount() {
+		return byteCount;
 	}
 }
