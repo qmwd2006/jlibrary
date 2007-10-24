@@ -124,11 +124,11 @@ public abstract class HTTPStreamingServlet extends HttpServlet {
         	
         	try {
         		if (!streamInput && !streamOutput) {
-        			returnValue = handleRequest(callMethodName,params);
+        			returnValue = handleRequest(req,callMethodName,params);
         		} else if (streamInput) {
-        			returnValue = handleRequest(callMethodName,params,InputStream.class);
+        			returnValue = handleRequest(req,callMethodName,params,InputStream.class);
         		} else if (streamOutput) {
-        			returnValue = handleRequest(callMethodName,params,OutputStream.class);
+        			returnValue = handleRequest(req,callMethodName,params,OutputStream.class);
         		}
             } catch (InvocationTargetException ite) {            	
             	returnValue = ite.getCause();
@@ -160,12 +160,13 @@ public abstract class HTTPStreamingServlet extends HttpServlet {
 
 	protected abstract Object getDelegate() throws Exception;
 	
-	protected Object handleRequest(String callMethodName, Object[] params) throws Exception{
+	protected Object handleRequest(HttpServletRequest request, String callMethodName, Object[] params) throws Exception{
 		
-        return handleRequest(callMethodName, params, null);
+        return handleRequest(request,callMethodName, params, null);
 	}	
 	
-	protected Object handleRequest(String callMethodName, 
+	protected Object handleRequest(HttpServletRequest request,
+								   String callMethodName, 
 								   Object[] params, 
 								   Class streamClass) throws Exception{
 		
