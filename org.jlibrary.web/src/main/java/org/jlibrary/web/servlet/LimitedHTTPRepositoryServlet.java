@@ -102,8 +102,12 @@ public class LimitedHTTPRepositoryServlet extends HTTPRepositoryService {
 			}
 			bytes+=lis.getByteCount();
 			if (bytes > BYTES_SESSION_INPUT_LIMIT) {
+				logger.error("Bandwidth exceeded for session " + session.getId() + ". Total bytes transfered: " + bytes);
 				throw new IOException("You have exceeded the maximum allowed bandwidth for your session.");
 			} else {
+				if (logger.isDebugEnabled()) {
+					logger.debug("Session " + session.getId() + " has read " + bytes + " bytes");
+				}
 				session.setAttribute(KEY_BYTES_SESSION_INPUT_LIMIT, bytes);
 			}
 		}
