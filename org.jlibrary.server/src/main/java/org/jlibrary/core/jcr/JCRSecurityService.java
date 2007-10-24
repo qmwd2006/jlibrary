@@ -485,10 +485,6 @@ public class JCRSecurityService implements SecurityService {
 			
 			userNode.setProperty(JLibraryConstants.JLIBRARY_GROUPS,new Value[]{});
 			userNode.setProperty(JLibraryConstants.JLIBRARY_ROLES,new Value[]{});
-			Rol readersRole = findRolByName(ticket, usersNode.getSession(), Rol.READER_ROLE_NAME);
-			JCRUtils.addNodeToProperty(readersRole.getId(),
-	   				   				   userNode,
-	   				   				   JLibraryConstants.JLIBRARY_ROLES);				
 			
 			if (sysAdmin) {
 				userNode.setProperty(JLibraryConstants.JLIBRARY_SYSADMIN,true);				
@@ -497,6 +493,11 @@ public class JCRSecurityService implements SecurityService {
 			usersNode.getSession().save();
 			
 			if (!sysAdmin) {
+				Rol readersRole = findRolByName(ticket, usersNode.getSession(), Rol.READER_ROLE_NAME);
+				JCRUtils.addNodeToProperty(readersRole.getId(),
+		   				   				   userNode,
+		   				   				   JLibraryConstants.JLIBRARY_ROLES);
+				
 				// A new user will automatically be given the readers rol
 				javax.jcr.Node readersGroup = findReadersGroup(userNode.getSession());
 				JCRUtils.addNodeToProperty(readersGroup,
