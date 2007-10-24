@@ -198,7 +198,7 @@ public abstract class HTTPStreamingServlet extends HttpServlet {
 		return returnValue;
 	}	
 	
-	private void debugMethodCall(String callMethodName, Class[] paramTypes) {
+	protected void debugMethodCall(String callMethodName, Class[] paramTypes) {
 		
 		StringBuffer logMessage = new StringBuffer("Calling method " + callMethodName + " with params [");
 		for(Class c: paramTypes) {
