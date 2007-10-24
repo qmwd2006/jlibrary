@@ -420,6 +420,11 @@ public class JCRRepositoryService implements RepositoryService {
 		}
 	}
 
+	/**
+	 * Note that destinationRepository is not used on this implementation
+	 * 
+	 * @see RepositoryService#copyDirectory(Ticket, String, String, String)
+	 */
 	public Directory copyDirectory(Ticket ticket, 
 								   String sourceId,
 								   String destinationId,
@@ -440,6 +445,11 @@ public class JCRRepositoryService implements RepositoryService {
 		}		
 	}
 
+	/**
+	 * Note that destinationRepository is not used on this implementation
+	 * 
+	 * @see RepositoryService#copyDocument(Ticket, String, String, String)
+	 */
 	public Document copyDocument(Ticket ticket, 
 								 String sourceId, 
 								 String destinationId,
@@ -459,6 +469,11 @@ public class JCRRepositoryService implements RepositoryService {
 		}		
 	}
 
+	/**
+	 * Note that destinationRepository is not used on this implementation
+	 * 
+	 * @see RepositoryService#moveDirectory(Ticket, String, String, String)
+	 */
 	public Directory moveDirectory(Ticket ticket, 
 								   String sourceId, 
 								   String destinationId,
@@ -479,6 +494,11 @@ public class JCRRepositoryService implements RepositoryService {
 		}
 	}
 
+	/**
+	 * Note that destinationRepository is not used on this implementation
+	 * 
+	 * @see RepositoryService#moveDocument(Ticket, String, String, String)
+	 */
 	public Document moveDocument(Ticket ticket, 
 								 String documentId, 
 								 String directoryId,
@@ -1949,6 +1969,11 @@ public class JCRRepositoryService implements RepositoryService {
 		resourcesModule.removeResourceNode(ticket,resourceId,docId);
 	}
 
+	/**
+	 * Note that destinationRepository is not used on this implementation
+	 * 
+	 * @see RepositoryService#copyResource(Ticket, String, String, String)
+	 */
 	public ResourceNode copyResource(Ticket ticket, 
 									 String resourceId, 
 									 String directoryId,
@@ -2121,7 +2146,11 @@ public class JCRRepositoryService implements RepositoryService {
 		}
 	}
 	
-	
+	/**
+	 * Note that destinationRepository is not used on this implementation
+	 * 
+	 * @see RepositoryService#moveResource(Ticket, String, String, String)
+	 */
 	public ResourceNode moveResource(Ticket ticket, 
 									 String resourceId, 
 									 String directoryId,
@@ -2141,6 +2170,11 @@ public class JCRRepositoryService implements RepositoryService {
 		}
 	}
 
+	/**
+	 * Note that destinationRepository is not used on this implementation
+	 * 
+	 * @see RepositoryService#copyNode(Ticket, String, String, String)
+	 */
 	public Node copyNode(Ticket ticket, 
 						 String sourceId, 
 						 String destinationId,
@@ -2168,6 +2202,11 @@ public class JCRRepositoryService implements RepositoryService {
 		
 	}
 
+	/**
+	 * Note that destinationRepository is not used on this implementation
+	 * 
+	 * @see RepositoryService#moveNode(Ticket, String, String, String)
+	 */
 	public Node moveNode(Ticket ticket, 
 						 String sourceId, 
 						 String destinationId,
