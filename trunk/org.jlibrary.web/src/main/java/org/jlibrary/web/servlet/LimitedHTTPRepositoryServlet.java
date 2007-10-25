@@ -25,12 +25,24 @@ package org.jlibrary.web.servlet;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletResponse;
 
-import org.jlibrary.servlet.service.HTTPRepositoryService;
+import org.jlibrary.core.entities.ServerProfile;
+import org.jlibrary.core.factory.JLibraryServiceFactory;
+import org.jlibrary.core.profiles.LocalServerProfile;
+import org.jlibrary.core.repository.RepositoryService;
+import org.jlibrary.servlet.service.HTTPStreamingServlet;
+import org.jlibrary.web.servlet.io.AccessStats;
 import org.jlibrary.web.servlet.io.LimitedInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,14 +58,58 @@ import org.slf4j.LoggerFactory;
  *
  */
 @SuppressWarnings("serial")
-public class LimitedHTTPRepositoryServlet extends HTTPRepositoryService {
+public class LimitedHTTPRepositoryServlet extends HTTPStreamingServlet {
 
-	private static final String KEY_BYTES_SESSION_INPUT_LIMIT = "bytesSessionInputLimit";
-	
 	private static final int BYTES_INPUT_LIMIT = 5242880; // 5Mbs maximum per InputStream
 	private static final int BYTES_SESSION_INPUT_LIMIT = 20971520; // 20Mbs maximum per HTTP Session
 	
+	ServerProfile localProfile = new LocalServerProfile();
+	private RepositoryService repositoryService;
+	
+	private ConcurrentHashMap<String, AccessStats> stats = new ConcurrentHashMap<String, AccessStats>();
+	
 	static Logger logger = LoggerFactory.getLogger(LimitedHTTPRepositoryServlet.class);
+	
+	public LimitedHTTPRepositoryServlet() {
+		
+		repositoryService = JLibraryServiceFactory.getInstance(localProfile).getRepositoryService();
+	}
+	
+	@Override
+	public void init() throws ServletException {
+
+		super.init();
+		
+		// Now schedule a cleaning task. This task will clean stats for ips. 
+		// An IP will have cleared its stats after one day. 
+		ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
+		service.scheduleAtFixedRate(new Runnable() {
+			public void run() {
+
+				long currentTime = System.currentTimeMillis();
+				Iterator<Map.Entry<String, AccessStats>> it = stats.entrySet().iterator();
+				while (it.hasNext()) {
+					Map.Entry<String, AccessStats> entry = it.next();
+					if (currentTime - entry.getValue().getCreationTime() > 24*60*60*1000L) {
+						// Entry is older than one day. Remove it.
+						it.remove();
+					}
+				}
+			}
+		},1,1,TimeUnit.MINUTES);
+	}
+	
+	@Override
+	public void doPost(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+
+		super.doPost(req, resp);
+	}
+	
+	protected Object getDelegate() throws Exception{
+		
+        return repositoryService;
+	}
 	
 	@Override
 	protected Object handleRequest(HttpServletRequest request,
@@ -95,20 +151,21 @@ public class LimitedHTTPRepositoryServlet extends HTTPRepositoryService {
 		Object returnValue = method.invoke(getDelegate(), params);
 		
 		if (lis != null) {
-			HttpSession session = request.getSession(true);
-			Long bytes = (Long)session.getAttribute(KEY_BYTES_SESSION_INPUT_LIMIT);
-			if (bytes == null) {
-				bytes = 0L;
+			String ip = request.getRemoteAddr();
+			AccessStats accessStats = stats.get(ip);
+			if (accessStats == null) {
+				accessStats = new AccessStats();
+				accessStats.setCreationTime(System.currentTimeMillis());
+				accessStats.setInputBandwidthUsed(0L);				
+				stats.put(ip,accessStats);
 			}
-			bytes+=lis.getByteCount();
-			if (bytes > BYTES_SESSION_INPUT_LIMIT) {
-				logger.error("Bandwidth exceeded for session " + session.getId() + ". Total bytes transfered: " + bytes);
-				throw new IOException("You have exceeded the maximum allowed bandwidth for your session.");
-			} else {
-				if (logger.isDebugEnabled()) {
-					logger.debug("Session " + session.getId() + " has read " + bytes + " bytes");
-				}
-				session.setAttribute(KEY_BYTES_SESSION_INPUT_LIMIT, bytes);
+			if (accessStats.getInputBandwidthUsed() > BYTES_SESSION_INPUT_LIMIT) {
+				logger.error("Bandwidth exceeded for IP " + ip + ". Total bytes transfered: " + accessStats.getInputBandwidthUsed());
+				throw new IOException("You have exceeded the maximum allowed bandwidth for your IP.");
+			}
+			accessStats.setInputBandwidthUsed(accessStats.getInputBandwidthUsed()+lis.getByteCount());
+			if (logger.isDebugEnabled()) {
+				logger.debug("IP " + ip + " has read " + accessStats.getInputBandwidthUsed() + " bytes");
 			}
 		}
 		
