@@ -159,7 +159,8 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 		} catch (SecurityException se) {
 			logErrorAndForward(req, resp, repositoryName, se, "You do not have enough rights for accessing to the requested page.");
 		} catch (Exception e) {
-			logErrorAndForward(req, resp, repositoryName, e, "There was an error in the server.");
+			//TODO:mandar a página de error estática
+			e.printStackTrace();
 		}
 	}
 
