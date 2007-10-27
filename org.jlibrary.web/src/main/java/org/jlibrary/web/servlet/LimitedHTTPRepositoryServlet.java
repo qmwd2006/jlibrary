@@ -96,7 +96,7 @@ public class LimitedHTTPRepositoryServlet extends HTTPStreamingServlet {
 					}
 				}
 			}
-		},1,1,TimeUnit.MINUTES);
+		},60,60,TimeUnit.SECONDS);
 	}
 	
 	@Override
