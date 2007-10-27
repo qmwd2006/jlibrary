@@ -3,7 +3,7 @@
 # It must be processed with native2ascii:
 # native2ascii -encoding windows-1251 messages.native messages.properties
 #
-about_text=jLibrary\nВерсия: 1.0.1\n\n(c) Copyright Mart\u00EDn P\u00E9rez Mari\u00F1\u00E1n and individual contributors, 2006.\n All rights reserved. Visit http://jlibrary.sourceforge.net\n\nThis product includes software developed by\nApache Software Foundation http://www.apache.org/ and \nby IBM Corp. and others http://www.eclipse.org/platform
+about_text=jLibrary\nВерсия: 1.1.0\n\n(c) Copyright Mart\u00EDn P\u00E9rez Mari\u00F1\u00E1n and individual contributors, 2006.\n All rights reserved. Visit http://jlibrary.sourceforge.net\n\nThis product includes software developed by\nApache Software Foundation http://www.apache.org/ and \nby IBM Corp. and others http://www.eclipse.org/platform
 about_title=О программе jLibrary
 accept_option=ОК
 action_canceled=Операция отменена пользователем
