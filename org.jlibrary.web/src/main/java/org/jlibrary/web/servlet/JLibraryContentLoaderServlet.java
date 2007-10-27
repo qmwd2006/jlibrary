@@ -141,8 +141,14 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 				req.setAttribute("node", node);
 
 				if (node.isDocument()) {
-					String output = exportDocument(req,ticket,repository,node);
-					resp.getOutputStream().write(output.getBytes());
+					Document document=(Document) node;
+					byte[] output;
+					if("true".equals(req.getParameter("download"))){
+						output = repositoryService.loadDocumentContent(document.getId(), ticket);
+					}else{
+						output = exportDocument(req,ticket,repository,node).getBytes();
+					}
+					resp.getOutputStream().write(output);
 					resp.flushBuffer();
 				} else if (node.isDirectory()) {
 					// Search for a root document (index.html)
