@@ -8,9 +8,9 @@
 		  <#if error??>
 		    <p class="error-header">${error}</p>
 		  </#if>
-			<#if document_content="">
-				Download: <a href="${repository_url}${document.path}">${document.name}</a>
-			<#else>
+		  Download: <a href="${repository_url}${document.path}?download=true">${document.name}</a>
+			<#if document_content!="">
+				<br/>
 				${document_content}
 			</#if>
 			<br/><br/>
