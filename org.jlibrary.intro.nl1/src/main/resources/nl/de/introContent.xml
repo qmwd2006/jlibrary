@@ -4,7 +4,7 @@
 
 -->
   <page alt-style="css/root_swt.properties" style="css/root.css" id="root" style-id="page">
-    <title style-id="intro-header">Willkommen bei jLibrary 1.0.2</title>
+    <title style-id="intro-header">Willkommen bei jLibrary 1.1.0</title>
     <group id="links-background">
       <group id="page-links">
         <link label="Einführung" url="http://org.eclipse.ui.intro/showPage?id=overview" id="overview" style-id="left">
@@ -37,7 +37,7 @@
 
 -->
   <page alt-style="css/standby_swt.properties" style="css/standby_root.css" id="standby" style-id="page">
-    <title style-id="intro-header">Willkommen bei jLibrary 1.0.2</title>
+    <title style-id="intro-header">Willkommen bei jLibrary 1.1.0</title>
     <group id="links-background">
       <group id="page-links">
         <link label="Einführung" url="http://org.eclipse.ui.intro/showPage?id=overview&amp;standby=false" id="overview" style-id="left">
@@ -59,7 +59,7 @@
 
 -->
   <page style="css/overview/overview.css" alt-style="css/overview/swt.properties" id="overview" style-id="page">
-    <title style-id="intro-header">Willkommen zu jLibrary 1.0.2</title>
+    <title style-id="intro-header">Willkommen zu jLibrary 1.1.0</title>
     <group id="background-image" filteredFrom="swt"/>
     <group id="curve-image" filteredFrom="swt"/>
     <group id="navigation-links" filteredFrom="swt">
@@ -108,7 +108,7 @@
 
 -->
   <page style="css/tutorials/tutorials.css" alt-style="css/samples/swt.properties" id="tutorials" style-id="page">
-    <title style-id="intro-header">Willkommen zu jLibrary 1.0.2</title>
+    <title style-id="intro-header">Willkommen zu jLibrary 1.1.0</title>
     <group id="background-image" filteredFrom="swt"/>
     <group id="curve-image" filteredFrom="swt"/>
     <include path="overview/navigation-links"/>
@@ -158,7 +158,7 @@
 
 -->
   <page style="css/samples/samples.css" alt-style="css/samples/swt.properties" id="samples" style-id="page">
-    <title style-id="intro-header">Willkommen zu jLibrary 1.0.2</title>
+    <title style-id="intro-header">Willkommen zu jLibrary 1.1.0</title>
     <group id="background-image" filteredFrom="swt"/>
     <group id="curve-image" filteredFrom="swt"/>
     <include path="overview/navigation-links"/>
@@ -182,7 +182,7 @@
 
 -->
   <page style="css/whatsnew/whatsnew.css" alt-style="css/whatsnew/swt.properties" id="news" style-id="page">
-    <title style-id="intro-header">Willkommen zu jLibrary 1.0.2</title>
+    <title style-id="intro-header">Willkommen zu jLibrary 1.1.0</title>
     <group id="background-image" filteredFrom="swt"/>
     <group id="curve-image" filteredFrom="swt"/>
     <include path="overview/navigation-links"/>
@@ -191,7 +191,7 @@
       <text style-id="page-title" id="page-title" filteredFrom="html">Was ist neu?</text>
       <anchor id="beginAnchor"/>
       <group id="noteworthy-links" label="Wichtige Änderungen">
-        <link label="jLibrary 1.0.2" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/4/whatsnew_final.html" id="platform-noteworthy" style-id="noteworthy-link">
+        <link label="jLibrary 1.1.0" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jlibrary.client/resources/help/4/whatsnew_final.html" id="platform-noteworthy" style-id="noteworthy-link">
           <text>Die neuen Features in diesem Release kennenlernen</text>
         </link>
         <anchor id="jdtAnchor"/>
