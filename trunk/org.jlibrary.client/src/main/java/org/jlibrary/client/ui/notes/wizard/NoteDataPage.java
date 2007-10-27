@@ -49,7 +49,7 @@ public class NoteDataPage extends WizardPage {
 	private Note note;
 	private Text noteText;
 
-	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 	
     public NoteDataPage(Note note, String pageName, String description) {
          

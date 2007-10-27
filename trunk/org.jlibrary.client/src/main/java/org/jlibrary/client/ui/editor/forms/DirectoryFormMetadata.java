@@ -44,7 +44,7 @@ import org.jlibrary.core.entities.ResourceNode;
  */
 public class DirectoryFormMetadata {
 
-	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 	
 	private boolean init;
 

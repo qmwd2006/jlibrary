@@ -37,7 +37,7 @@ import org.jlibrary.core.entities.DocumentVersion;
 public class DocumentVersionNode implements Comparable {
 
 	private static final SimpleDateFormat format1 = new SimpleDateFormat("dd-MMMM-yyyy");
-	private static final SimpleDateFormat format2 = new SimpleDateFormat("hh:mm:ss");
+	private static final SimpleDateFormat format2 = new SimpleDateFormat("HH:mm:ss");
 	
 	private DocumentVersion version;
 	private ArrayList children = new ArrayList();

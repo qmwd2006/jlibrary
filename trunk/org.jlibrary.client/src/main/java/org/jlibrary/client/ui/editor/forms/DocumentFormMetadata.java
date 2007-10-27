@@ -44,7 +44,7 @@ import org.jlibrary.core.entities.ResourceNode;
  */
 public class DocumentFormMetadata {
 
-	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
 	private MetadataSection metadataSection;
 	private KeywordsSection keywordsSection;
