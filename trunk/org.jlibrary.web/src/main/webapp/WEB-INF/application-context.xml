@@ -3,8 +3,13 @@
   "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
    	<bean id="template" class="org.jlibrary.web.services.ConfigurationService">
-                  <property name="templateDirectory" value="/javaconganas/jlibrary/org.jlibrary.web/src/main/webapp/templates/terrafirma"/>
+				 <!--<property name="templateDirectory" value="/javaconganas/jlibrary/org.jlibrary.web/src/main/webapp/templates/terrafirma"/>-->
+         <property name="templateDirectory" value="/software/apache-tomcat-6.0.13-pruebas/webapps/jlibrary/templates/terrafirma"/>
          <property name="registrationEnabled" value="true"/>
+         <property name="operationInputBandwidth" value="102400"/>
+         <property name="operationOutputBandwidth" value="102400"/>
+         <property name="totalInputBandwidth" value="302400"/>
+         <property name="totalOutputBandwidth" value="302400"/>
          <!-- <property name="templateDirectory" value="/software/apache-tomcat-6.0.13-pruebas/webapps/jlibrary/templates/terrafirma"/> -->
    	</bean>
    

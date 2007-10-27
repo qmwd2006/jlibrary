@@ -33,6 +33,43 @@ public class ConfigurationService {
 	
 	private String templateDirectory;
 	private Boolean registrationEnabled;
+	
+	private Long operationInputBandwidth;
+	private Long operationOutputBandwidth;
+	private Long totalInputBandwidth;
+	private Long totalOutputBandwidth;
+
+	public Long getOperationInputBandwidth() {
+		return operationInputBandwidth;
+	}
+
+	public void setOperationInputBandwidth(Long operationInputBandwidth) {
+		this.operationInputBandwidth = operationInputBandwidth;
+	}
+
+	public Long getOperationOutputBandwidth() {
+		return operationOutputBandwidth;
+	}
+
+	public void setOperationOutputBandwidth(Long operationOutputBandwidth) {
+		this.operationOutputBandwidth = operationOutputBandwidth;
+	}
+
+	public Long getTotalInputBandwidth() {
+		return totalInputBandwidth;
+	}
+
+	public void setTotalInputBandwidth(Long totalInputBandwidth) {
+		this.totalInputBandwidth = totalInputBandwidth;
+	}
+
+	public Long getTotalOutputBandwidth() {
+		return totalOutputBandwidth;
+	}
+
+	public void setTotalOutputBandwidth(Long totalOutputBandwidth) {
+		this.totalOutputBandwidth = totalOutputBandwidth;
+	}
 
 	public Boolean isRegistrationEnabled() {
 		return registrationEnabled;
