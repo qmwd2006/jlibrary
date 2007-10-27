@@ -31,10 +31,11 @@ package org.jlibrary.web.servlet.io;
 public class AccessStats {
 
 	private Long inputBandwidthUsed;
+	private Long outputBandwidthUsed;
 	private Long creationTime;
 
 	/**
-	 * Returns the bandwidth used by this session
+	 * Returns the input bandwidth used by this session
 	 * 
 	 * @return Long bandwidth
 	 */
@@ -58,5 +59,18 @@ public class AccessStats {
 
 	public void setCreationTime(Long creationTime) {
 		this.creationTime = creationTime;
+	}
+
+	/**
+	 * Returns the output bandwidth used by this session
+	 * 
+	 * @return Long bandwidth
+	 */
+	public Long getOutputBandwidthUsed() {
+		return outputBandwidthUsed;
+	}
+
+	public void setOutputBandwidthUsed(Long outputBandwidthUsed) {
+		this.outputBandwidthUsed = outputBandwidthUsed;
 	}
 }

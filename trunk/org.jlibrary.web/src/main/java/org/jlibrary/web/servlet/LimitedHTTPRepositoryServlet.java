@@ -24,6 +24,7 @@ package org.jlibrary.web.servlet;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.List;
@@ -41,11 +42,16 @@ import org.jlibrary.core.entities.ServerProfile;
 import org.jlibrary.core.factory.JLibraryServiceFactory;
 import org.jlibrary.core.profiles.LocalServerProfile;
 import org.jlibrary.core.repository.RepositoryService;
+import org.jlibrary.core.repository.exception.RepositoryException;
 import org.jlibrary.servlet.service.HTTPStreamingServlet;
+import org.jlibrary.web.services.ConfigurationService;
 import org.jlibrary.web.servlet.io.AccessStats;
 import org.jlibrary.web.servlet.io.LimitedInputStream;
+import org.jlibrary.web.servlet.io.LimitedOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  * This servlet extends the regular HTTP repository service available in the 
@@ -60,8 +66,11 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("serial")
 public class LimitedHTTPRepositoryServlet extends HTTPStreamingServlet {
 
-	private static final int BYTES_INPUT_LIMIT = 5242880; // 5Mbs maximum per InputStream
-	private static final int BYTES_SESSION_INPUT_LIMIT = 20971520; // 20Mbs maximum per HTTP Session
+	// Default values can be overwritten by Spring configuration
+	private static long BYTES_INPUT_LIMIT = 5242880L; // 5Mbs maximum per InputStream
+	private static long BYTES_OUTPUT_LIMIT = 5242880L; // 5Mbs maximum per OutputStream
+	private static long BYTES_SESSION_INPUT_LIMIT = 20971520L; // 20Mbs maximum per HTTP Session
+	private static long BYTES_SESSION_OUTPUT_LIMIT = 20971520L; // 20Mbs maximum per HTTP Session
 	
 	ServerProfile localProfile = new LocalServerProfile();
 	private RepositoryService repositoryService;
@@ -80,6 +89,21 @@ public class LimitedHTTPRepositoryServlet extends HTTPStreamingServlet {
 
 		super.init();
 		
+		ApplicationContext context = 
+			WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
+		ConfigurationService configService = (ConfigurationService)context.getBean("template");
+		if (configService.getOperationInputBandwidth() != null) {
+			BYTES_INPUT_LIMIT = configService.getOperationInputBandwidth();
+		}
+		if (configService.getOperationOutputBandwidth() != null) {
+			BYTES_OUTPUT_LIMIT = configService.getOperationOutputBandwidth();
+		}
+		if (configService.getTotalInputBandwidth() != null) {
+			BYTES_SESSION_INPUT_LIMIT = configService.getTotalInputBandwidth();
+		}
+		if (configService.getTotalOutputBandwidth() != null) {
+			BYTES_SESSION_OUTPUT_LIMIT = configService.getTotalOutputBandwidth();
+		}
 		// Now schedule a cleaning task. This task will clean stats for ips. 
 		// An IP will have cleared its stats after one day. 
 		ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
@@ -118,6 +142,7 @@ public class LimitedHTTPRepositoryServlet extends HTTPStreamingServlet {
 								   Class streamClass) throws Exception{
 		
 		LimitedInputStream lis = null;
+		LimitedOutputStream los = null;
 		Class clazz = getDelegate().getClass();
 		Class[] paramTypes = new Class[params.length];
 		if (streamClass == null) {
@@ -128,10 +153,17 @@ public class LimitedHTTPRepositoryServlet extends HTTPStreamingServlet {
 			for (int i=0;i<params.length-1;i++) {
 				paramTypes[i] = params[i].getClass();
 			}
-			// Tweak the streaming class with a restricted one
-			InputStream is = (InputStream)params[params.length-1];
-			lis = new LimitedInputStream(is,BYTES_INPUT_LIMIT);
-			params[params.length-1] = lis;
+			if (streamClass == InputStream.class) {
+				// Tweak the streaming class with a restricted one
+				InputStream is = (InputStream)params[params.length-1];
+				lis = new LimitedInputStream(is,BYTES_INPUT_LIMIT);
+				params[params.length-1] = lis;
+			} else {
+				// Tweak the streaming class with a restricted one
+				OutputStream os = (OutputStream)params[params.length-1];
+				los = new LimitedOutputStream(os,BYTES_OUTPUT_LIMIT);
+				params[params.length-1] = los;
+			}
 			paramTypes[params.length-1]=streamClass;
 			
 		}
@@ -147,25 +179,50 @@ public class LimitedHTTPRepositoryServlet extends HTTPStreamingServlet {
         	debugMethodCall(callMethodName,paramTypes);            
         }
 		
+        // Check session bandwidths first
+		if (lis != null || los != null) {
+			String ip = request.getRemoteAddr();
+			AccessStats accessStats = stats.get(ip);
+			if (accessStats != null) {
+				if (lis !=  null) {
+					if (accessStats.getInputBandwidthUsed() > BYTES_SESSION_INPUT_LIMIT) {
+						logger.error("Input bandwidth exceeded for IP " + ip + ". Total bytes transfered: " + accessStats.getInputBandwidthUsed());
+						return new RepositoryException("You have exceeded the maximum allowed intput bandwidth for your IP.");
+					}
+				}
+				if (los != null) {
+					if (accessStats.getOutputBandwidthUsed() > BYTES_SESSION_OUTPUT_LIMIT) {
+						logger.error("Output bandwidth exceeded for IP " + ip + ". Total bytes transfered: " + accessStats.getOutputBandwidthUsed());
+						return new RepositoryException("You have exceeded the maximum allowed output bandwidth for your IP.");
+					}
+				}
+			}
+		}
+		
 		Method method = clazz.getMethod(callMethodName, paramTypes);
 		Object returnValue = method.invoke(getDelegate(), params);
 		
-		if (lis != null) {
+		if (lis != null || los != null) {
 			String ip = request.getRemoteAddr();
 			AccessStats accessStats = stats.get(ip);
 			if (accessStats == null) {
 				accessStats = new AccessStats();
 				accessStats.setCreationTime(System.currentTimeMillis());
-				accessStats.setInputBandwidthUsed(0L);				
+				accessStats.setInputBandwidthUsed(0L);
+				accessStats.setOutputBandwidthUsed(0L);	
 				stats.put(ip,accessStats);
 			}
-			if (accessStats.getInputBandwidthUsed() > BYTES_SESSION_INPUT_LIMIT) {
-				logger.error("Bandwidth exceeded for IP " + ip + ". Total bytes transfered: " + accessStats.getInputBandwidthUsed());
-				throw new IOException("You have exceeded the maximum allowed bandwidth for your IP.");
+			if (lis != null) {
+				accessStats.setInputBandwidthUsed(accessStats.getInputBandwidthUsed()+lis.getByteCount());
+				if (logger.isDebugEnabled()) {
+					logger.debug("IP " + ip + " has read " + accessStats.getInputBandwidthUsed() + " bytes");
+				}
 			}
-			accessStats.setInputBandwidthUsed(accessStats.getInputBandwidthUsed()+lis.getByteCount());
-			if (logger.isDebugEnabled()) {
-				logger.debug("IP " + ip + " has read " + accessStats.getInputBandwidthUsed() + " bytes");
+			if (los != null) {
+				accessStats.setOutputBandwidthUsed(accessStats.getOutputBandwidthUsed()+los.getByteCount());
+				if (logger.isDebugEnabled()) {
+					logger.debug("IP " + ip + " has written " + accessStats.getOutputBandwidthUsed() + " bytes");
+				}
 			}
 		}
 		
