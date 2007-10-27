@@ -22,6 +22,7 @@
 */
 package org.jlibrary.web.servlet.io;
 
+import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -36,7 +37,7 @@ import org.apache.commons.io.input.ProxyInputStream;
  * @author mperez
  *
  */
-public class LimitedInputStream extends ProxyInputStream {
+public class LimitedInputStream extends FilterInputStream {
 
 	private long byteCount;
 	private long byteLimit;
@@ -55,11 +56,47 @@ public class LimitedInputStream extends ProxyInputStream {
 		super(proxy);
 		this.byteLimit = byteLimit;
 	}
-
+	
+	@Override
+	public int available() throws IOException {
+		// TODO Auto-generated method stub
+		return super.available();
+	}
+	
+	@Override
+	public void close() throws IOException {
+		// TODO Auto-generated method stub
+		super.close();
+	}
+	
+	@Override
+	public synchronized void mark(int readlimit) {
+		// TODO Auto-generated method stub
+		super.mark(readlimit);
+	}
+	
+	@Override
+	public boolean markSupported() {
+		// TODO Auto-generated method stub
+		return super.markSupported();
+	}
+	
+	@Override
+	public synchronized void reset() throws IOException {
+		// TODO Auto-generated method stub
+		super.reset();
+	}
+	
+	@Override
+	public long skip(long n) throws IOException {
+		// TODO Auto-generated method stub
+		return super.skip(n);
+	}
+	
 	@Override
 	public int read() throws IOException {
 
-		byteCount++;
+		byteCount+=4;
 		checkByteLimit();
 		return super.read();
 	}
@@ -87,7 +124,7 @@ public class LimitedInputStream extends ProxyInputStream {
 			throw new IOException("This service is limited to " + byteLimit + " bytes. The maximum allowed throughput has been exceeded.");
 		}
 	}
-
+	
 	/**
 	 * Returns the number of bytes that have been read through this Input Stream
 	 *  
