@@ -25,7 +25,25 @@
   		<param-name>contextConfigLocation</param-name>
 		<param-value>/WEB-INF/application-context.xml</param-value>
 	</context-param>
+ 
+    <context-param>
+        <param-name>java.naming.provider.url</param-name>
+        <param-value>http://www.apache.org/jackrabbit</param-value>
+    </context-param>
+    <context-param>
+        <param-name>java.naming.factory.initial</param-name>
+        <param-value>org.apache.jackrabbit.core.jndi.provider.DummyInitialContextFactory</param-value>
+    </context-param>    
+    <context-param>
+        <param-name>jlibrary.home</param-name>
+        <param-value>WEB-INF/repository</param-value>
+        <!--config home-->
+    </context-param>        
 
+    <listener>
+		<listener-class>org.jlibrary.web.servlet.JLibraryStartupContextListener</listener-class>
+	</listener>
+	
     <listener>
 		<listener-class>org.jlibrary.web.servlet.listener.StatsListener</listener-class>
 	</listener>
@@ -101,38 +119,16 @@
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-	
-	<servlet>
-    <servlet-name>JLibraryStartupServlet</servlet-name>
-    <display-name>JLibrary startup servlet</display-name>
-    <servlet-class>
-        org.jlibrary.servlet.JLibraryStartupServlet
-    </servlet-class>    
-        <init-param>
-            <param-name>java.naming.provider.url</param-name>
-            <param-value>http://www.apache.org/jackrabbit</param-value>
-        </init-param>
-        <init-param>
-            <param-name>java.naming.factory.initial</param-name>
-            <param-value>org.apache.jackrabbit.core.jndi.provider.DummyInitialContextFactory</param-value>
-        </init-param>    
-        <init-param>
-            <param-name>jlibrary.home</param-name>
-            <param-value>WEB-INF/repository</param-value>
-            <!--config home-->
-        </init-param>        
-    <load-on-startup>5</load-on-startup>       
-  </servlet>
-	
+		
   <servlet>
     <servlet-name>HTTPRepositoryService</servlet-name>
     <display-name>JLibrary Repository Service</display-name>
     <servlet-class>
-        org.jlibrary.servlet.service.HTTPRepositoryService
+        org.jlibrary.web.servlet.LimitedHTTPRepositoryServlet
     </servlet-class>  
     <load-on-startup>7</load-on-startup>        
   </servlet>
-  
+    
   <servlet>
     <servlet-name>HTTPSecurityService</servlet-name>
     <display-name>JLibrary Security Service</display-name>
@@ -214,12 +210,6 @@
 	<servlet-name>Faces Servlet</servlet-name>
 	<url-pattern>*.jsf</url-pattern>
   </servlet-mapping>
-	
-  <servlet-mapping>
-    <servlet-name>JLibraryStartupServlet</servlet-name>
-    <url-pattern>/servlet/JLibraryStartupServlet</url-pattern>
-  </servlet-mapping>
-
   <servlet-mapping>
     <servlet-name>HTTPRepositoryService</servlet-name>
     <url-pattern>/HTTPRepositoryService</url-pattern>
