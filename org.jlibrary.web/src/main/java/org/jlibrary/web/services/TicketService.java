@@ -59,7 +59,51 @@ public class TicketService {
 	public static final String SESSION_TICKET_ID = "ticket";
 	private volatile static TicketService instance;
 	
+	/**
+	 * Admin ticket in the system repository. 
+	 */
+	private Ticket systemTicket;
+	
 	private ConcurrentHashMap<String, Ticket> guestTickets = new ConcurrentHashMap<String, Ticket>();
+	
+	public TicketService() {
+		
+		LocalServerProfile profile = new LocalServerProfile();
+		SecurityService service = 
+			JLibraryServiceFactory.getInstance(profile).getSecurityService();	
+		Credentials credentials = new Credentials();
+		credentials.setUser(User.ADMIN_NAME);
+		credentials.setPassword(User.DEFAULT_PASSWORD);
+		try {
+			systemTicket = service.login(credentials, "system");
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+		}
+	}
+	
+	/**
+	 * Cleans up acquired resources
+	 */
+	public void clean() {
+		
+		if (systemTicket != null) {
+			try {
+				LocalServerProfile profile = new LocalServerProfile();
+				SecurityService service = 
+					JLibraryServiceFactory.getInstance(profile).getSecurityService();	
+				service.disconnect(systemTicket);
+			} catch (Exception e) {
+				logger.error(e.getMessage(),e);
+			}
+		}
+	}
+	
+	@Override
+	protected void finalize() throws Throwable {
+
+		// System should not rely in this method though
+		clean();
+	}
 	
 	/**
 	 * Returns a ticket for the given request and repository
@@ -199,6 +243,16 @@ public class TicketService {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Returns the system ticket
+	 * 
+	 * @return Ticket System ticket
+	 */
+	public Ticket getSystemTicket() {
+		
+		return systemTicket;
 	}
 	
 	/**
