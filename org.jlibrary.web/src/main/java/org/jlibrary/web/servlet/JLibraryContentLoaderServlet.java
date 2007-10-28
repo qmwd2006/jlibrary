@@ -24,6 +24,7 @@ package org.jlibrary.web.servlet;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -38,6 +39,7 @@ import org.jlibrary.core.entities.Directory;
 import org.jlibrary.core.entities.Document;
 import org.jlibrary.core.entities.Node;
 import org.jlibrary.core.entities.Repository;
+import org.jlibrary.core.entities.RepositoryInfo;
 import org.jlibrary.core.entities.ServerProfile;
 import org.jlibrary.core.entities.Ticket;
 import org.jlibrary.core.entities.Types;
@@ -95,7 +97,28 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 		String appURL = req.getContextPath();
 		String uri = req.getRequestURI();
 		String path = StringUtils.difference(appURL+"/repositories",uri);
-		
+		if (path.equals("") || path.equals("/")) {
+			// call to /repositories 
+			try {
+				Ticket ticket = TicketService.getTicketService().getSystemTicket();
+				RepositoryService repositoryService = 
+					JLibraryServiceFactory.getInstance(profile).getRepositoryService();
+				List repoInfo = repositoryService.findAllRepositoriesInfo(ticket);
+				Iterator it = repoInfo.iterator();
+				while (it.hasNext()) {
+					RepositoryInfo info = (RepositoryInfo)it.next();
+					if (info.getName().equals("system") || info.getName().equals("default")) {
+						continue;
+					}
+					resp.getOutputStream().println(info.getName());
+					resp.getOutputStream().flush();					
+				}
+				return;
+			} catch (Exception e) {
+				logger.error(e.getMessage(),e);
+				//TODO: mandar a una página de error estática
+			}
+		}
 		String[] pathElements = StringUtils.split(path,"/");
 		
 		String repositoryName = getRepositoryName(req);
