@@ -23,10 +23,12 @@
 package org.jlibrary.web.servlet;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -105,14 +107,19 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 					JLibraryServiceFactory.getInstance(profile).getRepositoryService();
 				List repoInfo = repositoryService.findAllRepositoriesInfo(ticket);
 				Iterator it = repoInfo.iterator();
+				List<RepositoryInfo> repositories = new ArrayList<RepositoryInfo>();
 				while (it.hasNext()) {
 					RepositoryInfo info = (RepositoryInfo)it.next();
 					if (info.getName().equals("system") || info.getName().equals("default")) {
 						continue;
 					}
-					resp.getOutputStream().println(info.getName());
-					resp.getOutputStream().flush();					
+					repositories.add(info);
+
 				}
+				RequestDispatcher rd = getServletContext().getRequestDispatcher("/repositories.jsp");		
+				req.setAttribute("repositories", repositories);
+				rd.forward(req, resp);
+
 				return;
 			} catch (Exception e) {
 				logger.error(e.getMessage(),e);
