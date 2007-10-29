@@ -41,7 +41,7 @@
 		  <h3>Directory: ${directory.name}</h3>
 			<div class="date">
 			  ${directory.date?string("MMMM dd, yyyy")} 
-			  <a href="${repository_url}${directory.path}?rss=true" border=0><img border="0" src="${root_url}/templates/terrafirma/images/rss.png"></a>
+			  <a href="${repository_url}${directory.path}?rss=true" border=0><img border="0" src="${root_url}/templates/terrafirma/images/rss.png" alt="Suscribe in a reader" /></a>
 			</div>
 		</div>
 		<div class="content">
@@ -53,7 +53,7 @@
 	  		<#list directory.nodes as children>
 		  		<#if !children.directory>
 		  	  		<h2><a style="text-decoration:none" 
-		  	         href="${repository_url}${children.path}">${children.name}</a></h2>
+		  	         href="${repository_url}${children.path}">${children.name}</a>&nbsp;<a href="${repository_url}${children.path}?download=true"><img border="0" src="${root_url}/templates/terrafirma/images/download.png" alt="Download file"/></a></h2>
 			  			<p>${children.description}</p>
 		  		</#if>
 	  		</#list>
@@ -84,7 +84,7 @@
 		  <h3>Category contents: ${category.name}</h3>			
 			<div class="date">
 			${category.date?string("MMMM dd, yyyy")}
-			<A href="${categories_root_url}/${category.name}?rss=true" border=0><img border="0" src="${root_url}/templates/terrafirma/images/rss.png"></A>			
+			<a href="${categories_root_url}/${category.name}?rss=true" border=0><img border="0" src="${root_url}/templates/terrafirma/images/rss.png" alt="Suscribe in a reader"/></a>			
 			</div>
 		</div>
 		<div class="content">
