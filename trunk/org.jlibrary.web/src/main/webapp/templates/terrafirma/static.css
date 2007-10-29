@@ -1,0 +1,144 @@
+body{
+	padding:0px; 
+	margin:0px; 
+	background:url(images/a8.gif) 0 0 repeat-x #fff; 
+	color:#707070; 
+	font:14px/18px "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+
+div, p, ul, h2, h3, img{
+	padding:0px; 
+	margin:0px;
+}
+
+ul{
+	list-style-type:none;
+}
+
+#header{
+	width:747px; 
+	height:73px; 
+	position:relative; 
+	margin:0 auto; 
+	padding:0px;
+}
+
+#header a {
+	color:#F2F3DE;
+	text-decoration:none;
+}
+
+#header h1 {
+	color:#F2F3DE;
+	text-decoration:none;
+}
+
+#header h2 {
+	color:#F2F3DE;
+	text-decoration:none;
+	font-size:18px;
+}
+
+#outer{
+	width:100%; 
+	background:#F4F4F4; 
+	color:#8D8D8D; 
+	float:left; 
+	padding:0px 0 0; 
+	clear:both;
+}
+
+#inner{
+	width:747px; 
+	height:401px;
+	position:relative; 
+	background:#F4F4F4; 
+	color:#707070; 
+	margin:0 auto; 
+	padding:0px;
+}
+
+#inner h2{
+	background:#F4F4F4; 
+	color:#6E6C00; 
+	font-size:24px; 
+	height:70px; 
+	line-height:70px;
+}
+
+#inner p{
+	padding:0 38px 11px 0;
+}
+
+#inner p span{
+	font-weight:bold;
+}
+
+#inner p.button{
+	margin:0 0 15px 618px; 
+	padding:20px 0 0 10px;
+}
+
+#inner p.button a{
+	display:block;
+	width:79px; 
+	height:28px; 
+	background:url(images/button1.gif) 0 0 no-repeat #fff; 
+	color:#111; 
+	font-size:15px; 
+	line-height:28px; 
+	text-decoration:none; 
+	padding:0 0 0 10px;
+}
+
+#inner p.button a:hover{
+	background:url(images/button2.gif) 100% 0% no-repeat #fff; 
+	color:#111; 
+	text-decoration:none;
+}
+
+#inner a {
+  text-decoration:none;
+  color:#6E6C00;
+}
+
+#inner a:hover {
+  color:#bbb;
+}
+
+#inner h3{
+	width:177px; 
+	height:83px; 
+	float:left; 
+	display:block; 
+	background:url(images/doc.jpg) 0 0 no-repeat #F4F4F4; 
+	font:27px/34px "Trebuchet MS",Arial, Helvetica, sans-serif; 
+	font-weight:bold; 
+	color:#4D4D4D; 
+	padding:0 0 0 70px; 
+	margin:0;
+}
+
+#footer{
+	height:44px; 
+	background:url(images/footerbg.gif) 0 0 repeat-x #565656; 
+	color:#fff; 
+	clear:both;
+}
+
+#footer p {
+	text-decoration:none;
+	text-align:center;
+	padding:15px 0 0 0;	
+}
+
+#footer a {
+  text-decoration:none;
+  color:#ddd;
+}
+
+#footer a:hover {
+  text-decoration:none;
+  color:#bbb;
+}
+
