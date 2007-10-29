@@ -24,7 +24,7 @@
 			  java.util.Iterator it = repositories.iterator();
 			  while (it.hasNext()) {
 			  org.jlibrary.core.entities.RepositoryInfo info = (org.jlibrary.core.entities.RepositoryInfo)it.next();
-			  out.println("<h3><a href=\"repositories/" + info.getName()+"\">" + info.getName() + "</a></h3>");
+			  out.println("<h3><a href=\""+ request.getContextPath() +"/repositories/" + info.getName()+"\">" + info.getName() + "</a></h3>");
 			  }
 			%>			
 		</div>
