@@ -22,12 +22,13 @@
 	<h3>Actions</h3>
 	<div class="content">
 	  <#if ticket.user.admin>
-			<a href="${root_url}/forward?method=updateform&amp;type=node&amp;repository=${repository.name}&amp;id=${directory.id}">Update directory</a>
-			<br/>
 			<a href="${root_url}/forward?method=createform&amp;type=directory&amp;repository=${repository.name}&amp;id=${directory.id}">Create directory</a>
 			<br/>
 			<#if directory.parent??>
-		    	<a href="${root_url}/forward?method=delete&amp;type=node&amp;repository=${repository.name}&amp;id=${directory.id}">Delete directory</a><br/>
+				<a href="${root_url}/forward?method=updateform&amp;type=node&amp;repository=${repository.name}&amp;id=${directory.id}">Update directory</a>
+				<br/>
+		    	<a href="${root_url}/forward?method=delete&amp;type=node&amp;repository=${repository.name}&amp;id=${directory.id}">Delete directory</a>
+		    	<br/>
 		    </#if>
 			<#if !directory.parent??>
 				<a href="${root_url}/forward?method=createform&amp;type=category&amp;repository=${repository.name}&amp;id=${directory.id}">Create category</a><br/>
