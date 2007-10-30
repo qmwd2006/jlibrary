@@ -166,21 +166,17 @@
   				<label for="keywords">Keywords</label>				
 					<input type="text" id="keywords" name="keywords"/><br/>
 					<label for="content">Content</label>
-					<script type="text/javascript">
-						var oFCKeditor = new FCKeditor( 'FCKEditor' ) ;
-						oFCKeditor.BasePath	= '${root_url}/FCKEditor/';
-						oFCKeditor.ToolbarSet = 'Basic';
-						oFCKeditor.Value	= '' ;
-						oFCKeditor.Create() ;
-					</script>					
+					<textarea id="content" name="content"></textarea>
 					<button type="submit">Create</button>
 					<button type="reset">Cancel</button>
 					<input type="hidden" name="repository" value="${repository.name}"/>
 					<input type="hidden" name="method" value="create"/>					
 					<input type="hidden" name="id" value="${directory.id}"/>
 					<input type="hidden" name="type" value="document"/>
+					<input type="hidden" name="baseUrl" id="baseUrl" value="${root_url}"/>
 				</fieldset>
 			</form>
+			<script type="text/javascript" src="${root_url}/js/jlibrary_editor.js"/>
 			<script type="text/javascript">
 				documentFormValidation();
 			</script>
@@ -234,21 +230,17 @@
   				<label for="keywords">Keywords</label>				
 					<input type="text" id="keywords" name="keywords" value="${document.metaData.keywords}"/><br/>
 					<label for="content">Content</label>
-					<script type="text/javascript">
-						var oFCKeditor = new FCKeditor( 'FCKEditor' ) ;
-						oFCKeditor.BasePath	= '${root_url}/FCKEditor/';
-						oFCKeditor.ToolbarSet = 'Basic';
-						oFCKeditor.Value	= '${document_content}' ;
-						oFCKeditor.Create() ;
-					</script>
+					<textarea id="content" name="content">${document_content}</textarea>
 					<button type="submit">Update</button>
 					<button type="reset">Cancel</button>
 					<input type="hidden" name="repository" value="${repository.name}"/>
 					<input type="hidden" name="method" value="update"/>					
 					<input type="hidden" name="id" value="${document.id}"/>
 					<input type="hidden" name="type" value="node"/>
+					<input type="hidden" name="baseUrl" id="baseUrl" value="${root_url}"/>
 				</fieldset>
 			</form>
+			<script type="text/javascript" src="${root_url}/js/jlibrary_editor.js"/>
 			<script type="text/javascript">
 				documentFormValidation();
 			</script>
