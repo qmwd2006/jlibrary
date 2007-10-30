@@ -188,6 +188,35 @@
 	</div>			
 </#macro>
 
+<#macro documentCreateFormUpload>
+  <div class="post">
+	  <div class="header">
+		  <h3>Parent directory: ${directory.name}</h3>
+			<div class="date">${directory.date?string("MMMM dd, yyyy")}</div>
+		</div>
+		<div class="content">
+  		<form class="sheet" action="${root_url}/forward?method=create&amp;type=document&amp;id=${directory.id}&amp;repository=${repository.name}" method="post" enctype="multipart/form-data">
+				<fieldset>
+					<legend>Document details</legend>						
+  				<label for="name">Name</label>				
+					<input type="text" id="name" name="name"/><br/>
+					<label for="description">Description</label>
+					<textarea name="description" rows="8" cols="auto" id="description"></textarea>
+  				<label for="keywords">Keywords</label>				
+					<input type="text" id="keywords" name="keywords"/><br/>
+					<label for="file">File</label>
+					<input type="file" name="file" />				
+					<button type="submit">Create</button>
+					<button type="reset">Cancel</button>
+				</fieldset>
+			</form>
+			<script type="text/javascript">
+				documentFormValidation();
+			</script>
+		</div>			
+	</div>			
+</#macro>
+
 <#macro documentUpdateForm>
   <div class="post">
 	  <div class="header">
