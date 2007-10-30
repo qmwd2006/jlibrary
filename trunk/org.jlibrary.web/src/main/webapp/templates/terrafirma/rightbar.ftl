@@ -26,7 +26,9 @@
 			<br/>
 			<a href="${root_url}/forward?method=createform&amp;type=directory&amp;repository=${repository.name}&amp;id=${directory.id}">Create directory</a>
 			<br/>
-		    <a href="${root_url}/forward?method=delete&amp;type=node&amp;repository=${repository.name}&amp;id=${directory.id}">Delete directory</a><br/>
+			<#if directory.parent??>
+		    	<a href="${root_url}/forward?method=delete&amp;type=node&amp;repository=${repository.name}&amp;id=${directory.id}">Delete directory</a><br/>
+		    </#if>
 			<#if !directory.parent??>
 				<a href="${root_url}/forward?method=createform&amp;type=category&amp;repository=${repository.name}&amp;id=${directory.id}">Create category</a><br/>
 			</#if>
