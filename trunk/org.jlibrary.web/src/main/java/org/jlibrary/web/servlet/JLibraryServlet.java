@@ -71,7 +71,11 @@ public class JLibraryServlet extends HttpServlet{
 			refererURL = "/repositories/" + repositoryName;
 		} else {
 			int i = refererURL.indexOf("/repositories");
-			refererURL = refererURL.substring(i,refererURL.length());
+			if(i>-1){
+				refererURL = refererURL.substring(i,refererURL.length());
+			}else{
+				refererURL = "/repositories/" + request.getParameter("repository");
+			}
 		}
 		return refererURL;
 	}
