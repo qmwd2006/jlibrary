@@ -388,6 +388,9 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 					node = repositoryService.updateDocument(ticket, properties);
 					statsService.incUpdatedDocuments();
 					String content = req.getParameter("FCKEditor");
+					if (content == null) {
+						content = "";
+					}
 					repositoryService.updateContent(ticket, node.getId(), content.getBytes());
 					
 					String url = getRepositoryURL(req, repositoryName);
