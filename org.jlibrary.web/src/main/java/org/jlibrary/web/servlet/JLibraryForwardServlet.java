@@ -25,12 +25,20 @@ package org.jlibrary.web.servlet;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.RequestContext;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.fileupload.servlet.ServletRequestContext;
 import org.apache.jackrabbit.util.Text;
 import org.apache.log4j.Logger;
 import org.jlibrary.core.entities.Author;
@@ -221,7 +229,10 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 			} else if (type.equals("document")) {
 				resp.getOutputStream().write(
 					exporter.exportDirectory((Directory)node, context, "document-create.ftl").getBytes());				
-			} else if (type.equals("category")) {
+			}else if (type.equals("documentupload")) {
+				resp.getOutputStream().write(
+					exporter.exportDirectory((Directory)node, context, "document-upload-create.ftl").getBytes());				
+			}else if (type.equals("category")) {
 				resp.getOutputStream().write(
 						exporter.exportDirectory((Directory)node, context, "category-create.ftl").getBytes());
 			} else {
@@ -372,7 +383,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 				Node node = 
 					repositoryService.findNode(ticket, id);
 	
-				if (node.isDirectory()) {
+				if (node.isDirectory() && node.getParent()!=null) {
 					node.setName(name);
 					node.setDescription(description);
 					DirectoryProperties properties = ((Directory)node).dumpProperties();
@@ -445,7 +456,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 					repositoryService.findNode(ticket, id);
 				Node parent = 
 					repositoryService.findNode(ticket, node.getParent());
-				if (node.isDirectory()) {
+				if (node.isDirectory() && node.getParent()!=null) {
 					repositoryService.removeDirectory(ticket, node.getId());
 					statsService.incDeletedDirectories();
 				} else if (node.isDocument()) {
@@ -566,12 +577,26 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 			if (!type.equals("category")) {
 				id = getField(req, resp, "id");
 			}
+			if (type.equals("document")) {
+				DiskFileItemFactory factory = new DiskFileItemFactory();
+				ServletFileUpload upload = new ServletFileUpload(factory);
+				try {
+					List<FileItem> listFilteItems = upload.parseRequest(req);
+					Iterator<FileItem> iterFilteItems=listFilteItems.iterator();
+					if(iterFilteItems.hasNext()){
+						FileItem fileItem=iterFilteItems.next();
+						fileItem.getContentType();
+						logger.debug(fileItem.getContentType());
+						logger.debug(fileItem.getName());
+					}
+				} catch (FileUploadException e) {
+					e.printStackTrace();
+				}
+				keywords = getField(req, resp, "keywords");
+			}
 			repositoryName = getField(req, resp, "repository");
 			name = getField(req, resp, "name");
 			description = getField(req, resp, "description");
-			if (type.equals("document")) {
-				keywords = getField(req, resp, "keywords");
-			}
 		} catch (FieldNotFoundException e) {
 			return;
 		}
@@ -611,8 +636,6 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 				document.setPosition(new Integer(1));
 				document.setImportance(Node.IMPORTANCE_MEDIUM);
 				document.setDate(new Date());
-				document.setPath(Text.escape(name)+".html");
-				document.setTypecode(Types.HTML_DOCUMENT);
 				document.setRelations(new HashSet());
 				document.addCategory(Category.UNKNOWN);
 				
@@ -623,15 +646,42 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 				metaData.setUrl(url);
 				metaData.setAuthor(author);
 				document.setMetaData(metaData);
+				
+				byte[] dataContent=null;
+				String content = req.getParameter("content");
+				RequestContext context=new ServletRequestContext(req);
+				if(content!=null && !"".equals(content)){
+					dataContent=content.getBytes();
+					document.setPath(Text.escape(name)+".html");
+					document.setTypecode(Types.HTML_DOCUMENT);
+				}else{
+					logger.debug("upload");
+					/**Iterator<FileItem> iterFilteItems=listFilteItems.iterator();
+					if(iterFilteItems.hasNext()){
+						FileItem fileItem=iterFilteItems.next();
+						dataContent=fileItem.get();
+						fileItem.getContentType();
+						logger.debug(fileItem.getContentType());
+						logger.debug(fileItem.getName());
+						document.setPath(Text.escape(fileItem.getName()));
+						document.setTypecode(Types.OTHER);
+					}**/
+				}
+				
 				DocumentProperties properties = document.dumpProperties();
 				document = repositoryService.createDocument(ticket, properties);	
 				statsService.incCreatedDocuments();
-				String content = req.getParameter("FCKEditor");
+				if(dataContent!=null){
+					repositoryService.updateContent(ticket, document.getId(), dataContent);
+					url+=document.getPath();
+					resp.sendRedirect(resp.encodeRedirectURL(url));
+				}else{
+					logErrorAndForward(req, resp, repositoryName, null, "There was a problem trying to upload the document.");
+				}
 				if (content == null) {
 					content = "";
 				}
 				repositoryService.updateContent(ticket, document.getId(), content.getBytes());
-				
 				url+=document.getPath();
 				resp.sendRedirect(resp.encodeRedirectURL(url));
 			} else if (type.equals("category")) {
