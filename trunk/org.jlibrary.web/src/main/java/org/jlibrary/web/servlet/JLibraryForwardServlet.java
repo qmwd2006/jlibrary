@@ -23,10 +23,13 @@
 package org.jlibrary.web.servlet;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -34,6 +37,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemIterator;
+import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.RequestContext;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -86,7 +91,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 	private StatsService statsService=StatsService.newInstance();
 
 	private ServerProfile profile = new LocalServerProfile();
-	
+	private Map params;
 	@Override
 	public void init() throws ServletException {
 
@@ -106,9 +111,50 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 
 		processRequest(req,resp);
 	}
+	
+	protected String getField(HttpServletRequest req, 
+			  HttpServletResponse resp, 
+			  String fieldName) throws FieldNotFoundException {
+		String ret=null;
+		if(params!=null){
+			ret=(String) params.get(fieldName);
+		}
+		if(ret==null){
+			ret=super.getField(req, resp, fieldName);
+		}
+		return ret;
+	}
 
 	private void processRequest(HttpServletRequest req, HttpServletResponse resp) {
-		
+		if(ServletFileUpload.isMultipartContent(req)){
+			params=new HashMap();
+			ServletFileUpload upload = new ServletFileUpload();
+//			upload.setFileSizeMax(fileSizeMax);
+//			upload.setSizeMax(sizeMax);
+			FileItemIterator iterFilteItems;
+			try {
+				iterFilteItems = upload.getItemIterator(req);
+				while(iterFilteItems.hasNext()){
+					FileItemStream fileItem=iterFilteItems.next();
+					InputStream is=fileItem.openStream();
+					byte[] dataContent=new byte[is.available()];
+					is.read(dataContent);
+					if(fileItem.isFormField()){
+						params.put(fileItem.getFieldName(), new String(dataContent));
+					}else{
+						JLibraryUploadEntity up=new JLibraryUploadEntity();
+						up.setData(dataContent);
+						up.setName(fileItem.getName());
+						up.setContentType(fileItem.getContentType());
+						params.put(fileItem.getFieldName(), up);
+					}
+				}
+			} catch (FileUploadException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		if (logger.isDebugEnabled()) {
 			logger.debug("Received content upload request");
 		}
@@ -571,27 +617,12 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 		String description;
 		String type;
 		String keywords = null;
-		
 		try {
 			type = getField(req, resp, "type");
 			if (!type.equals("category")) {
 				id = getField(req, resp, "id");
 			}
 			if (type.equals("document")) {
-				DiskFileItemFactory factory = new DiskFileItemFactory();
-				ServletFileUpload upload = new ServletFileUpload(factory);
-				try {
-					List<FileItem> listFilteItems = upload.parseRequest(req);
-					Iterator<FileItem> iterFilteItems=listFilteItems.iterator();
-					if(iterFilteItems.hasNext()){
-						FileItem fileItem=iterFilteItems.next();
-						fileItem.getContentType();
-						logger.debug(fileItem.getContentType());
-						logger.debug(fileItem.getName());
-					}
-				} catch (FileUploadException e) {
-					e.printStackTrace();
-				}
 				keywords = getField(req, resp, "keywords");
 			}
 			repositoryName = getField(req, resp, "repository");
@@ -646,33 +677,26 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 				metaData.setUrl(url);
 				metaData.setAuthor(author);
 				document.setMetaData(metaData);
-				
 				byte[] dataContent=null;
 				String content = req.getParameter("content");
-				RequestContext context=new ServletRequestContext(req);
 				if(content!=null && !"".equals(content)){
 					dataContent=content.getBytes();
 					document.setPath(Text.escape(name)+".html");
 					document.setTypecode(Types.HTML_DOCUMENT);
 				}else{
-					logger.debug("upload");
-					/**Iterator<FileItem> iterFilteItems=listFilteItems.iterator();
-					if(iterFilteItems.hasNext()){
-						FileItem fileItem=iterFilteItems.next();
-						dataContent=fileItem.get();
-						fileItem.getContentType();
-						logger.debug(fileItem.getContentType());
-						logger.debug(fileItem.getName());
-						document.setPath(Text.escape(fileItem.getName()));
-						document.setTypecode(Types.OTHER);
-					}**/
+					JLibraryUploadEntity uploadedFile=(JLibraryUploadEntity) params.get("file");
+					dataContent=uploadedFile.getData();
+					document.setPath(uploadedFile.getName());
+					document.setTypecode(Types.OTHER);
 				}
 				
 				DocumentProperties properties = document.dumpProperties();
 				document = repositoryService.createDocument(ticket, properties);	
 				statsService.incCreatedDocuments();
 				if(dataContent!=null){
+					logger.debug("antes "+dataContent.length);
 					repositoryService.updateContent(ticket, document.getId(), dataContent);
+					logger.debug("despues "+repositoryService.loadDocumentContent(document.getId(), ticket).length);
 					url+=document.getPath();
 					resp.sendRedirect(resp.encodeRedirectURL(url));
 				}else{
