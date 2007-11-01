@@ -20,7 +20,11 @@
         <param-name>jlibrary.home</param-name>
         <param-value>WEB-INF/repository</param-value>
         <!--config home-->
-    </context-param>        
+    </context-param>
+    
+	<listener>
+		<listener-class>org.apache.commons.fileupload.servlet.FileCleanerCleanup</listener-class>
+	</listener>
 
     <listener>
 		<listener-class>org.jlibrary.web.servlet.JLibraryStartupContextListener</listener-class>

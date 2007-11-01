@@ -35,6 +35,8 @@
 			</#if>
 			<a href="${root_url}/forward?method=createform&amp;type=document&amp;repository=${repository.name}&amp;id=${directory.id}">Create document</a>
 			<br/>
+			<a href="${root_url}/forward?method=createform&amp;type=documentupload&amp;repository=${repository.name}&amp;id=${directory.id}">Upload document</a>
+			<br/>
 		</#if>
 	</div>
 </#macro>
