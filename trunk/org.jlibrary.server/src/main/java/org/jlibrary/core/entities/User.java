@@ -74,6 +74,27 @@ public class User extends Member implements Serializable, Comparable {
     	return admin;
     }
     
+    public boolean isEditor() {
+    	
+    	Iterator it = getRoles().iterator();
+    	while (it.hasNext()) {
+    		Rol rol = (Rol)it.next();
+    		if (rol.getName().equals(Rol.PUBLISHER_ROLE_NAME)) {
+    			return true;
+    		}
+    	}
+    	
+    	it = getGroups().iterator();
+    	while (it.hasNext()) {
+    		Group group = (Group)it.next();
+    		if (group.getName().equals(Group.ADMINS_GROUP_NAME)) {
+    			return true;
+    		}
+    	}
+    	
+    	return false;
+    }
+    
     /**
      * @param admin The admin to set.
      */
