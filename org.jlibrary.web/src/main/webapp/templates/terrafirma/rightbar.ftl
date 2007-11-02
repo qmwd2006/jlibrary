@@ -21,7 +21,7 @@
 <#macro actions>
 	<h3>Actions</h3>
 	<div class="content">
-	  <#if ticket.user.admin>
+	  <#if ticket.user.admin || ticket.user.editor>
 			<a href="${root_url}/forward?method=createform&amp;type=directory&amp;repository=${repository.name}&amp;id=${directory.id}">Create directory</a>
 			<br/>
 			<#if directory.parent??>
@@ -44,7 +44,7 @@
 <#macro actionsCategory>
 	<h3>Actions</h3>
 	<div class="content">
-	  <#if ticket.user.admin>
+	  <#if ticket.user.admin || ticket.user.editor>
 		  <a href="${root_url}/forward?method=updateform&amp;type=category&amp;repository=${repository.name}&amp;id=${category.id}">Update category</a><br/>
 		  <a href="${root_url}/forward?method=delete&amp;type=category&amp;repository=${repository.name}&amp;id=${category.id}">Delete category</a><br/>
 		</#if>
