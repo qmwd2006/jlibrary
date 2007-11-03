@@ -202,7 +202,7 @@
 					<input type="text" id="keywords" name="keywords"/><br/>
 					<label for="file">File</label>
 					<input type="file" name="file" />				
-					<button type="submit">Create</button>
+					<button type="submit">Upload</button>
 					<button type="reset">Cancel</button>
 				</fieldset>
 			</form>
