@@ -27,8 +27,6 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
@@ -36,14 +34,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.RequestContext;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.fileupload.servlet.ServletRequestContext;
 import org.apache.jackrabbit.util.Text;
 import org.apache.log4j.Logger;
 import org.jlibrary.core.entities.Author;
@@ -687,7 +681,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 					JLibraryUploadEntity uploadedFile=(JLibraryUploadEntity) params.get("file");
 					dataContent=uploadedFile.getData();
 					document.setPath(uploadedFile.getName());
-					document.setTypecode(Types.OTHER);
+					document.setTypecode(Types.getTypeForFile(uploadedFile.getName()));
 				}
 				
 				DocumentProperties properties = document.dumpProperties();
@@ -699,6 +693,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 					logger.debug("despues "+repositoryService.loadDocumentContent(document.getId(), ticket).length);
 					url+=document.getPath();
 					resp.sendRedirect(resp.encodeRedirectURL(url));
+					return;
 				}else{
 					logErrorAndForward(req, resp, repositoryName, null, "There was a problem trying to upload the document.");
 				}
