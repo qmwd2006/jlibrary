@@ -2,13 +2,14 @@
   <div class="post">
 	  <div class="header">
 		  <h3>${document.name}</h3>
-			<div class="date">${document.date?string("MMMM dd, yyyy")}</div>
+			<div class="date">${document.date?string("MMMM dd, yyyy")}
+			  <a style="text-decoration:none" href="${repository_url}${document.path}?download=true"><img border="0" src="${root_url}/templates/terrafirma/images/download.png" alt="Download file"/></a>
+			</div>
 		</div>
 		<div class="content">
 		  <#if error??>
 		    <p class="error-header">${error}</p>
 		  </#if>
-		  Download: <a href="${repository_url}${document.path}?download=true">${document.name}</a>
 			<#if document_content!="">
 				<br/>
 				${document_content}
