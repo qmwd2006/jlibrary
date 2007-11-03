@@ -688,9 +688,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 				document = repositoryService.createDocument(ticket, properties);	
 				statsService.incCreatedDocuments();
 				if(dataContent!=null){
-					logger.debug("antes "+dataContent.length);
 					repositoryService.updateContent(ticket, document.getId(), dataContent);
-					logger.debug("despues "+repositoryService.loadDocumentContent(document.getId(), ticket).length);
 					url+=document.getPath();
 					resp.sendRedirect(resp.encodeRedirectURL(url));
 					return;
