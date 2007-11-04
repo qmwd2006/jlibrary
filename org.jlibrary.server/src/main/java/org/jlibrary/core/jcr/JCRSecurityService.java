@@ -1811,7 +1811,7 @@ public class JCRSecurityService implements SecurityService {
 			return false;
 		}
 		
-		String[] roles = obtainRoles(userNode,node);
+		String[] roles = obtainRoles(userNode);
 		
 		for (int i = 0; i < roles.length; i++) {
 			javax.jcr.Node rol = userNode.getSession().getNodeByUUID(roles[i]);
@@ -1826,8 +1826,7 @@ public class JCRSecurityService implements SecurityService {
 		return false;
 	}
 	
-	private static String[] obtainRoles(Node userNode,
-										Node targetNode) 
+	private static String[] obtainRoles(Node userNode) 
 									throws javax.jcr.RepositoryException {
 
 		javax.jcr.Session session = userNode.getSession();
@@ -1838,23 +1837,12 @@ public class JCRSecurityService implements SecurityService {
 		for (int i = 0; i < roles.length; i++) {
 			set.add(roles[i].getString());
 		}
-		
-		javax.jcr.Property property = 
-			targetNode.getProperty(JLibraryConstants.JLIBRARY_RESTRICTIONS);
-		Value[] targetRestrictions = property.getValues();
-		
+
 		// Now we will get all the roles from user's groups
 		Value[] userGroups = userNode.getProperty(
 				JLibraryConstants.JLIBRARY_GROUPS).getValues();
 		for (int i = 0; i < userGroups.length; i++) {
 			String groupId = userGroups[i].getString();
-			boolean found = false;
-			for (int j=0;j<targetRestrictions.length;j++) {
-				if (targetRestrictions[j].getString().equals(groupId)) {
-					found = true; break;
-				}
-			}
-			if (!found) continue;
 			javax.jcr.Node groupNode = session.getNodeByUUID(groupId);
 			Value[] groupRoles = groupNode.getProperty(
 					JLibraryConstants.JLIBRARY_ROLES).getValues();
@@ -1866,6 +1854,22 @@ public class JCRSecurityService implements SecurityService {
 		return (String[])set.toArray(new String[]{});
 	}
 	
+	/**
+	 * <p>This method will return true if the node passed as a parameter has been 
+	 * created by a jLibrary "system" administrator user. In this case will only 
+	 * return true when the node has been created by the default administrator user 
+	 * and will return false when the node has been created by a regular user with 
+	 * administrator rights.</p>
+	 * 
+	 * <p>The idea is that nodes created by the system administrator must have special 
+	 * permissions like for example can only be removed by users with administrator 
+	 * rights but not by editor users.</p>
+	 * 
+	 * @param node
+	 * @return
+	 * @throws javax.jcr.RepositoryException
+	 * @throws SecurityException
+	 */
 	private static boolean createdByAdmin(javax.jcr.Node node) 
 										throws javax.jcr.RepositoryException,
 											   SecurityException {
@@ -1881,17 +1885,6 @@ public class JCRSecurityService implements SecurityService {
 				return true;
 			}
 		}
-		String[] roles = obtainRoles(creatorNode,node);
-
-		for (int i = 0; i < roles.length; i++) {
-			javax.jcr.Node rol = creatorNode.getSession().getNodeByUUID(roles[i]);
-			String propertyName = rol.getProperty(
-					JLibraryConstants.JLIBRARY_NAME).getString();
-			if ((propertyName.equals(Rol.ADMIN_ROLE_NAME))) {
-				return true;
-			}
-		}
-		
 		return false;
 	}
 	
@@ -1916,7 +1909,7 @@ public class JCRSecurityService implements SecurityService {
 		}
 
 		boolean adminCreated = createdByAdmin(node);
-		String[] roles = obtainRoles(userNode,node);
+		String[] roles = obtainRoles(userNode);
 		for (int i = 0; i < roles.length; i++) {
 			javax.jcr.Node rol = userNode.getSession().getNodeByUUID(roles[i]);
 			String propertyName = rol.getProperty(
@@ -1965,7 +1958,7 @@ public class JCRSecurityService implements SecurityService {
 		//   1 - Have the admin role
 		//   2 - Be on a group with admin rights on the repository root node
 		javax.jcr.Node node = JCRUtils.getRootNode(session);
-		String[] roles = obtainRoles(userNode,node);
+		String[] roles = obtainRoles(userNode);
 
 		for (int i = 0; i < roles.length; i++) {
 			javax.jcr.Node rol = userNode.getSession().getNodeByUUID(roles[i]);
