@@ -60,11 +60,13 @@
 </#macro>
 
 <#macro admin>
-    <#if ticket.user.admin || (ticket.user.editor && (ticket.user.id == document.creator))>
+    <#if ticket.user.admin || ticket.user.editor>
 	  	<h3>Admin</h3>
 	  	<div class="content">
 			  	<a href="${root_url}/forward?method=updateform&amp;type=node&amp;repository=${repository.name}&amp;id=${document.id}">Update document</a><br/>
-			  	<a href="${root_url}/forward?method=delete&amp;type=node&amp;repository=${repository.name}&amp;id=${document.id}">Delete document</a><br/>
+	  	    <#if ticket.user.admin || (ticket.user.editor && (ticket.user.id == document.creator))>
+			  	  <a href="${root_url}/forward?method=delete&amp;type=node&amp;repository=${repository.name}&amp;id=${document.id}">Delete document</a><br/>
+			  	</#if>
 			</div>  
 		</#if>
 </#macro>
