@@ -1865,7 +1865,36 @@ public class JCRSecurityService implements SecurityService {
 		
 		return (String[])set.toArray(new String[]{});
 	}
+	
+	private static boolean createdByAdmin(javax.jcr.Node node) 
+										throws javax.jcr.RepositoryException,
+											   SecurityException {
+		
+		String creatorId = node.getProperty(JLibraryConstants.JLIBRARY_CREATOR).getValue().getString();
+		javax.jcr.Node creatorNode = 
+			JCRSecurityService.getUserNode(node.getSession(),creatorId);
+		boolean adminCreated = false;
+		if (creatorNode.hasProperty(JLibraryConstants.JLIBRARY_ISADMIN)) {
+			adminCreated = creatorNode.getProperty(
+					JLibraryConstants.JLIBRARY_ISADMIN).getBoolean();
+			if (adminCreated) {
+				return true;
+			}
+		}
+		String[] roles = obtainRoles(creatorNode,node);
 
+		for (int i = 0; i < roles.length; i++) {
+			javax.jcr.Node rol = creatorNode.getSession().getNodeByUUID(roles[i]);
+			String propertyName = rol.getProperty(
+					JLibraryConstants.JLIBRARY_NAME).getString();
+			if ((propertyName.equals(Rol.ADMIN_ROLE_NAME))) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	public static boolean canWrite(javax.jcr.Node node, String memberId) 
 										throws javax.jcr.RepositoryException,
 											   SecurityException {
@@ -1886,15 +1915,21 @@ public class JCRSecurityService implements SecurityService {
 			}
 		}
 
+		boolean adminCreated = createdByAdmin(node);
 		String[] roles = obtainRoles(userNode,node);
-
 		for (int i = 0; i < roles.length; i++) {
 			javax.jcr.Node rol = userNode.getSession().getNodeByUUID(roles[i]);
 			String propertyName = rol.getProperty(
 					JLibraryConstants.JLIBRARY_NAME).getString();
-			if ((propertyName.equals(Rol.ADMIN_ROLE_NAME)) ||
-				(propertyName.equals(Rol.PUBLISHER_ROLE_NAME))) {
-				return true;
+			if (!adminCreated) {
+				if ((propertyName.equals(Rol.ADMIN_ROLE_NAME)) ||
+					(propertyName.equals(Rol.PUBLISHER_ROLE_NAME))) {
+					return true;
+				}
+			} else {
+				if (propertyName.equals(Rol.ADMIN_ROLE_NAME)) {
+					return true;
+				}
 			}
 		}
 		return false;
