@@ -180,7 +180,9 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 			updateform(req,resp);
 		} else if (method.equals("createform")) {
 			createform(req,resp);
-		} else {
+		} else if (method.equals("upload")) {
+			upload(req,resp);
+		} else{
 			try {
 				if (logger.isDebugEnabled()) { logger.error("The operation " + method + " is not supported.");}
 				String repositoryName = getField(req, resp, "repository");
@@ -323,8 +325,15 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 					resp.getOutputStream().write(
 						exporter.exportDirectory((Directory)node, context, "directory-update.ftl").getBytes());
 				} else if (node.isDocument()) {
+					Document doc=(Document) node;
+					String template;
+					if(doc.getTypecode().equals(Types.HTML_DOCUMENT)){
+						template="document-update.ftl";
+					}else{
+						template="document-upload-update.ftl";
+					}
 					resp.getOutputStream().write(
-							exporter.exportDocument((Document)node, context, "document-update.ftl").getBytes());				
+							exporter.exportDocument((Document)node, context, "document-update.ftl").getBytes());
 				}
 			} else if (type.equals("category")) {
 				Category category = repositoryService.findCategoryById(ticket, id);
@@ -673,32 +682,17 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 				document.setMetaData(metaData);
 				byte[] dataContent=null;
 				String content = req.getParameter("content");
-				if(content!=null && !"".equals(content)){
-					dataContent=content.getBytes();
-					document.setPath(Text.escape(name)+".html");
-					document.setTypecode(Types.HTML_DOCUMENT);
-				}else{
-					JLibraryUploadEntity uploadedFile=(JLibraryUploadEntity) params.get("file");
-					dataContent=uploadedFile.getData();
-					document.setPath(uploadedFile.getName());
-					document.setTypecode(Types.getTypeForFile(uploadedFile.getName()));
-				}
-				
+				dataContent=content.getBytes();
+				document.setPath(Text.escape(name)+".html");
+				document.setTypecode(Types.HTML_DOCUMENT);
 				DocumentProperties properties = document.dumpProperties();
 				document = repositoryService.createDocument(ticket, properties);	
 				statsService.incCreatedDocuments();
 				if(dataContent!=null){
 					repositoryService.updateContent(ticket, document.getId(), dataContent);
-					url+=document.getPath();
-					resp.sendRedirect(resp.encodeRedirectURL(url));
-					return;
 				}else{
 					logErrorAndForward(req, resp, repositoryName, null, "There was a problem trying to upload the document.");
 				}
-				if (content == null) {
-					content = "";
-				}
-				repositoryService.updateContent(ticket, document.getId(), content.getBytes());
 				url+=document.getPath();
 				resp.sendRedirect(resp.encodeRedirectURL(url));
 			} else if (type.equals("category")) {
@@ -720,6 +714,72 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 			}
 
 			resp.getOutputStream().flush();
+		} catch (Exception e) {
+			logErrorAndForward(req, resp, repositoryName, e, "There was a problem trying to create the object.");
+		}
+	}
+	
+	private void upload(HttpServletRequest req, HttpServletResponse resp) {
+
+		String id = null;
+		String repositoryName;
+		String name;
+		String description;
+		String keywords = null;
+		try {
+			id = getField(req, resp, "id");
+			keywords = getField(req, resp, "keywords");
+			repositoryName = getField(req, resp, "repository");
+			name = getField(req, resp, "name");
+			description = getField(req, resp, "description");
+		} catch (FieldNotFoundException e) {
+			return;
+		}
+		Ticket ticket = TicketService.getTicketService().getTicket(req, repositoryName);
+		RepositoryService repositoryService = 
+			JLibraryServiceFactory.getInstance(profile).getRepositoryService();
+
+		try {
+			Repository repository = repositoryService.findRepository(repositoryName, ticket);
+			repository.setServerProfile(profile);
+			String url = getRepositoryURL(req, repositoryName);
+			Author author = null;
+			try {
+				author = repositoryService.findAuthorByName(ticket, ticket.getUser().getName());
+			} catch (AuthorNotFoundException anfe) {
+				author = Author.UNKNOWN;
+			}
+			Document document = new Document();
+			document.setName(name);
+			document.setDescription(description);
+			document.setParent(id);
+			document.setPosition(new Integer(1));
+			document.setImportance(Node.IMPORTANCE_MEDIUM);
+			document.setDate(new Date());
+			document.setRelations(new HashSet());
+			document.addCategory(Category.UNKNOWN);
+			DocumentMetaData metaData = new DocumentMetaData();
+			metaData.setDate(new Date());
+			metaData.setTitle(name);
+			metaData.setKeywords(keywords);
+			metaData.setUrl(url);
+			metaData.setAuthor(author);
+			document.setMetaData(metaData);
+			JLibraryUploadEntity uploadedFile=(JLibraryUploadEntity) params.get("file");
+			byte[] dataContent = uploadedFile.getData();
+			document.setPath(uploadedFile.getName());
+			document.setTypecode(Types.getTypeForFile(uploadedFile.getName()));
+			DocumentProperties properties = document.dumpProperties();
+			document = repositoryService.createDocument(ticket, properties);	
+			statsService.incCreatedDocuments();
+			if(dataContent!=null){
+				repositoryService.updateContent(ticket, document.getId(), dataContent);
+				url+=document.getPath();
+				resp.sendRedirect(resp.encodeRedirectURL(url));
+				return;
+			}else{
+				logErrorAndForward(req, resp, repositoryName, null, "There was a problem trying to upload the document.");
+			}
 		} catch (Exception e) {
 			logErrorAndForward(req, resp, repositoryName, e, "There was a problem trying to create the object.");
 		}
