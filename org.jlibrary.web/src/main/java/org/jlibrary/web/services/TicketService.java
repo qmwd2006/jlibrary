@@ -50,7 +50,6 @@ import org.jlibrary.web.WebConstants;
  * exist then it will be created and 'read' permissions will be added for all content to that user.</p> 
  * 
  * @author mpermar
- *
  */
 public class TicketService {
 
@@ -65,21 +64,10 @@ public class TicketService {
 	private Ticket systemTicket;
 	
 	private ConcurrentHashMap<String, Ticket> guestTickets = new ConcurrentHashMap<String, Ticket>();
+
+	private String rootPassword;
 	
-	public TicketService() {
-		
-		LocalServerProfile profile = new LocalServerProfile();
-		SecurityService service = 
-			JLibraryServiceFactory.getInstance(profile).getSecurityService();	
-		Credentials credentials = new Credentials();
-		credentials.setUser(User.ADMIN_NAME);
-		credentials.setPassword(User.DEFAULT_PASSWORD);
-		try {
-			systemTicket = service.login(credentials, "system");
-		} catch (Exception e) {
-			logger.error(e.getMessage(),e);
-		}
-	}
+	public TicketService() {}
 	
 	/**
 	 * Cleans up acquired resources
@@ -186,7 +174,7 @@ public class TicketService {
 			JLibraryServiceFactory.getInstance(profile).getSecurityService();	
 		Credentials credentials = new Credentials();
 		credentials.setUser(User.ADMIN_NAME);
-		credentials.setPassword(User.DEFAULT_PASSWORD);
+		credentials.setPassword(rootPassword);
 		Ticket adminTicket = null;
 		try {
 			adminTicket = service.login(credentials, repositoryName);
@@ -269,5 +257,27 @@ public class TicketService {
 				}
 	     	}
 	    return instance;
+	}
+
+	/**
+	 * Initialises this ticket service
+	 * 
+	 * @param configService Configuration service
+	 */
+	public void init(ConfigurationService configService) {
+
+		this.rootPassword = configService.getRootPassword();
+		
+		LocalServerProfile profile = new LocalServerProfile();
+		SecurityService service = 
+			JLibraryServiceFactory.getInstance(profile).getSecurityService();	
+		Credentials credentials = new Credentials();
+		credentials.setUser(User.ADMIN_NAME);
+		credentials.setPassword(rootPassword);
+		try {
+			systemTicket = service.login(credentials, "system");
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+		}
 	}
 }

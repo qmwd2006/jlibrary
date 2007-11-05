@@ -22,6 +22,8 @@
 */
 package org.jlibrary.web.services;
 
+import org.jlibrary.core.entities.User;
+
 /**
  * This Spring service will hold several configuration values.
  * 
@@ -39,6 +41,9 @@ public class ConfigurationService {
 	private Long totalInputBandwidth;
 	private Long totalOutputBandwidth;
 
+	// Default password
+	private String rootPassword = User.DEFAULT_PASSWORD;
+	
 	public Long getOperationInputBandwidth() {
 		return operationInputBandwidth;
 	}
@@ -85,5 +90,13 @@ public class ConfigurationService {
 
 	public void setTemplateDirectory(String templateDirectory) {
 		this.templateDirectory = templateDirectory;
+	}
+
+	public String getRootPassword() {
+		return rootPassword;
+	}
+
+	public void setRootPassword(String rootPassword) {
+		this.rootPassword = rootPassword;
 	}
 }
