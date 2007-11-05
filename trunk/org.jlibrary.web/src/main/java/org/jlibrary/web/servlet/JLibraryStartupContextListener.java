@@ -24,8 +24,6 @@ package org.jlibrary.web.servlet;
 
 import javax.servlet.ServletContextEvent;
 
-import org.jlibrary.core.entities.Ticket;
-import org.jlibrary.web.services.StatsService;
 import org.jlibrary.web.services.TicketService;
 
 /**

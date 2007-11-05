@@ -56,8 +56,11 @@ import org.jlibrary.core.util.FileUtils;
 import org.jlibrary.web.RepositoryRegistry;
 import org.jlibrary.web.freemarker.FreemarkerExporter;
 import org.jlibrary.web.freemarker.RepositoryContext;
+import org.jlibrary.web.services.ConfigurationService;
 import org.jlibrary.web.services.StatsService;
 import org.jlibrary.web.services.TicketService;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  * This servlet listens for content requests following a model very similar to REST. 
@@ -78,6 +81,15 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 	public void init() throws ServletException {
 
 		super.init();
+		
+		try {
+			ApplicationContext context = 
+				WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
+			ConfigurationService configService = (ConfigurationService)context.getBean("template");
+			TicketService.getTicketService().init(configService);
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+		}
 	}
 	
 	@Override
