@@ -39,7 +39,9 @@
 <#macro directoryContent>
   <div class="post">
 	  <div class="header">
-		  <h3>Directory: ${directory.name}</h3>
+	    <#if directory_content="">
+		  	<h3>Directory: ${directory.name}</h3>
+		  </#if>
 			<div class="date">
 			  ${directory.date?string("MMMM dd, yyyy")} 
 			  <a href="${repository_url}${directory.path}?rss=true" border=0><img border="0" src="${root_url}/templates/terrafirma/images/rss.png" alt="Suscribe in a reader" /></a>

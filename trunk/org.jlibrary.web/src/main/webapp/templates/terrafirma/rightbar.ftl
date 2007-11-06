@@ -18,6 +18,26 @@
 	</div>
 </#macro>
 
+<!-- This macro will be used when the directory has an index.html file that will be shown as the 
+     page content. So this will provide a way to access to the documents in that folder -->
+<#macro documents>
+	<h3>See also here</h3>
+	<div class="content">
+		<ul class="linklist">
+			<#assign hasDocuments=false/>
+			<#list directory.nodes as menuitem>
+				<#if menuitem.document && menuitem.name != "index.html">
+  			  <#assign hasDocuments=true/>
+  				<li class="first"><a href="${repository_url}${menuitem.path}">${menuitem.name}</a></li>
+				</#if>
+			</#list>
+			<#if !hasDocuments> 
+				<li>No more documents.</li>
+			</#if>
+		</ul>
+	</div>
+</#macro>
+
 <#macro actions>
 	<h3>Actions</h3>
 	<div class="content">
