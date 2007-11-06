@@ -20,6 +20,9 @@
     	<@rightbar.infoDirectory/>
       <@rightbar.directories/>        
       <@rightbar.actions/>
+      <#if directory_content !="">
+        <@rightbar.documents/>
+      </#if>
     </div>
   </@com.rightbar>
     
