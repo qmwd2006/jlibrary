@@ -109,6 +109,9 @@ public class Rol implements Serializable, IResource {
     	
         if ( !(other instanceof Rol) ) return false;
         Rol castOther = (Rol) other;
+        if (castOther == null || id == null) {
+        	return false;
+        }
         return id.equals(castOther.id);
     }
 
