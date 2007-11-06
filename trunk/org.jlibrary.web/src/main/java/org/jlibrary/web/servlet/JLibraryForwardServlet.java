@@ -397,8 +397,9 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 			Ticket userTicket = securityService.login(credentials, repositoryName);
 			TicketService.getTicketService().putTicket(req, repositoryName, userTicket);
 			req.getSession(true).setAttribute((StatsService.SESSION_LOGGED_USER+repositoryName).toLowerCase(),new LoggedUser());
-			String refererURL = req.getHeader("referer");
-			resp.sendRedirect(resp.encodeRedirectURL(refererURL));
+			String refererURL = getRefererURL(req, repositoryName);
+			RequestDispatcher rd = getServletContext().getRequestDispatcher(refererURL);
+			rd.forward(req, resp);
 		} catch (Exception e) {
 			logErrorAndForward(req, resp, repositoryName, e, "There was a problem trying to log in.");
 		}
