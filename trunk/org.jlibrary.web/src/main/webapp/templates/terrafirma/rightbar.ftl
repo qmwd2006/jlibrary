@@ -26,7 +26,7 @@
 		<ul class="linklist">
 			<#assign hasDocuments=false/>
 			<#list directory.nodes as menuitem>
-				<#if menuitem.document && menuitem.name != "index.html">
+				<#if menuitem.document && menuitem.name != "index.html" && menuitem.name != "index">
   			  <#assign hasDocuments=true/>
   				<li class="first"><a href="${repository_url}${menuitem.path}">${menuitem.name}</a></li>
 				</#if>
