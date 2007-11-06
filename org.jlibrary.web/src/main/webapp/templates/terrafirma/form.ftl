@@ -14,6 +14,7 @@
 					<textarea id="description" name="description" rows="8" cols="auto">${directory.description}</textarea>						
 					<button type="submit">Update</button>
 					<button type="reset">Cancel</button>
+					<input type="hidden" name="type" value="node"/>
 					<input type="hidden" name="repository" value="${repository.name}"/>
 					<input type="hidden" name="method" value="update"/>					
 					<input type="hidden" name="id" value="${directory.id}"/>
