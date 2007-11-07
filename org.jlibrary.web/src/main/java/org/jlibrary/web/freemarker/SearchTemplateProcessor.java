@@ -22,12 +22,9 @@
 */
 package org.jlibrary.web.freemarker;
 
-import java.util.Collection;
 import java.util.Date;
 
 import org.jlibrary.core.entities.SearchResult;
-import org.jlibrary.core.search.SearchResultSet;
-import org.jlibrary.web.content.WordCounter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,14 +33,11 @@ import org.slf4j.LoggerFactory;
  *
  * Template processor for search results
  */
-public class SearchTemplateProcessor implements FreemarkerTemplateProcessor {
+public class SearchTemplateProcessor extends BaseTemplateProcessor {
 
 	static Logger logger = LoggerFactory.getLogger(SearchTemplateProcessor.class);
 	
 	private SearchResult result;
-	private RepositoryContext context;
-	private FreemarkerExporter exporter;
-
 	/**
 	 * Document template processor
 	 * 
@@ -55,36 +49,19 @@ public class SearchTemplateProcessor implements FreemarkerTemplateProcessor {
 								   SearchResult result, 
 								   RepositoryContext context) {
 
+		super(exporter,context,"search.ftl");
 		this.result = result;
-		this.context = context;
-		this.exporter = exporter;
-	}
-	
-	public String processTemplate(FreemarkerFactory factory) throws ExportException {
-
-		return processTemplate(factory,factory.getPage("search.ftl"));
 	}	
 	
+	@Override
+	protected void exportContent(Page page) throws ExportException {
 
-	public String processTemplate(FreemarkerFactory factory,
-								  Page page) throws ExportException {
 		
-		page.expose(FreemarkerVariables.REPOSITORY,context.getRepository());
-		page.expose(FreemarkerVariables.SEARCH_RESULTS, result);
-		page.expose(FreemarkerVariables.TICKET, context.getTicket());
-		page.expose(FreemarkerVariables.ERROR_MESSAGE, exporter.getError());
-		
+		page.expose(FreemarkerVariables.SEARCH_RESULTS, result);		
 		page.expose(FreemarkerVariables.DATE, new Date());
 
-		String rootURL = exporter.getRootURL(context.getRepository().getRoot());
-		String repositoryURL = exporter.getRepositoryURL();
-		
-		page.expose(FreemarkerVariables.ROOT_URL,rootURL);
-		page.expose(FreemarkerVariables.REPOSITORY_URL,repositoryURL);
-		page.expose(FreemarkerVariables.CATEGORIES_ROOT_URL,repositoryURL+"/categories");
-		page.expose(FreemarkerVariables.LOCATION_URL, "");
-			
+		String rootURL = exporter.getRootURL(context.getRepository().getRoot());		
+		page.expose(FreemarkerVariables.ROOT_URL,rootURL);			
 		page.expose(FreemarkerVariables.PAGE_KEYWORDS,"jlibrary, search, results");
-		return page.getAsString();
 	}
 }
