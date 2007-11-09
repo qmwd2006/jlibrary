@@ -687,4 +687,12 @@ public class Document extends Node implements Serializable {
 	public void setCustomProperties(Map customProperties) {
 		this.customProperties = customProperties;
 	}	
+	
+	public boolean isImage() {
+		
+		if (getTypecode() == null) {
+			return false;
+		}
+		return org.jlibrary.core.entities.Types.isImageFile(getTypecode());
+	}
 }
