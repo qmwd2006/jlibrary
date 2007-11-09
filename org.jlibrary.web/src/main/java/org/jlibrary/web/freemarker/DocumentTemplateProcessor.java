@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import org.apache.commons.lang.StringUtils;
 import org.jlibrary.core.entities.Author;
 import org.jlibrary.core.entities.Document;
 import org.jlibrary.core.entities.Repository;
@@ -125,8 +126,11 @@ public class DocumentTemplateProcessor extends BaseTemplateProcessor {
 
 		try {
 			byte[] content = repositoryService.loadDocumentContent(document.getId(), ticket);
-			if (document.getTypecode().equals(Types.HTML_DOCUMENT)) {				
+			if (Types.isTextFile(document.getTypecode())) {
 				String body = HTMLUtils.extractBody(new String(content));
+				if (document.getTypecode().equals(Types.TEXT_DOCUMENT)) {
+					body = "<pre>" + body + "</pre>";
+				} 
 				return body;
 			} else {
 				//TODO: Implement binary content return
