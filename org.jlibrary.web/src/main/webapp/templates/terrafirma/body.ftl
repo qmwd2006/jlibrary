@@ -13,6 +13,10 @@
 			<#if document_content!="">
 				<br/>
 				${document_content}
+			<#else>
+			  <#if document.image>
+				  <img src="${repository_url}${document.path}?download=true"/>
+				</#if>
 			</#if>
 			<br/><br/>
 		</div>			

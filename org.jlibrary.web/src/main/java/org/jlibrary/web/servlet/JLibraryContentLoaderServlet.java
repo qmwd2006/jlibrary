@@ -187,7 +187,12 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 					byte[] output;
 					if("true".equals(req.getParameter("download"))){
 						output = repositoryService.loadDocumentContent(document.getId(), ticket);
-						resp.setContentType("application/octet-stream");
+						if (document.isImage()) {
+							resp.setContentType(Types.getMimeTypeForExtension(
+									FileUtils.getExtension(document.getPath())));
+						} else {
+							resp.setContentType("application/octet-stream");
+						}
 					}else{
 						output = exportDocument(req,ticket,repository,node).getBytes();
 					}
