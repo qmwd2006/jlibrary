@@ -58,7 +58,7 @@
   		<#if directory_content="">
   	  	<p>${directory.description}</p>
 	  		<#list directory.nodes as children>
-		  		<#if !children.directory>
+		  		<#if children.document>
 		  	  		<h2><a style="text-decoration:none" 
 		  	         href="${repository_url}${children.path}">${children.name}</a>&nbsp;<a href="${repository_url}${children.path}?download=true"><img border="0" src="${root_url}/templates/terrafirma/images/download.png" alt="Download file"/></a></h2>
 			  			<p>${children.description}</p>
