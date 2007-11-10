@@ -223,8 +223,13 @@ public class FreemarkerExporter extends BaseExporter {
 		String[] pathParts = StringUtils.split(location,"/");
 		String href="./";
 		for (int i=pathParts.length-1;i>=0;i--) {
-			buffer.insert(0,"<A href=\"" + href + Text.escape(pathParts[i]) + "\">" + 
-					 Text.unescape(pathParts[i]) + "</A>/");
+			if (i != pathParts.length-1) {
+				buffer.insert(0,"<A href=\"" + href + Text.escape(pathParts[i]) + "\">" + 
+						 Text.unescape(pathParts[i]) + "</A>/");
+			} else {
+				buffer.insert(0,"<A href=\"" + href + Text.escape(pathParts[i]) + "\">" + 
+						 Text.unescape(node.getName()) + "</A>/");				
+			}
 			href = href + "../";
 		}
 		buffer.insert(0,"/");
