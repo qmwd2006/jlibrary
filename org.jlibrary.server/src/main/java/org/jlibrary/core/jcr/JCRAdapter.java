@@ -355,9 +355,13 @@ public class JCRAdapter {
 		}
 
 		if (node.hasProperty(JLibraryConstants.JLIBRARY_PATH)) {
+			/*
 			resource.setPath(node.getProperty(
 					JLibraryConstants.JLIBRARY_PATH).
-					getString());			
+					getString());
+			*/
+			String path = StringUtils.difference("/"+JLibraryConstants.JLIBRARY_ROOT, node.getPath());
+			resource.setPath(path);			
 		}
 
 		if (node.hasProperty(JLibraryConstants.JLIBRARY_SIZE)) {
