@@ -90,7 +90,7 @@ public class JLibraryServlet extends HttpServlet{
 	protected String getRootURL(HttpServletRequest request) {
 
 		return request.getScheme( ) + "://"
-				+ request.getLocalAddr( )  + ":"
+				+ request.getLocalName( ) + ":"
 				+ request.getLocalPort( )
 				+ request.getContextPath( );
 	}
