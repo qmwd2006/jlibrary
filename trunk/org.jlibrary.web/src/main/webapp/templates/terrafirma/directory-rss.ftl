@@ -6,7 +6,7 @@
 		<link>${repository_url}${directory.path}</link>
 
 		<#list directory.nodes as children>
-  	  <#if !children.directory>
+  	  <#if children.document>
   		  <item>
   		    <title>${children.name}</title>
   		    <link>${repository_url}${children.path}</link>
