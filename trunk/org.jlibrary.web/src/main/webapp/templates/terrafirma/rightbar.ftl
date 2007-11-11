@@ -142,7 +142,7 @@
 		    <p>Not categorized.</p>
 		  <#else>
 		    <#list document_categories as category>
-		      <p><a href="${categoryURL(category.id)}">${category.name}</a></p>
+		      <p><a href="${categories_root_url}/${category.name}">${category.name}</a></p>
 		     </#list>
 		  </#if> 
 	  </#if>
