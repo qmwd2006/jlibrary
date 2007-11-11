@@ -10,8 +10,8 @@
     <@head.header/>
             
     <!--body-->
-    <div id="primarycontent">   
-    	<@form.documentUpdateForm/>
+    <div id="primarycontent">
+    	<@form.documentUpdateFormUpload/>
     </div>
     
     <!-- right bar -->
