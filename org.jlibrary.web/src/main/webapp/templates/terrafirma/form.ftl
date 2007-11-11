@@ -202,7 +202,7 @@
   				<label for="keywords">Keywords</label>				
 					<input type="text" id="keywords" name="keywords"/><br/>
 					<label for="file">File</label>
-					<input type="file" name="file" id="file/>				
+					<input type="file" name="file" id="file"/>				
 					<button type="submit">Upload</button>
 					<button type="reset">Cancel</button>
 				</fieldset>
@@ -267,7 +267,7 @@
 					<input type="text" id="keywords" name="keywords" value="${document.metaData.keywords}"/><br/>
 					<label for="file">File</label>
 					<input type="file" name="file" id="file"/>				
-					<button type="submit">Create</button>
+					<button type="submit">Update</button>
 					<button type="reset">Cancel</button>
 					<input type="hidden" name="method" value="update"/>					
 					<input type="hidden" name="id" value="${document.id}"/>
