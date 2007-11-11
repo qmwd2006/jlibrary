@@ -177,10 +177,10 @@
 					<input type="hidden" name="baseUrl" id="baseUrl" value="${root_url}"/>
 				</fieldset>
 			</form>
-			<script type="text/javascript" src="${root_url}/js/jlibrary_editor.js"/>
 			<script type="text/javascript">
 				documentFormValidation();
 			</script>
+			<script type="text/javascript" src="${root_url}/js/jlibrary_editor.js"/>
 		</div>			
 	</div>			
 </#macro>
@@ -202,13 +202,13 @@
   				<label for="keywords">Keywords</label>				
 					<input type="text" id="keywords" name="keywords"/><br/>
 					<label for="file">File</label>
-					<input type="file" name="file" />				
+					<input type="file" name="file" id="file/>				
 					<button type="submit">Upload</button>
 					<button type="reset">Cancel</button>
 				</fieldset>
 			</form>
 			<script type="text/javascript">
-				documentFormValidation();
+				documentUploadFormValidation(true);
 			</script>
 		</div>			
 	</div>			
@@ -241,12 +241,12 @@
 					<input type="hidden" name="baseUrl" id="baseUrl" value="${root_url}"/>
 				</fieldset>
 			</form>
-			<script type="text/javascript" src="${root_url}/js/jlibrary_editor.js"/>
 			<script type="text/javascript">
 				documentFormValidation();
 			</script>
+			<script type="text/javascript" src="${root_url}/js/jlibrary_editor.js"/>
 		</div>			
-	</div>			
+	</div>			2
 </#macro>
 
 <#macro documentUpdateFormUpload>
@@ -256,7 +256,7 @@
 			<div class="date">${document.date?string("MMMM dd, yyyy")}</div>
 		</div>
 		<div class="content">
-  		<form class="sheet" action="${root_url}/forward?method=create&amp;type=document&amp;id=${directory.id}&amp;repository=${repository.name}" method="post" enctype="multipart/form-data">
+  		<form class="sheet" action="${root_url}/forward?repository=${repository.name}" method="post" enctype="multipart/form-data">
 				<fieldset>
 					<legend>Document details</legend>						
   				<label for="name">Name</label>				
@@ -266,13 +266,17 @@
   				<label for="keywords">Keywords</label>				
 					<input type="text" id="keywords" name="keywords" value="${document.metaData.keywords}"/><br/>
 					<label for="file">File</label>
-					<input type="file" name="file" />				
+					<input type="file" name="file" id="file"/>				
 					<button type="submit">Create</button>
 					<button type="reset">Cancel</button>
+					<input type="hidden" name="method" value="update"/>					
+					<input type="hidden" name="id" value="${document.id}"/>
+					<input type="hidden" name="type" value="node"/>
+					<input type="hidden" name="baseUrl" id="baseUrl" value="${root_url}"/>
 				</fieldset>
 			</form>
 			<script type="text/javascript">
-				documentFormValidation();
+				documentUploadFormValidation(false);
 			</script>
 		</div>			
 	</div>			

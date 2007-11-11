@@ -25,9 +25,21 @@ function loginValidation(){
 function documentFormValidation(){
 	var name= new LiveValidation('name',{onlyOnSubmit:true});
 	var description= new LiveValidation('description',{onlyOnSubmit:true});
-	//var content= new LiveValidation('passwordheader',{onlyOnSubmit:true});
+	var content= new LiveValidation('content',{onlyOnSubmit:true});
 	name.add(Validate.Presence);
 	description.add(Validate.Presence);
+	content.add(Validate.Presence);
+}
+
+function documentUploadFormValidation(createBoolean){
+	var name= new LiveValidation('name',{onlyOnSubmit:true});
+	var description= new LiveValidation('description',{onlyOnSubmit:true});
+	var file= new LiveValidation('file',{onlyOnSubmit:true});
+	name.add(Validate.Presence);
+	description.add(Validate.Presence);
+	if(createBoolean){
+		file.add(Validate.Presence);
+	}
 }
 
 function directoryFormValidation(){
