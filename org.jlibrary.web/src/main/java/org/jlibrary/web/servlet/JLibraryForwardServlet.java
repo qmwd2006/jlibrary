@@ -333,7 +333,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 						template="document-upload-update.ftl";
 					}
 					resp.getOutputStream().write(
-							exporter.exportDocument((Document)node, context, "document-update.ftl").getBytes());
+							exporter.exportDocument((Document)node, context, template).getBytes());
 				}
 			} else if (type.equals("category")) {
 				Category category = repositoryService.findCategoryById(ticket, id);
@@ -443,19 +443,26 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 					url+=node.getPath();
 					resp.sendRedirect(resp.encodeRedirectURL(url));
 				} else if (node.isDocument()) {
-					node.setName(name);
-					node.setDescription(description);
-					DocumentProperties properties = ((Document)node).dumpProperties();
-					node = repositoryService.updateDocument(ticket, properties);
-					statsService.incUpdatedDocuments();
-					String content = req.getParameter("FCKEditor");
-					if (content == null) {
-						content = "";
+					Document document=(Document) node;
+					document.setName(name);
+					document.setDescription(description);
+					String content = req.getParameter("content");
+					JLibraryUploadEntity uploadedFile=(JLibraryUploadEntity) params.get("file");
+					byte[] dataContent;
+					if (uploadedFile != null) {
+						dataContent = uploadedFile.getData();
+						document.setTypecode(Types.getTypeForFile(uploadedFile.getName()));
+					}else{
+						dataContent=content.getBytes();
 					}
-					repositoryService.updateContent(ticket, node.getId(), content.getBytes());
-					
+					DocumentProperties properties = document.dumpProperties();
+					document = repositoryService.updateDocument(ticket, properties);
+					if(dataContent!=null){
+						repositoryService.updateContent(ticket, document.getId(), dataContent);
+					}
+					statsService.incUpdatedDocuments();
 					String url = getRepositoryURL(req, repositoryName);
-					url+=node.getPath();
+					url+=document.getPath();
 					resp.sendRedirect(resp.encodeRedirectURL(url));
 					
 				}
