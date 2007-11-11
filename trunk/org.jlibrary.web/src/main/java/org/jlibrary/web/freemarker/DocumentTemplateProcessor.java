@@ -23,11 +23,9 @@
 package org.jlibrary.web.freemarker;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import org.apache.commons.lang.StringUtils;
 import org.jlibrary.core.entities.Author;
 import org.jlibrary.core.entities.Document;
 import org.jlibrary.core.entities.Repository;
@@ -144,9 +142,17 @@ public class DocumentTemplateProcessor extends BaseTemplateProcessor {
 	
 	private Collection loadCategories() throws ExportException {
 
-		return Collections.EMPTY_LIST;
-		//CategoryHelper helper = exporter.getCategoryHelper();
-		//return helper.findCategoriesForNode(document.getId());
+		try {
+			Repository repository = context.getRepository();
+			Ticket ticket = context.getTicket(); 
+			ServerProfile profile = repository.getServerProfile();
+			RepositoryService service = 
+				JLibraryServiceFactory.getInstance(profile).getRepositoryService();	
+			return service.findCategoriesForNode(ticket, document.getId());
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			throw new ExportException(e);	
+		}
 	}
 	
 	public String getPrintFile(Document document) {
