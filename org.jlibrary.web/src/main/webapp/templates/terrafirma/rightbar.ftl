@@ -81,7 +81,7 @@
 
 <#macro admin>
     <#if ticket.user.admin || ticket.user.editor>
-	  	<h3>Admin</h3>
+	  	<h3>Actions</h3>
 	  	<div class="content">
 			  	<a href="${root_url}/forward?method=updateform&amp;type=node&amp;repository=${repository.name}&amp;id=${document.id}">Update document</a><br/>
 	  	    <#if ticket.user.admin || (ticket.user.editor && (ticket.user.id == document.creator))>
