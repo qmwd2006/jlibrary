@@ -85,7 +85,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 	private StatsService statsService=StatsService.newInstance();
 
 	private ServerProfile profile = new LocalServerProfile();
-	private Map params;
+	private Map params=new HashMap();
 	@Override
 	public void init() throws ServletException {
 
@@ -121,7 +121,6 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 
 	private void processRequest(HttpServletRequest req, HttpServletResponse resp) {
 		if(ServletFileUpload.isMultipartContent(req)){
-			params=new HashMap();
 			ServletFileUpload upload = new ServletFileUpload();
 //			upload.setFileSizeMax(fileSizeMax);
 //			upload.setSizeMax(sizeMax);
@@ -451,6 +450,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 					byte[] dataContent;
 					if (uploadedFile != null) {
 						dataContent = uploadedFile.getData();
+						document.setPath(uploadedFile.getName());
 						document.setTypecode(Types.getTypeForFile(uploadedFile.getName()));
 					}else{
 						dataContent=content.getBytes();
