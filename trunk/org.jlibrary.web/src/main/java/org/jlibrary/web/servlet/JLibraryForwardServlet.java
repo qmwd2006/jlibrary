@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.FileUploadBase.SizeLimitExceededException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.jackrabbit.util.Text;
 import org.apache.log4j.Logger;
@@ -67,6 +68,7 @@ import org.jlibrary.core.security.SecurityService;
 import org.jlibrary.web.captcha.CaptchaService;
 import org.jlibrary.web.freemarker.FreemarkerExporter;
 import org.jlibrary.web.freemarker.RepositoryContext;
+import org.jlibrary.web.services.ConfigurationService;
 import org.jlibrary.web.services.StatsService;
 import org.jlibrary.web.services.TicketService;
 
@@ -122,8 +124,11 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 	private void processRequest(HttpServletRequest req, HttpServletResponse resp) {
 		if(ServletFileUpload.isMultipartContent(req)){
 			ServletFileUpload upload = new ServletFileUpload();
-//			upload.setFileSizeMax(fileSizeMax);
-//			upload.setSizeMax(sizeMax);
+			boolean sizeExceeded=false;
+			Exception ex=null;
+			String repositoryName=req.getParameter("repository");
+			ConfigurationService conf=(ConfigurationService) context.getBean("template");
+			upload.setSizeMax(conf.getOperationInputBandwidth());
 			FileItemIterator iterFilteItems;
 			try {
 				iterFilteItems = upload.getItemIterator(req);
@@ -142,11 +147,20 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 						params.put(fileItem.getFieldName(), up);
 					}
 				}
+			} catch (SizeLimitExceededException e) {
+				sizeExceeded=true;
+				ex=e;
+				if(repositoryName==null || "".equals(repositoryName))
+					repositoryName=(String) params.get("repository");
 			} catch (FileUploadException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			if(sizeExceeded){
+				logErrorAndForward(req, resp, repositoryName, ex, "Bandwith exceeded");
+			}
+			
 		}
 		if (logger.isDebugEnabled()) {
 			logger.debug("Received content upload request");
@@ -781,7 +795,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 			document = repositoryService.createDocument(ticket, properties);	
 			statsService.incCreatedDocuments();
 			if(dataContent!=null){
-				repositoryService.updateContent(ticket, document.getId(), dataContent);
+				Document doc=(Document) repositoryService.updateContent(ticket, document.getId(), dataContent);
 				url+=document.getPath();
 				resp.sendRedirect(resp.encodeRedirectURL(url));
 				return;
