@@ -13,7 +13,7 @@
 					<label for="description">Description</label>
 					<textarea id="description" name="description" rows="8" cols="auto">${directory.description}</textarea>						
 					<button type="submit">Update</button>
-					<button type="reset">Cancel</button>
+					<a href="${root_url}/repositories/${repository.name}${location}" class="button">Cancel</a>
 					<input type="hidden" name="type" value="node"/>
 					<input type="hidden" name="repository" value="${repository.name}"/>
 					<input type="hidden" name="method" value="update"/>					
@@ -80,7 +80,7 @@
 					<label for="description">Description</label>
 					<textarea name="description" rows="8" cols="auto" id="description"></textarea>						
 					<button type="submit">Create</button>
-					<button type="reset">Cancel</button>
+					<a href="${root_url}/repositories/${repository.name}${location}" class="button">Cancel</a>
 					<input type="hidden" name="repository" value="${repository.name}"/>
 					<input type="hidden" name="method" value="create"/>					
 					<input type="hidden" name="id" value="${directory.id}"/>
@@ -109,7 +109,7 @@
 					<label for="description">Description</label>
 					<textarea name="description" rows="8" cols="auto" id="description">${category.description}</textarea>						
 					<button type="submit">Update</button>
-					<button type="reset">Cancel</button>
+					<a href="${root_url}/repositories/${repository.name}" class="button">Cancel</a>
 					<input type="hidden" name="repository" value="${repository.name}"/>
 					<input type="hidden" name="method" value="update"/>					
 					<input type="hidden" name="id" value="${category.id}"/>
@@ -137,7 +137,7 @@
 					<label for="description">Description</label>
 					<textarea name="description" rows="8" cols="auto" id="description"></textarea>						
 					<button type="submit">Create</button>
-					<button type="reset">Cancel</button>
+					<a href="${root_url}/repositories/${repository.name}" class="button">Cancel</a>
 					<input type="hidden" name="repository" value="${repository.name}"/>
 					<input type="hidden" name="method" value="create"/>					
 					<input type="hidden" name="type" value="category"/>
@@ -169,7 +169,7 @@
 					<label for="content">Content</label>
 					<textarea id="content" name="content"></textarea>
 					<button type="submit">Create</button>
-					<button type="reset">Cancel</button>
+					<a href="${root_url}/repositories/${repository.name}${location}" class="button">Cancel</a>
 					<input type="hidden" name="repository" value="${repository.name}"/>
 					<input type="hidden" name="method" value="create"/>					
 					<input type="hidden" name="id" value="${directory.id}"/>
@@ -204,7 +204,7 @@
 					<label for="file">File</label>
 					<input type="file" name="file" id="file"/>				
 					<button type="submit">Upload</button>
-					<button type="reset">Cancel</button>
+					<a href="${root_url}/repositories/${repository.name}${location}" class="button">Cancel</a>
 				</fieldset>
 			</form>
 			<script type="text/javascript">
@@ -233,7 +233,7 @@
 					<label for="content">Content</label>
 					<textarea id="content" name="content">${document_content}</textarea>
 					<button type="submit">Update</button>
-					<button type="reset">Cancel</button>
+					<a href="${root_url}/repositories/${repository.name}${location}" class="button">Cancel</a>
 					<input type="hidden" name="repository" value="${repository.name}"/>
 					<input type="hidden" name="method" value="update"/>					
 					<input type="hidden" name="id" value="${document.id}"/>
@@ -266,7 +266,7 @@
   				<label for="keywords">Keywords</label>				
 					<input type="text" id="keywords" name="keywords" value="${document.metaData.keywords}"/><br/>
 					<button type="submit">Update</button>
-					<button type="reset">Cancel</button>
+					<a href="${root_url}/repositories/${repository.name}${location}" class="button">Cancel</a>
 					<input type="hidden" name="method" value="update"/>					
 					<input type="hidden" name="id" value="${document.id}"/>
 					<input type="hidden" name="type" value="node"/>
