@@ -246,7 +246,7 @@
 			</script>
 			<script type="text/javascript" src="${root_url}/js/jlibrary_editor.js"/>
 		</div>			
-	</div>			2
+	</div>
 </#macro>
 
 <#macro documentUpdateFormUpload>
