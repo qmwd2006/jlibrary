@@ -91,6 +91,7 @@ public abstract class BaseTemplateProcessor implements FreemarkerTemplateProcess
 		page.expose(FreemarkerVariables.DATE, new Date());
 		page.expose(FreemarkerVariables.PAGE_KEYWORDS,"");
 		page.expose(FreemarkerVariables.LOCATION_URL, "");
+		page.expose(FreemarkerVariables.LOCATION, "");
 
 		
 		if (context.getRepository().getTicket().getUser().equals(User.ADMIN_USER)) {
