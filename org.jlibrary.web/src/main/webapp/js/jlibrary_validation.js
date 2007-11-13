@@ -25,10 +25,8 @@ function loginValidation(){
 function documentFormValidation(){
 	var name= new LiveValidation('name',{onlyOnSubmit:true});
 	var description= new LiveValidation('description',{onlyOnSubmit:true});
-	var content= new LiveValidation('content',{onlyOnSubmit:true});
 	name.add(Validate.Presence);
 	description.add(Validate.Presence);
-	content.add(Validate.Presence);
 }
 
 function documentUploadFormValidation(createBoolean){
