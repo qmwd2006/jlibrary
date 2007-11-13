@@ -39,6 +39,8 @@ import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.FileUploadBase.SizeLimitExceededException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.fileupload.util.Streams;
+import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.util.Text;
 import org.apache.log4j.Logger;
 import org.jlibrary.core.entities.Author;
@@ -123,43 +125,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 
 	private void processRequest(HttpServletRequest req, HttpServletResponse resp) {
 		if(ServletFileUpload.isMultipartContent(req)){
-			ServletFileUpload upload = new ServletFileUpload();
-			boolean sizeExceeded=false;
-			Exception ex=null;
-			String repositoryName=req.getParameter("repository");
-			ConfigurationService conf=(ConfigurationService) context.getBean("template");
-			upload.setSizeMax(conf.getOperationInputBandwidth());
-			FileItemIterator iterFilteItems;
-			try {
-				iterFilteItems = upload.getItemIterator(req);
-				while(iterFilteItems.hasNext()){
-					FileItemStream fileItem=iterFilteItems.next();
-					InputStream is=fileItem.openStream();
-					byte[] dataContent=new byte[is.available()];
-					is.read(dataContent);
-					if(fileItem.isFormField()){
-						params.put(fileItem.getFieldName(), new String(dataContent));
-					}else{
-						JLibraryUploadEntity up=new JLibraryUploadEntity();
-						up.setData(dataContent);
-						up.setName(fileItem.getName());
-						up.setContentType(fileItem.getContentType());
-						params.put(fileItem.getFieldName(), up);
-					}
-				}
-			} catch (SizeLimitExceededException e) {
-				sizeExceeded=true;
-				ex=e;
-				if(repositoryName==null || "".equals(repositoryName))
-					repositoryName=(String) params.get("repository");
-			} catch (FileUploadException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			if(sizeExceeded){
-				logErrorAndForward(req, resp, repositoryName, ex, "Bandwith exceeded");
-			}
+			upload(req,resp);
 			
 		}
 		if (logger.isDebugEnabled()) {
@@ -738,20 +704,61 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 	
 	private void upload(HttpServletRequest req, HttpServletResponse resp) {
 
-		String id = null;
-		String repositoryName;
+		ServletFileUpload upload = new ServletFileUpload();
+		boolean sizeExceeded=false;
+		String repositoryName=req.getParameter("repository");
+		ConfigurationService conf=(ConfigurationService) context.getBean("template");
+		upload.setSizeMax(conf.getOperationInputBandwidth());
+		
+		try {
+			params = new HashMap();
+			FileItemIterator iter = upload.getItemIterator(req);
+			while (iter.hasNext()) {
+			    FileItemStream item = iter.next();
+			    InputStream stream = item.openStream();
+				if(item.isFormField()){
+					params.put(item.getFieldName(),Streams.asString(stream));
+				} else {
+					params.put("filename",item.getName());
+					uploadDocumentStructure(req, resp, repositoryName, stream);
+				}
+			}
+		} catch (SizeLimitExceededException e) {
+			sizeExceeded=true;
+			if( repositoryName==null || "".equals(repositoryName)) {
+				repositoryName=(String) params.get("repository");
+			}
+			logErrorAndForward(req, resp, repositoryName, e, "Bandwith exceeded");
+		} catch (FileUploadException e) {
+			logErrorAndForward(req, resp, repositoryName, e, "There was a problem uploading the document.");
+		} catch (IOException e) {
+			logErrorAndForward(req, resp, repositoryName, e, "There was a problem uploading the document.");
+		} catch (Exception t) {
+			logErrorAndForward(req, resp, repositoryName, t, "There was a problem uploading the document.");
+		}
+		
+		
+	}
+
+	private void uploadDocumentStructure(HttpServletRequest req,
+										 HttpServletResponse resp, 
+										 String repositoryName,
+										 InputStream contentInputStream) {
+		// This will trigger validation
+		String id;
 		String name;
 		String description;
-		String keywords = null;
+		String keywords;
 		try {
 			id = getField(req, resp, "id");
-			keywords = getField(req, resp, "keywords");
-			repositoryName = getField(req, resp, "repository");
-			name = getField(req, resp, "name");
-			description = getField(req, resp, "description");
+			keywords = checkParameter(params, req, resp, repositoryName, "keywords");
+			name = checkParameter(params, req, resp, repositoryName, "name");
+			repositoryName = getField(req,resp,"repository");
+			description = checkParameter(params, req, resp, repositoryName, "description");
 		} catch (FieldNotFoundException e) {
 			return;
 		}
+		
 		Ticket ticket = TicketService.getTicketService().getTicket(req, repositoryName);
 		RepositoryService repositoryService = 
 			JLibraryServiceFactory.getInstance(profile).getRepositoryService();
@@ -782,17 +789,15 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 			metaData.setUrl(url);
 			metaData.setAuthor(author);
 			document.setMetaData(metaData);
-			JLibraryUploadEntity uploadedFile=(JLibraryUploadEntity) params.get("file");
-			byte[] dataContent=uploadedFile.getData();
-			document.setPath(uploadedFile.getName());
-			document.setTypecode(Types.getTypeForFile(uploadedFile.getName()));
+
+			String path = (String)params.get("filename");
+			document.setPath(path);
+			document.setTypecode(Types.getTypeForFile(path));
 			DocumentProperties properties = document.dumpProperties();
 			document = repositoryService.createDocument(ticket, properties);	
 			statsService.incCreatedDocuments();
-			if( dataContent!=null){
-				logger.debug("Tamaño del documento antes: "+dataContent.length);
-				document=(Document) repositoryService.updateContent(ticket, document.getId(), dataContent);
-				logger.debug("Tamaño del documento despues: "+repositoryService.loadDocumentContent(document.getId(), ticket).length);
+			if( contentInputStream!=null){
+				document=(Document) repositoryService.updateContent(ticket, document.getId(), contentInputStream);
 				url+=document.getPath();
 				resp.sendRedirect(resp.encodeRedirectURL(url));
 				return;
@@ -801,9 +806,33 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 			}
 		} catch (Exception e) {
 			logErrorAndForward(req, resp, repositoryName, e, "There was a problem trying to create the object.");
+		} finally {
+			if (contentInputStream != null) {
+				try {
+					contentInputStream.close();
+				} catch (IOException e) {
+					logErrorAndForward(req, resp, repositoryName, e, "There was a problem trying to create the object.");
+				}
+			}
 		}
 	}
 
+	private String checkParameter (Map params,
+								   HttpServletRequest req, 
+								   HttpServletResponse resp,
+								   String repositoryName, 
+								   String parameterName) throws FieldNotFoundException {
+		
+		String parameter = (String)params.get(parameterName);
+		if (parameter == null) {
+			FieldNotFoundException fnfe = 
+				new FieldNotFoundException("Parameter " + parameter + " has not been found");
+			logErrorAndForward(req, resp, repositoryName, fnfe, fnfe.getMessage());
+			throw fnfe;
+		}
+		return parameter;
+	}
+	
 	private void addComment(HttpServletRequest req, HttpServletResponse resp) {
 
 		String id;
