@@ -224,11 +224,11 @@ public class FreemarkerExporter extends BaseExporter {
 		String href="./";
 		for (int i=pathParts.length-1;i>=0;i--) {
 			if (i != pathParts.length-1) {
-				buffer.insert(0,"<A href=\"" + href + Text.escape(pathParts[i]) + "\">" + 
-						 Text.unescape(pathParts[i]) + "</A>/");
+				buffer.insert(0,"<a href=\"" + href + Text.escape(pathParts[i]) + "\">" + 
+						 Text.unescape(pathParts[i]) + "</a>/");
 			} else {
-				buffer.insert(0,"<A href=\"" + href + Text.escape(pathParts[i]) + "\">" + 
-						 Text.unescape(node.getName()) + "</A>/");				
+				buffer.insert(0,"<a href=\"" + href + Text.escape(pathParts[i]) + "\">" + 
+						 Text.unescape(node.getName()) + "</a>/");				
 			}
 			href = href + "../";
 		}
@@ -312,17 +312,17 @@ public class FreemarkerExporter extends BaseExporter {
 	public String getLocationURL(Category category) {
 		
 		String escapedCategoryName = Text.escape(category.getName());
-		StringBuffer path = new StringBuffer("<A href=\"" + escapedCategoryName + "\">" + 
+		StringBuffer path = new StringBuffer("<a href=\"" + escapedCategoryName + "\">" + 
 											 category.getName()+
-											 "</A>");
+											 "</a>");
 		String href = "./";
 		while(category.getParent() != null) {
 			category = category.getParent();
 			escapedCategoryName = Text.escape(category.getName());
-			path.insert(0,"<A href=\" " + 
+			path.insert(0,"<a href=\" " + 
 						  href+"/" + escapedCategoryName + "\">" + 
 						  category.getName()+
-						  "</A>/"); 
+						  "</a>/"); 
 			href = href + "../";
 		}
 		path.insert(0,"/");
