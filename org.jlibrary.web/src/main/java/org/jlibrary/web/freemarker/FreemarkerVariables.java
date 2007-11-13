@@ -101,6 +101,11 @@ public class FreemarkerVariables {
 	public static final String LOCATION_URL = "location_url"; 
 	
 	/**
+	 * String that contains the current path. 
+	 */
+	public static final String LOCATION = "location";
+	
+	/**
 	 * Key string for the document's categories list
 	 */
 	public static final String DOCUMENT_CATEGORIES = "document_categories";
