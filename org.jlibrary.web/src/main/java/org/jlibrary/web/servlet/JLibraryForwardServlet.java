@@ -460,13 +460,8 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 					document.setName(name);
 					document.setDescription(description);
 					String content = req.getParameter("content");
-					JLibraryUploadEntity uploadedFile=(JLibraryUploadEntity) params.get("file");
-					byte[] dataContent;
-					if (uploadedFile != null) {
-						dataContent = uploadedFile.getData();
-						document.setPath(uploadedFile.getName());
-						document.setTypecode(Types.getTypeForFile(uploadedFile.getName()));
-					}else{
+					byte[] dataContent=null;
+					if(content!=null && !"".equals(content)){
 						dataContent=content.getBytes();
 					}
 					DocumentProperties properties = document.dumpProperties();
@@ -788,14 +783,16 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 			metaData.setAuthor(author);
 			document.setMetaData(metaData);
 			JLibraryUploadEntity uploadedFile=(JLibraryUploadEntity) params.get("file");
-			byte[] dataContent = uploadedFile.getData();
+			byte[] dataContent=uploadedFile.getData();
 			document.setPath(uploadedFile.getName());
 			document.setTypecode(Types.getTypeForFile(uploadedFile.getName()));
 			DocumentProperties properties = document.dumpProperties();
 			document = repositoryService.createDocument(ticket, properties);	
 			statsService.incCreatedDocuments();
-			if(dataContent!=null){
-				Document doc=(Document) repositoryService.updateContent(ticket, document.getId(), dataContent);
+			if( dataContent!=null){
+				logger.debug("Tamaño del documento antes: "+dataContent.length);
+				document=(Document) repositoryService.updateContent(ticket, document.getId(), dataContent);
+				logger.debug("Tamaño del documento despues: "+repositoryService.loadDocumentContent(document.getId(), ticket).length);
 				url+=document.getPath();
 				resp.sendRedirect(resp.encodeRedirectURL(url));
 				return;

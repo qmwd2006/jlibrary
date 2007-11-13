@@ -256,7 +256,7 @@
 			<div class="date">${document.date?string("MMMM dd, yyyy")}</div>
 		</div>
 		<div class="content">
-  		<form class="sheet" action="${root_url}/forward?repository=${repository.name}" method="post" enctype="multipart/form-data">
+  		<form class="sheet" action="${root_url}/forward?repository=${repository.name}" method="post">
 				<fieldset>
 					<legend>Document details</legend>						
   				<label for="name">Name</label>				
@@ -265,8 +265,6 @@
 					<textarea name="description" rows="8" cols="auto" id="description">${document.description}</textarea>
   				<label for="keywords">Keywords</label>				
 					<input type="text" id="keywords" name="keywords" value="${document.metaData.keywords}"/><br/>
-					<label for="file">File</label>
-					<input type="file" name="file" id="file"/>				
 					<button type="submit">Update</button>
 					<button type="reset">Cancel</button>
 					<input type="hidden" name="method" value="update"/>					
