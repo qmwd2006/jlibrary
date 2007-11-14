@@ -138,14 +138,17 @@
   <h3>Categories</h3>
   <div class="content">
 	  <#if document_categories?exists>
-		  <#if document_categories?size = 0>
-		    <p>Not categorized.</p>
-		  <#else>
-		    <#list document_categories as category>
+      <#assign hasCategories=false/>
+		  <#list document_categories as category>
+		    <#if category.id != "-1">
 		      <p><a href="${categories_root_url}/${category.name}">${category.name}</a></p>
-		     </#list>
-		  </#if> 
-	  </#if>
+		      <#assign hasCategories=true/>
+		    </#if>
+		  </#list>
+			<#if !hasCategories> 
+				<p>Not categorized.</p>
+			</#if>		  
+		</#if> 
 	</div>  
 </#macro>
 
