@@ -100,7 +100,7 @@
     <servlet-name>HTTPRepositoryService</servlet-name>
     <display-name>JLibrary Repository Service</display-name>
     <servlet-class>
-        org.jlibrary.web.servlet.LimitedHTTPRepositoryServlet
+        org.jlibrary.servlet.service.HTTPRepositoryService
     </servlet-class>  
     <load-on-startup>7</load-on-startup>        
   </servlet>
