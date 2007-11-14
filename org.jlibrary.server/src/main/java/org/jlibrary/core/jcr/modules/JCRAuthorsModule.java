@@ -104,6 +104,11 @@ public class JCRAuthorsModule {
 							getRepositoryState(ticket).getSession(
 									ticket.getRepositoryId());
 
+			javax.jcr.Node root = JCRUtils.getRootNode(session);
+			if (!JCRSecurityService.canAdmin(root, ticket.getUser().getId())) {
+				throw new SecurityException(SecurityException.NOT_ENOUGH_PERMISSIONS);
+			}			
+			
 			javax.jcr.Node systemNode = JCRUtils.getSystemNode(session); 
 			javax.jcr.Node authorsNode = 
 				systemNode.getNode(JLibraryConstants.JLIBRARY_AUTHORS);
@@ -153,7 +158,7 @@ public class JCRAuthorsModule {
 								ticket.getRepositoryId());
 
 			javax.jcr.Node root = JCRUtils.getRootNode(session);
-			if (!JCRSecurityService.canWrite(root, ticket.getUser().getId())) {
+			if (!JCRSecurityService.canAdmin(root, ticket.getUser().getId())) {
 				throw new SecurityException(SecurityException.NOT_ENOUGH_PERMISSIONS);
 			}
 			
@@ -192,7 +197,7 @@ public class JCRAuthorsModule {
 								ticket.getRepositoryId());
 
 			javax.jcr.Node root = JCRUtils.getRootNode(session);
-			if (!JCRSecurityService.canWrite(root, ticket.getUser().getId())) {
+			if (!JCRSecurityService.canAdmin(root, ticket.getUser().getId())) {
 				throw new SecurityException(SecurityException.NOT_ENOUGH_PERMISSIONS);
 			}			
 			
