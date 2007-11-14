@@ -80,7 +80,6 @@ public class DocumentTemplateProcessor extends BaseTemplateProcessor {
 		
 		page.expose(FreemarkerVariables.ROOT_URL,rootURL);
 		page.expose(FreemarkerVariables.LOCATION_URL, exporter.getLocationURL(document));
-		page.expose(FreemarkerVariables.LOCATION, document.getPath());
 		page.expose(FreemarkerVariables.PRINT_FILE, getPrintFile(document));
 		
 		page.expose(FreemarkerVariables.PAGE_KEYWORDS,document.getMetaData().getKeywords());
