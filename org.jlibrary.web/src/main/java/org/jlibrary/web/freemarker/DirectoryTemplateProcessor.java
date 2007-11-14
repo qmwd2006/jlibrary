@@ -95,7 +95,6 @@ public class DirectoryTemplateProcessor extends BaseTemplateProcessor {
 		String rootURL = exporter.getRootURL(directory);
 		page.expose(FreemarkerVariables.ROOT_URL,rootURL);
 		page.expose(FreemarkerVariables.LOCATION_URL, exporter.getLocationURL(directory));
-		page.expose(FreemarkerVariables.LOCATION, directory.getPath());
 		page.expose(FreemarkerVariables.PRINT_FILE, "");		
 		page.expose(FreemarkerVariables.PAGE_AUTHOR,"");
 	
