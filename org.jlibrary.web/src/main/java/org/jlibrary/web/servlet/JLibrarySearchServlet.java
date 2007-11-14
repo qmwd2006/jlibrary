@@ -141,7 +141,7 @@ public class JLibrarySearchServlet extends JLibraryServlet {
 		
 		try {
 			RepositoryContext context = 
-				new RepositoryContext(repository,getContext());
+				new RepositoryContext(repository,getServletContext(),getContext());
 			context.setTicket(ticket);
 			FreemarkerExporter exporter = new FreemarkerExporter();
 			

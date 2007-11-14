@@ -196,7 +196,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 			repository.setServerProfile(profile);
 
 			RepositoryContext context = 
-				new RepositoryContext(repository, getContext());
+				new RepositoryContext(repository, getServletContext(),getContext());
 			context.setTicket(ticket);
 			FreemarkerExporter exporter = new FreemarkerExporter();
 			
@@ -236,7 +236,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 				repositoryService.findNode(ticket, id);
 
 			RepositoryContext context = 
-				new RepositoryContext(repository,getContext());
+				new RepositoryContext(repository,getServletContext(),getContext());
 			context.setTicket(ticket);
 			FreemarkerExporter exporter = new FreemarkerExporter();
 			
@@ -288,7 +288,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 			repository.setServerProfile(profile);
 
 			RepositoryContext context = 
-				new RepositoryContext(repository,getContext());
+				new RepositoryContext(repository,getServletContext(),getContext());
 			context.setTicket(ticket);
 			FreemarkerExporter exporter = new FreemarkerExporter();
 			
