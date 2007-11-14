@@ -22,6 +22,8 @@
 */
 package org.jlibrary.web.freemarker;
 
+import javax.servlet.ServletContext;
+
 import org.jlibrary.core.entities.Repository;
 import org.jlibrary.core.entities.Ticket;
 import org.jlibrary.web.services.ConfigurationService;
@@ -39,13 +41,15 @@ public class RepositoryContext {
 	private Ticket ticket;
 	private boolean registrationEnabled;
 	
-	public RepositoryContext(Repository repository, ApplicationContext context) {
+	public RepositoryContext(Repository repository, 
+							 ServletContext servletContext, 
+							 ApplicationContext context) {
 
 		this.repository = repository;
-		
+		String rootPath = servletContext.getRealPath("/");
 		ConfigurationService service=(ConfigurationService) context.getBean("template");
 		registrationEnabled = service.isRegistrationEnabled();
-		templatesDirectory = service.getTemplateDirectory();
+		templatesDirectory = rootPath+"/"+service.getTemplateDirectory();
 	}
 
 	public Repository getRepository() {
