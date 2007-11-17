@@ -340,9 +340,9 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 		// Remove ticket from user's session
 		TicketService.getTicketService().removeTicket(req, repositoryName);
 		req.getSession(true).setAttribute((StatsService.SESSION_LOGGED_USER+repositoryName).toLowerCase(),null);
-		String refererURL = req.getHeader("referer");
+		String rootURL = getRepositoryURL(req, repositoryName);
 		try {
-			resp.sendRedirect(resp.encodeRedirectURL(refererURL));
+			resp.sendRedirect(resp.encodeRedirectURL(rootURL));
 		} catch (IOException e) {
 			logErrorAndForward(req, resp, repositoryName, e, "There was a problem trying to log out.");
 		}
