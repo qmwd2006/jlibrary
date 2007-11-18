@@ -23,39 +23,44 @@
 <#macro documents>
 	<h3>See also here</h3>
 	<div class="content">
-		<ul class="linklist">
 			<#assign hasDocuments=false/>
 			<#list directory.nodes as menuitem>
 				<#if menuitem.document && menuitem.name != "index.html" && menuitem.name != "index">
   			  <#assign hasDocuments=true/>
-  				<li class="first"><a href="${repository_url}${menuitem.path}">${menuitem.name}</a></li>
+  				<a href="${repository_url}${menuitem.path}">${menuitem.name}</a>
 				</#if>
 			</#list>
 			<#if !hasDocuments> 
-				<li>No more documents.</li>
+			  <p>No more documents.</p>
 			</#if>
-		</ul>
 	</div>
 </#macro>
 
 <#macro actions>
 	<h3>Actions</h3>
 	<div class="content">
+	  <#assign hasActions=false/>
 	  <#if ticket.user.admin || (ticket.user.editor && ("-1" != directory.creator))>
 	    <a href="${root_url}/forward?method=createform&amp;type=directory&amp;repository=${repository.name}&amp;id=${directory.id}">Create directory</a>
+           <#assign hasActions=true/>
            <br/>
 	  </#if>
          <#if ticket.user.admin || (ticket.user.editor && (ticket.user.id == directory.creator))>
+	    <#assign hasActions=true/>
 	    <a href="${root_url}/forward?method=updateform&amp;type=node&amp;repository=${repository.name}&amp;id=${directory.id}">Update directory</a>
 	    <br/>
 	    <a href="${root_url}/forward?method=delete&amp;type=node&amp;repository=${repository.name}&amp;id=${directory.id}">Delete directory</a>
 	    <br/>
 	  </#if>
 	  <#if ticket.user.admin || (ticket.user.editor && ("-1" != directory.creator))>
+ 	    <#assign hasActions=true/>
 	    <a href="${root_url}/forward?method=createform&amp;type=document&amp;repository=${repository.name}&amp;id=${directory.id}">Create document</a>
 	    <br/>
 	    <a href="${root_url}/forward?method=createform&amp;type=documentupload&amp;repository=${repository.name}&amp;id=${directory.id}">Upload document</a>
 	    <br/>
+	  </#if>
+         <#if !hasActions>
+	   <p>No actions available.</p>
 	  </#if>
 	</div>
 </#macro>
@@ -63,11 +68,16 @@
 <#macro actionsCategory>
 	<h3>Actions</h3>
 	<div class="content">
+         <#assign hasActions=false/>
 	  <#if ticket.user.admin>
+            <#assign hasActions=true/>
 		  <a href="${root_url}/forward?method=updateform&amp;type=category&amp;repository=${repository.name}&amp;id=${category.id}">Update category</a><br/>
 		  <a href="${root_url}/forward?method=delete&amp;type=category&amp;repository=${repository.name}&amp;id=${category.id}">Delete category</a><br/>
-		</#if>
+	  </#if>
 	</div>
+         <#if !hasActions>
+	   <p>No actions available.</p>
+	  </#if>
 </#macro>
 
 <#macro infoDirectory>
@@ -79,15 +89,20 @@
 </#macro>
 
 <#macro admin>
+  <h3>Actions</h3>
+  <div class="content">
+    <#assign hasActions=false/>
     <#if ticket.user.admin || ticket.user.editor>
-	  	<h3>Actions</h3>
-	  	<div class="content">
-			  	<a href="${root_url}/forward?method=updateform&amp;type=node&amp;repository=${repository.name}&amp;id=${document.id}">Update document</a><br/>
-	  	    <#if ticket.user.admin || (ticket.user.editor && (ticket.user.id == document.creator))>
-			  	  <a href="${root_url}/forward?method=delete&amp;type=node&amp;repository=${repository.name}&amp;id=${document.id}">Delete document</a><br/>
-			  	</#if>
-			</div>  
-		</#if>
+      <#assign hasActions=true/>
+      <a href="${root_url}/forward?method=updateform&amp;type=node&amp;repository=${repository.name}&amp;id=${document.id}">Update document</a><br/>
+      <#if ticket.user.admin || (ticket.user.editor && (ticket.user.id == document.creator))>
+        <a href="${root_url}/forward?method=delete&amp;type=node&amp;repository=${repository.name}&amp;id=${document.id}">Delete document</a><br/>
+      </#if>
+    </#if>
+    <#if !hasActions>
+      <p>No actions available.</p>
+    </#if>
+  </div>  
 </#macro>
 
 <#macro directoryDocuments>
