@@ -1,3 +1,29 @@
+window.onload = function(){
+	if(document.getElementById('validation')){
+		var idform = document.getElementById('validation').value;
+		switch(idform){
+			case "directory":
+				directoryFormValidation();
+				break;
+			case "document": 
+				documentFormValidation();
+				break;
+			case "documentUpload":
+				documentUploadFormValidation();
+				break;
+			case "search": 
+				searchValidation();
+				break;
+			case "category":
+				categoryFormValidation();
+				break;
+			case "register":
+				registerValidation();
+				break;
+		}
+	}
+}
+
 function registerValidation(){
 	var username = new LiveValidation('username',{onlyOnSubmit:true});
 	var password = new LiveValidation('password',{onlyOnSubmit:true});
@@ -29,15 +55,11 @@ function documentFormValidation(){
 	description.add(Validate.Presence);
 }
 
-function documentUploadFormValidation(createBoolean){
+function documentUploadFormValidation(){
 	var name= new LiveValidation('name',{onlyOnSubmit:true});
 	var description= new LiveValidation('description',{onlyOnSubmit:true});
-	var file= new LiveValidation('file',{onlyOnSubmit:true});
 	name.add(Validate.Presence);
 	description.add(Validate.Presence);
-	if(createBoolean){
-		file.add(Validate.Presence);
-	}
 }
 
 function directoryFormValidation(){

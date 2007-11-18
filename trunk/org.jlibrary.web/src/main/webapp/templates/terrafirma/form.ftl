@@ -18,11 +18,9 @@
 					<input type="hidden" name="repository" value="${repository.name}"/>
 					<input type="hidden" name="method" value="update"/>					
 					<input type="hidden" name="id" value="${directory.id}"/>
+					<input type="hidden" id="validation" name="validation" value="directory"/>
 				</fieldset>
 			</form>
-			<script type="text/javascript">
-				directoryFormValidation();
-			</script>
 		</div>			
 	</div>			
 </#macro>
@@ -54,15 +52,13 @@
 					<button type="submit">Send</button>
 					<button type="reset">Cancel</button>
 					<input type="hidden" name="repository" value="${repository.name}"/>
-					<input type="hidden" name="method" value="register"/>					
+					<input type="hidden" name="method" value="register"/>
+					<input type="hidden" name="validation" id="validation" value="register"/>
 				</fieldset>
 			</form>
 			<p>The password will be sent to your email address.</p>
 		</div>			
 	</div>
-	<script type="text/javascript">
-		registerValidation();
-	</script>
 </#macro>
 
 <#macro directoryCreateForm>
@@ -85,11 +81,9 @@
 					<input type="hidden" name="method" value="create"/>					
 					<input type="hidden" name="id" value="${directory.id}"/>
 					<input type="hidden" name="type" value="directory"/>
+					<input type="hidden" name="validation" id="validation" value="directory"/>
 				</fieldset>
 			</form>
-			<script type="text/javascript">
-				directoryFormValidation();
-			</script>
 		</div>			
 	</div>			
 </#macro>
@@ -114,11 +108,9 @@
 					<input type="hidden" name="method" value="update"/>					
 					<input type="hidden" name="id" value="${category.id}"/>
 					<input type="hidden" name="type" value="category"/>
+					<input type="hidden" name="validation" id="validation" value="category"/>
 				</fieldset>
 			</form>
-			<script type="text/javascript">
-				categoryFormValidation();
-			</script>
 		</div>			
 	</div>			
 </#macro>
@@ -141,11 +133,9 @@
 					<input type="hidden" name="repository" value="${repository.name}"/>
 					<input type="hidden" name="method" value="create"/>					
 					<input type="hidden" name="type" value="category"/>
+					<input type="hidden" name="validation" id="validation" value="category"/>
 				</fieldset>
 			</form>
-			<script type="text/javascript">
-				categoryFormValidation();
-			</script>
 		</div>			
 	</div>			
 </#macro>
@@ -169,17 +159,15 @@
 					<label for="content">Content</label>
 					<textarea id="content" name="content"></textarea>
 					<button type="submit">Create</button>
-					<a href="${repository_url}${document.path}" class="button">Cancel</a>
+					<a href="${repository_url}${directory.path}" class="button">Cancel</a>
 					<input type="hidden" name="repository" value="${repository.name}"/>
 					<input type="hidden" name="method" value="create"/>					
 					<input type="hidden" name="id" value="${directory.id}"/>
 					<input type="hidden" name="type" value="document"/>
 					<input type="hidden" name="baseUrl" id="baseUrl" value="${root_url}"/>
+					<input type="hidden" name="validation" id="validation" value="document"/>
 				</fieldset>
 			</form>
-			<script type="text/javascript">
-				documentFormValidation();
-			</script>
 			<script type="text/javascript" src="${root_url}/js/jlibrary_editor.js"/>
 		</div>			
 	</div>			
@@ -204,12 +192,10 @@
 					<label for="file">File</label>
 					<input type="file" name="file" id="file"/>				
 					<button type="submit">Upload</button>
-					<a href="${repository_url}${document.path}" class="button">Cancel</a>
+					<a href="${repository_url}${directory.path}" class="button">Cancel</a>
+					<input type="hidden" name="validation" id="validation" value="documentUpload"/>
 				</fieldset>
 			</form>
-			<script type="text/javascript">
-				documentUploadFormValidation(true);
-			</script>
 		</div>			
 	</div>			
 </#macro>
@@ -239,11 +225,9 @@
 					<input type="hidden" name="id" value="${document.id}"/>
 					<input type="hidden" name="type" value="node"/>
 					<input type="hidden" name="baseUrl" id="baseUrl" value="${root_url}"/>
+					<input type="hidden" name="validation" id="validation" value="document"/>
 				</fieldset>
 			</form>
-			<script type="text/javascript">
-				documentFormValidation();
-			</script>
 			<script type="text/javascript" src="${root_url}/js/jlibrary_editor.js"/>
 		</div>			
 	</div>
@@ -271,11 +255,9 @@
 					<input type="hidden" name="id" value="${document.id}"/>
 					<input type="hidden" name="type" value="node"/>
 					<input type="hidden" name="baseUrl" id="baseUrl" value="${root_url}"/>
+					<input type="hidden" name="validation" id="validation" value="documentUpload"/>
 				</fieldset>
 			</form>
-			<script type="text/javascript">
-				documentUploadFormValidation(false);
-			</script>
 		</div>			
 	</div>			
 </#macro>
