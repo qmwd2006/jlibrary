@@ -797,6 +797,18 @@ public class JCRRepositoryService implements RepositoryService {
 			JCRUtils.removeReferences(document);
 
 			if (JCRUtils.allowsPhysicalDeletes(session)) {
+				//TODO: Replace this when JCR-134 is fixed
+				//See more details at http://issues.apache.org/jira/browse/JCR-134
+				VersionHistory vh = document.getVersionHistory();
+				VersionIterator vi = vh.getAllVersions();
+				while (vi.hasNext()) {
+					Version currenVersion = vi.nextVersion();
+					String versionName = currenVersion.getName();
+                    if (!versionName.equals("jcr:rootVersion") && !versionName.equals("1.3")) {
+                        vh.removeVersion(versionName);     
+                    } 					
+                } 				
+				
 				document.remove();
 			} else {
 				JCRUtils.deactivate(document);
