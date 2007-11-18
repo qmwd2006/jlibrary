@@ -35,11 +35,9 @@
 					<input type="hidden" name="repository" value="${repository.name}"/>
 					<input type="hidden" name="init" value="0"/>
 					<input type="hidden" name="end" value="10"/>
+					<input type="hidden" name="validation" id="validation" value="search"/>
 				</div>
 			</form>
-			<script type="text/javascript">
-				searchValidation();
-			</script>
 			<div id="location">
 				<p>Location: ${location_url?replace(">/","> &raquo; ")}</p>
 			</div>
