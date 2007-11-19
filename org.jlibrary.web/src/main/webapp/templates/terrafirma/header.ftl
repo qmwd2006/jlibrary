@@ -35,7 +35,6 @@
 					<input type="hidden" name="repository" value="${repository.name}"/>
 					<input type="hidden" name="init" value="0"/>
 					<input type="hidden" name="end" value="10"/>
-					<input type="hidden" name="validation" id="validation" value="search"/>
 				</div>
 			</form>
 			<div id="location">
@@ -58,9 +57,6 @@
 						</#if>						
 					</fieldset>
 				  </form>
-				  <script type="text/javascript">
-				  	loginValidation();
-				  </script>
 				<#else>
 					<p>Welcome ${username(ticket.repositoryId,ticket.user.id)} <a href="${root_url}/forward?method=logout&amp;repository=${repository.name}">(log out)</a></p>
 				</#if>

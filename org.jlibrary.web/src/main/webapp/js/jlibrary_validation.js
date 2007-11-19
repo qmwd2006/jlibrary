@@ -1,4 +1,16 @@
-window.onload = function(){
+window.onload = makeDoubleDelegate(window.onload, validation);
+window.onload = makeDoubleDelegate(window.onload, searchValidation);
+window.onload = makeDoubleDelegate(window.onload, loginValidation);
+function makeDoubleDelegate(function1, function2) {
+    return function() {
+        if (function1)
+            function1();
+        if (function2)
+            function2();
+    }
+}
+
+function validation(){
 	if(document.getElementById('validation')){
 		var idform = document.getElementById('validation').value;
 		switch(idform){
@@ -10,9 +22,6 @@ window.onload = function(){
 				break;
 			case "documentUpload":
 				documentUploadFormValidation();
-				break;
-			case "search": 
-				searchValidation();
 				break;
 			case "category":
 				categoryFormValidation();
@@ -42,10 +51,12 @@ function searchValidation(){
 }
 
 function loginValidation(){
-	var username= new LiveValidation('usernameheader',{onlyOnSubmit:true});
-	var password= new LiveValidation('passwordheader',{onlyOnSubmit:true});
-	username.add(Validate.Presence);
-	password.add(Validate.Presence);
+	if(document.getElementById('usernameheader')){
+		var username= new LiveValidation('usernameheader',{onlyOnSubmit:true});
+		var password= new LiveValidation('passwordheader',{onlyOnSubmit:true});
+		username.add(Validate.Presence);
+		password.add(Validate.Presence);
+	}
 }
 
 function documentFormValidation(){
