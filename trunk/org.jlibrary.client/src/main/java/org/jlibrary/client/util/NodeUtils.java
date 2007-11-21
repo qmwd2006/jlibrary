@@ -259,7 +259,7 @@ public class NodeUtils {
 		} else if (type.equals(Types.IMAGE_DOCUMENT)) {
 			return ".bmp";
 		} else if (type.equals(Types.OO_DOCUMENT)) {
-			return ".swx";
+			return ".sxw";
 		} else if (type.equals(Types.PDF_DOCUMENT)) {
 			return ".pdf";
 		} else if (type.equals(Types.POWERPOINT_DOCUMENT)) {
