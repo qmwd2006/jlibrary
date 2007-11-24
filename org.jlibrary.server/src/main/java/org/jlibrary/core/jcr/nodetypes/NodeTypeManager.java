@@ -25,6 +25,8 @@ package org.jlibrary.core.jcr.nodetypes;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -36,6 +38,7 @@ import javax.jcr.Session;
 import javax.jcr.Workspace;
 import javax.jcr.version.OnParentVersionAction;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.core.nodetype.InvalidNodeTypeDefException;
 import org.apache.jackrabbit.core.nodetype.NodeTypeDef;
 import org.apache.jackrabbit.core.nodetype.NodeTypeManagerImpl;
@@ -79,31 +82,23 @@ public class NodeTypeManager {
 		namespaceResolver.registerAvailableNamespaces(wsp);
 		session.save();
 		
-		URL url = getClass().getClassLoader().getResource(DEFAULT_CND_LOCATION);
-		if (url == null) {
+		InputStream stream = getClass().getClassLoader().getResourceAsStream(DEFAULT_CND_LOCATION);
+		if (stream == null) {
 			logger.error("CND file could not be found");
 			throw new RepositoryException("CND file could not be found");				
 		}
-		URI uri;
 		CompactNodeTypeDefReader cndReader;
 		try {
-			uri = url.toURI();
-			File file = new File(uri);
-			
 	        // Read in the CND file
-	        FileReader fileReader = new FileReader(file);
+	        InputStreamReader reader = new InputStreamReader(stream);
 	        
 	        // Create a CompactNodeTypeDefReader
-	        cndReader = new CompactNodeTypeDefReader(fileReader, file.getName());
-		} catch (URISyntaxException e) {
-			logger.error("Invalid URI");
-			throw new RepositoryException(e);
-		} catch (FileNotFoundException e) {
-			logger.error("CND file could not be found");
-			throw new RepositoryException("CND file could not be found",e);	
+	        cndReader = new CompactNodeTypeDefReader(reader, DEFAULT_CND_LOCATION);
 		} catch (ParseException e) {
 			logger.error("CND file could not be parsed");
 			throw new RepositoryException("CND file could not be parsed",e);	
+		} finally {
+			IOUtils.closeQuietly(stream);
 		}
 		
         // Get the List of NodeTypeDef objects
