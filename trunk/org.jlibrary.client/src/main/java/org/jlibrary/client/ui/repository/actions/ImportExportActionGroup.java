@@ -113,6 +113,6 @@ public class ImportExportActionGroup extends ActionGroup {
 		
 		actionBars.setGlobalActionHandler(ActionFactory.IMPORT_ID, fImport);
 		actionBars.setGlobalActionHandler(ActionFactory.EXPORT_ID,fExport);
-		actionBars.setGlobalActionHandler(ActionFactory.EXPORT_HTML_ID,fExport);
+		actionBars.setGlobalActionHandler(ActionFactory.EXPORT_HTML_ID,fExportHTML);
 	}
 }
