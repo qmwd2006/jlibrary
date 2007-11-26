@@ -36,6 +36,9 @@ import org.jlibrary.core.entities.Ticket;
  * @author martin
  *
  */
+//TODO: It turns out that session objects in Jackrabbit are now quite lightweight. Remove this class
+// and maintain a session object per http request.   
+// See: http://www.nabble.com/Sharing-a-Session-or-a-Session-per-web-user-tf4851166.html#a13954712
 public class SessionManager {
 
 	private static SessionManager instance = new SessionManager();
