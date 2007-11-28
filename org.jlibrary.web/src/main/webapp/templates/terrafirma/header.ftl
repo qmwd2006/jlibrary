@@ -28,7 +28,7 @@
 				</#if>
 			</ul>
 		  
-		  <form method="post" action="${root_url}/search">
+		  <form id="searchform" method="post" action="${root_url}/search">
 				<div id="search">
 					<input type="text" id="searchtext" class="text" maxlength="64" name="text" />
 					<input type="submit" class="submit" value="Search" />
