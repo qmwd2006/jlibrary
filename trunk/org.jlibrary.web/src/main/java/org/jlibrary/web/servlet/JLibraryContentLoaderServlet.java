@@ -113,10 +113,7 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 	}
 
 	private void processContent(HttpServletRequest req, HttpServletResponse resp) {
-			
-		if (req.getAttribute("test") == null) { 
-			throw new RuntimeException();
-		}
+
 		String appURL = req.getContextPath();
 		String uri = req.getRequestURI();
 		String path = StringUtils.difference(appURL+"/repositories",uri);
