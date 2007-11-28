@@ -35,6 +35,7 @@ import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.RowIterator;
 
+import org.apache.commons.lang.StringUtils;
 import org.jlibrary.core.entities.SearchResult;
 import org.jlibrary.core.entities.Ticket;
 import org.jlibrary.core.search.SearchException;
@@ -181,8 +182,9 @@ public class JCRSearchService implements SearchService {
 				sh.setId(node.getUUID());
 				sh.setName(node.getProperty(
 						JLibraryConstants.JLIBRARY_NAME).getString());
-				sh.setPath(node.getProperty(
-						JLibraryConstants.JLIBRARY_PATH).getString());
+				String path = StringUtils.difference("/" + 
+						JLibraryConstants.JLIBRARY_ROOT, node.getPath());				
+				sh.setPath(path);
 				sh.setImportance(new Integer((int)node.getProperty(
 						JLibraryConstants.JLIBRARY_IMPORTANCE).getLong()));
 				sh.setExcerpt(textExcerpt);
