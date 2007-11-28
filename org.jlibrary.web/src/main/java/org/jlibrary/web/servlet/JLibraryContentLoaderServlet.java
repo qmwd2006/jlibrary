@@ -51,6 +51,7 @@ import org.jlibrary.core.profiles.LocalServerProfile;
 import org.jlibrary.core.repository.RepositoryService;
 import org.jlibrary.core.repository.exception.NodeNotFoundException;
 import org.jlibrary.core.repository.exception.RepositoryException;
+import org.jlibrary.core.repository.exception.RepositoryNotFoundException;
 import org.jlibrary.core.security.SecurityException;
 import org.jlibrary.core.util.FileUtils;
 import org.jlibrary.web.RepositoryRegistry;
@@ -77,6 +78,8 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 	private ServerProfile profile = new LocalServerProfile();
 	private StatsService statsService=StatsService.newInstance();
 	
+	private RepositoryService repositoryService;
+	
 	@Override
 	public void init() throws ServletException {
 
@@ -87,6 +90,9 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 				WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
 			ConfigurationService configService = (ConfigurationService)context.getBean("template");
 			TicketService.getTicketService().init(configService);
+			
+			repositoryService = 
+				JLibraryServiceFactory.getInstance(profile).getRepositoryService();
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 		}
@@ -107,7 +113,10 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 	}
 
 	private void processContent(HttpServletRequest req, HttpServletResponse resp) {
-				
+			
+		if (req.getAttribute("test") == null) { 
+			throw new RuntimeException();
+		}
 		String appURL = req.getContextPath();
 		String uri = req.getRequestURI();
 		String path = StringUtils.difference(appURL+"/repositories",uri);
@@ -115,8 +124,6 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 			// call to /repositories 
 			try {
 				Ticket ticket = TicketService.getTicketService().getSystemTicket();
-				RepositoryService repositoryService = 
-					JLibraryServiceFactory.getInstance(profile).getRepositoryService();
 				List repoInfo = repositoryService.findAllRepositoriesInfo(ticket);
 				Iterator it = repoInfo.iterator();
 				List<RepositoryInfo> repositories = new ArrayList<RepositoryInfo>();
@@ -144,14 +151,7 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 		Ticket ticket = TicketService.getTicketService().getTicket(req, repositoryName);
 		Repository repository = null;
 		try {
-			RepositoryService repositoryService = 
-				JLibraryServiceFactory.getInstance(profile).getRepositoryService();
-			//TODO: Check if we really need to have this instance. Perhaps some of the methods that 
-			// use a RepositoryContext object don't need to get a whole repository object
-			repository = repositoryService.findRepository(repositoryName, ticket);
-			RepositoryRegistry.getInstance().addRepository(repository, repositoryName);
-			repository.setServerProfile(new LocalServerProfile());
-			repository.setTicket(ticket);
+			repository = loadRepository(repositoryName,ticket);
 	
 			if (pathElements.length > 1) {
 				if (pathElements[1].equals("categories")) {
@@ -216,6 +216,25 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 			//TODO:mandar a página de error estática
 			e.printStackTrace();
 		}
+	}
+
+	private Repository loadRepository(String repositoryName,
+									  Ticket userTicket) throws RepositoryNotFoundException, 
+									  							RepositoryException,
+									  							SecurityException {
+		
+		Repository repository;		
+		RepositoryRegistry registry = RepositoryRegistry.getInstance();
+		repository = registry.getRepository(repositoryName);
+		if (repository == null) {
+			Ticket ticket = TicketService.getTicketService().getSystemTicket();
+			repository = repositoryService.findRepository(repositoryName, ticket);
+			repository.setServerProfile(profile);
+			RepositoryRegistry.getInstance().addRepository(repository, repositoryName);
+		}
+		// Change user ticket. This is to use security constraints when applying templates
+		repository.setTicket(userTicket);
+		return repository;
 	}
 
 	private Node findNode(Ticket ticket, 
