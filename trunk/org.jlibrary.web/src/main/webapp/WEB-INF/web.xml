@@ -196,7 +196,12 @@
     <servlet-name>HTTPSearchService</servlet-name>
     <url-pattern>/HTTPSearchService</url-pattern>
   </servlet-mapping>
-      
+
+  <error-page>
+    <exception-type>java.lang.Throwable</exception-type>
+    <location>/error.html</location>
+  </error-page>
+        
   <welcome-file-list>
     <welcome-file>/index.html</welcome-file>
   </welcome-file-list>  
