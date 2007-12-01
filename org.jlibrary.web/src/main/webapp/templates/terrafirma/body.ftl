@@ -16,7 +16,9 @@
 			<#else>
 			  <#if document.image>
 				  <img src="${repository_url}${document.path}?download=true"/>
-				</#if>
+			  <#else>
+			    <p>This demo does not know how to display this type of document. However you can download it using the download icon just right next to the date.</p>
+			  </#if>
 			</#if>
 			<br/><br/>
 		</div>			
