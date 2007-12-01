@@ -54,7 +54,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.JcrConstants;
 import org.apache.jackrabbit.core.WorkspaceImpl;
-import org.apache.jackrabbit.name.QName;
 import org.apache.jackrabbit.util.Text;
 import org.jlibrary.core.entities.Author;
 import org.jlibrary.core.entities.Bookmark;
@@ -804,7 +803,10 @@ public class JCRRepositoryService implements RepositoryService {
 				while (vi.hasNext()) {
 					Version currenVersion = vi.nextVersion();
 					String versionName = currenVersion.getName();
-                    if (!versionName.equals("jcr:rootVersion") && !versionName.equals("1.3")) {
+                    if (!versionName.equals("jcr:rootVersion") &&
+                    	!versionName.equals("1.1") &&
+                    	!versionName.equals("1.2") &&
+                    	!versionName.equals("1.3")) {
                         vh.removeVersion(versionName);     
                     } 					
                 } 				
