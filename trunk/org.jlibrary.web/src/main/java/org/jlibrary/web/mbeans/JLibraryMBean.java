@@ -105,4 +105,9 @@ public class JLibraryMBean {
 	public Integer getErrors() {
 		return statsService.getErrors();
 	}
+	
+	public Integer getComments() {
+		
+		return statsService.getComments();
+	}
 }
