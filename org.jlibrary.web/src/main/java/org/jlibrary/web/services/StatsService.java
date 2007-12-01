@@ -76,6 +76,7 @@ public class StatsService {
 		servedCategories=0;
 		attachments=0;
 		errors=0;
+		comments=0;
 	}
 	
 	public static StatsService newInstance(){
@@ -236,5 +237,12 @@ public class StatsService {
 
 	public int getErrors() {
 		return errors;
+	}
+	
+	public void incComments() {
+		comments++;
+	}
+	public int getComments() {
+		return comments;
 	}
 }
