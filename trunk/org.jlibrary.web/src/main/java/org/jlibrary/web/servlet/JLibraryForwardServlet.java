@@ -65,6 +65,7 @@ import org.jlibrary.core.properties.DocumentProperties;
 import org.jlibrary.core.properties.UserProperties;
 import org.jlibrary.core.repository.RepositoryService;
 import org.jlibrary.core.repository.exception.AuthorNotFoundException;
+import org.jlibrary.core.repository.exception.RepositoryException;
 import org.jlibrary.core.security.SecurityException;
 import org.jlibrary.core.security.SecurityService;
 import org.jlibrary.web.captcha.CaptchaService;
@@ -858,13 +859,18 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 			note.setNote(processNote(text));
 			document.addNote(note);
 			repositoryService.updateDocument(ticket, document.dumpProperties());
-			
+			statsService.incComments();
 			String refererURL = req.getHeader("referer"); 
 			resp.sendRedirect(resp.encodeRedirectURL(refererURL));
-
+		} catch (RepositoryException e) {
+			if ((e.getCause() != null) && (e.getCause() instanceof SecurityException)) {
+				logErrorAndForward(req, resp, repositoryName, e, "Sorry, but you need to be logged in to add comments!");
+			} else {
+				logErrorAndForward(req, resp, repositoryName, e, "There was a problem adding the comment.");
+			}
 		} catch (Exception e) {
-			logErrorAndForward(req, resp, repositoryName, e, "There was a problem adding the comment.");
-		}	
+			logErrorAndForward(req, resp, repositoryName, e, "There was a problem adding the comment.");			
+		}
 	}
 	
 	private String processNote(String text) {
