@@ -1184,30 +1184,6 @@ public class JCRRepositoryService implements RepositoryService {
 				
 				//Handle relations			
 				PropertyDef[] relations = properties.getPropertyList(
-							DocumentProperties.DOCUMENT_ADD_RELATION);
-				if (relations != null) {
-					for (int i = 0; i < relations.length; i++) {
-						Relation relation = (Relation)relations[i].getValue();
-						String destinationId = 
-							relation.getDestinationNode().getId();
-						
-						JCRUtils.addNodeToProperty(
-								destinationId,
-								node,
-								JLibraryConstants.JLIBRARY_RELATIONS);
-						if (relation.isBidirectional()) {
-							javax.jcr.Node referencedNode = 
-								session.getNodeByUUID(destinationId);
-							JCRUtils.addNodeToProperty(
-									node.getUUID(),
-									referencedNode,
-									JLibraryConstants.JLIBRARY_RELATIONS);
-							
-						}
-					}
-				}
-				
-				relations = properties.getPropertyList(
 						DocumentProperties.DOCUMENT_DELETE_RELATION);
 				if (relations != null) {
 					for (int i = 0; i < relations.length; i++) {
@@ -1231,6 +1207,30 @@ public class JCRRepositoryService implements RepositoryService {
 					}
 				}
 				
+				relations = properties.getPropertyList(
+						DocumentProperties.DOCUMENT_ADD_RELATION);
+				if (relations != null) {
+					for (int i = 0; i < relations.length; i++) {
+						Relation relation = (Relation)relations[i].getValue();
+						String destinationId = 
+							relation.getDestinationNode().getId();
+						
+						JCRUtils.addNodeToProperty(
+								destinationId,
+								node,
+								JLibraryConstants.JLIBRARY_RELATIONS);
+						if (relation.isBidirectional()) {
+							javax.jcr.Node referencedNode = 
+								session.getNodeByUUID(destinationId);
+							JCRUtils.addNodeToProperty(
+									node.getUUID(),
+									referencedNode,
+									JLibraryConstants.JLIBRARY_RELATIONS);
+							
+						}
+					}
+				}
+				
 				
 				//Handle authors
 				if (author.equals(Author.UNKNOWN)) {
@@ -1246,6 +1246,20 @@ public class JCRRepositoryService implements RepositoryService {
 				
 				// Handle document categories
 				PropertyDef[] categories = properties.getPropertyList(
+						DocumentProperties.DOCUMENT_DELETE_CATEGORY);
+				if (categories != null) {
+					for (int i = 0; i < categories.length; i++) {
+						String category = (String)categories[i].getValue();
+						javax.jcr.Node categoryNode = 
+							categoriesModule.getCategoryNode(session,category);
+						categoriesModule.removeCategory(ticket,categoryNode,node);
+					}
+					if (categoriesModule.numberOfCategories(node) == 0) {
+						categoriesModule.addUnknownCategory(ticket,node);
+					}
+				}
+				
+				categories = properties.getPropertyList(
 						DocumentProperties.DOCUMENT_ADD_CATEGORY);
 				if (categories != null) {
 					if (categoriesModule.containsUnknownCategory(ticket,node)) {
@@ -1258,19 +1272,7 @@ public class JCRRepositoryService implements RepositoryService {
 						categoriesModule.addCategory(ticket,categoryNode,node);
 					}
 				}			
-				categories = properties.getPropertyList(
-						DocumentProperties.DOCUMENT_DELETE_CATEGORY);
-				if (categories != null) {
-					for (int i = 0; i < categories.length; i++) {
-						String category = (String)categories[i].getValue();
-						javax.jcr.Node categoryNode = 
-							categoriesModule.getCategoryNode(session,category);
-						categoriesModule.removeCategory(ticket,categoryNode,node);
-					}
-					if (categoriesModule.numberOfCategories(node) == 0) {
-						categoriesModule.addUnknownCategory(ticket,node);
-					}
-				}				
+								
 				// Handle document notes
 				PropertyDef[] notes = properties.getPropertyList(
 						DocumentProperties.DOCUMENT_ADD_NOTE);
