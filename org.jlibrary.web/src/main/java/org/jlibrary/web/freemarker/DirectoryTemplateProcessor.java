@@ -23,10 +23,13 @@
 package org.jlibrary.web.freemarker;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.jlibrary.core.entities.Directory;
 import org.jlibrary.core.entities.Document;
@@ -78,7 +81,29 @@ public class DirectoryTemplateProcessor extends BaseTemplateProcessor {
 
 		loadChildren();
 		
-		page.expose(FreemarkerVariables.DIRECTORY, directory);		
+		
+		// We will order children by position and date. This will show directories updated 
+		// at top unless they have a hardcoded position (like in the jLibrary web site).
+		SortedSet<Node> set = new TreeSet<Node>(new Comparator<Node>() {
+			public int compare(Node node1, Node node2) {
+
+				// Be defensive
+				if ((node1 == null) || (node2 == null) || 
+					(node1.getPosition() == null) || (node2.getPosition() == null) ||
+					(node1.getDate() == null) || (node2.getDate() == null)) {
+					// Return something. Should not happen.
+					return -1;
+				}
+				if (node1.getPosition().equals(node2.getPosition())) {
+					return node1.getDate().compareTo(node2.getDate());
+				}
+				return node1.getPosition().compareTo(node2.getPosition());
+			}
+		});
+		set.addAll(directory.getNodes());
+		directory.setNodes(set);
+		page.expose(FreemarkerVariables.DIRECTORY, directory);	
+
 		
 		if (hasIndexDocument()) {
 			page.expose(FreemarkerVariables.DIRECTORY_CONTENT, 
