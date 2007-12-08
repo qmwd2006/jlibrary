@@ -109,8 +109,6 @@ public class TicketService {
 		HttpSession session = request.getSession(true);
 		ticket = (Ticket)session.getAttribute((SESSION_TICKET_ID+repositoryName).toLowerCase());
 		if (ticket == null) {
-			// Obtain a guest ticket. Synchronization for obtaining guest tickets it is not very 
-			// critical so we don't bother adding synchronized blocks for this collection
 			ticket = guestTickets.get(repositoryName);
 			if (ticket == null) {
 				ticket = createGuestSession(session, repositoryName);
