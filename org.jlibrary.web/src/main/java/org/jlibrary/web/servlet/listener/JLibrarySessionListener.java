@@ -29,10 +29,12 @@ import javax.servlet.http.HttpSessionListener;
 
 import org.apache.log4j.Logger;
 import org.jlibrary.core.entities.Ticket;
+import org.jlibrary.core.entities.User;
 import org.jlibrary.core.factory.JLibraryServiceFactory;
 import org.jlibrary.core.profiles.LocalServerProfile;
 import org.jlibrary.core.security.SecurityException;
 import org.jlibrary.core.security.SecurityService;
+import org.jlibrary.web.WebConstants;
 import org.jlibrary.web.services.StatsService;
 import org.jlibrary.web.services.TicketService;
 /**
@@ -63,6 +65,17 @@ public class JLibrarySessionListener implements HttpSessionListener {
     			// Safety check
     			if ((value != null) && (value instanceof Ticket)) {
     				Ticket ticket = (Ticket)value;
+    				if ((ticket == null) || (ticket.getUser() == null)) {
+    					if (logger.isDebugEnabled()) {
+    						logger.debug("Found an invalid ticket : " + ticket);
+    					}
+    					continue;
+    				}
+    				// Guest tickets won't be removed
+    				if (ticket.getUser().getName().equals(WebConstants.ANONYMOUS_WEB_USERNAME)) {
+    					continue;
+    				}
+    				
     				LocalServerProfile profile = new LocalServerProfile();
     				SecurityService service = 
     					JLibraryServiceFactory.getInstance(profile).getSecurityService();
