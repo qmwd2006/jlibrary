@@ -95,7 +95,7 @@ public class DirectoryTemplateProcessor extends BaseTemplateProcessor {
 					return -1;
 				}
 				if (node1.getPosition().equals(node2.getPosition())) {
-					return node1.getDate().compareTo(node2.getDate());
+					return node2.getDate().compareTo(node1.getDate());
 				}
 				return node1.getPosition().compareTo(node2.getPosition());
 			}
