@@ -40,6 +40,7 @@ import org.jlibrary.core.security.SecurityException;
 import org.jlibrary.core.security.SecurityService;
 import org.jlibrary.core.security.exception.UserNotFoundException;
 import org.jlibrary.web.WebConstants;
+import org.jlibrary.web.services.config.RepositoryConfig;
 
 /**
  * <p>This class handles ticket creation and management. Every content request will use the ticket 
@@ -65,7 +66,7 @@ public class TicketService {
 	
 	private ConcurrentHashMap<String, Ticket> guestTickets = new ConcurrentHashMap<String, Ticket>();
 
-	private String rootPassword;
+	private ConfigurationService configService;
 	
 	public TicketService() {}
 	
@@ -172,9 +173,11 @@ public class TicketService {
 			JLibraryServiceFactory.getInstance(profile).getSecurityService();	
 		Credentials credentials = new Credentials();
 		credentials.setUser(User.ADMIN_NAME);
-		credentials.setPassword(rootPassword);
 		Ticket adminTicket = null;
 		try {
+			RepositoryConfig config = configService.getRepositoryConfig(repositoryName);
+			credentials.setPassword(config.getAdminPassword());
+			
 			adminTicket = service.login(credentials, repositoryName);
 			// Check that the guest user exists, otherwise create it 
 			Credentials webCredentials = new Credentials();
@@ -264,14 +267,14 @@ public class TicketService {
 	 */
 	public void init(ConfigurationService configService) {
 
-		this.rootPassword = configService.getRootPassword();
+		this.configService = configService;
 		
 		LocalServerProfile profile = new LocalServerProfile();
 		SecurityService service = 
 			JLibraryServiceFactory.getInstance(profile).getSecurityService();	
 		Credentials credentials = new Credentials();
 		credentials.setUser(User.ADMIN_NAME);
-		credentials.setPassword(rootPassword);
+		credentials.setPassword(configService.getRootPassword());
 		try {
 			systemTicket = service.login(credentials, "system");
 		} catch (Exception e) {
