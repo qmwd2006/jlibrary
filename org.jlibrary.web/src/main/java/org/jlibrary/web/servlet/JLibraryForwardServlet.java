@@ -419,9 +419,9 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 					DirectoryProperties properties = ((Directory)node).dumpProperties();
 					node = repositoryService.updateDirectory(ticket, properties);
 					statsService.incUpdatedDirectories();
-					String url = getRepositoryURL(req, repositoryName);
-					url+=node.getPath();
-					resp.sendRedirect(resp.encodeRedirectURL(url));
+					StringBuilder url = new StringBuilder(getRepositoryURL(req, repositoryName));
+					url.append(node.getPath());
+					resp.sendRedirect(resp.encodeRedirectURL(url.toString()));
 				} else if (node.isDocument()) {
 					Document document=(Document) node;
 					document.setName(name);
@@ -437,9 +437,9 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 						repositoryService.updateContent(ticket, document.getId(), dataContent);
 					}
 					statsService.incUpdatedDocuments();
-					String url = getRepositoryURL(req, repositoryName);
-					url+=document.getPath();
-					resp.sendRedirect(resp.encodeRedirectURL(url));
+					StringBuilder url = new StringBuilder(getRepositoryURL(req, repositoryName));
+					url.append(document.getPath());
+					resp.sendRedirect(resp.encodeRedirectURL(url.toString()));
 					
 				}
 			} else if (type.equals("category")) {
@@ -450,9 +450,9 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 				CategoryProperties properties = category.dumpProperties();
 				category = repositoryService.updateCategory(ticket, id, properties);
 				statsService.incUpdatedCategories();
-				String url = getRepositoryURL(req, repositoryName);
-				url+="/categories/"+category.getName();
-				resp.sendRedirect(resp.encodeRedirectURL(url));	
+				StringBuilder url = new StringBuilder(getRepositoryURL(req, repositoryName));
+				url.append("/categories/"+category.getName());
+				resp.sendRedirect(resp.encodeRedirectURL(url.toString()));	
 			} else {
 				String error = "Invalid operation : " + type;
 				logErrorAndForward(req, resp, repositoryName, new InvalidOperationException(error), error);
@@ -496,9 +496,9 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 					repositoryService.removeDocument(ticket, node.getId());
 					statsService.incDeletedDocuments();
 				}
-				String url = getRepositoryURL(req, repositoryName);
-				url+=parent.getPath();
-				resp.sendRedirect(resp.encodeRedirectURL(url));
+				StringBuilder url = new StringBuilder(getRepositoryURL(req, repositoryName));
+				url.append(parent.getPath());
+				resp.sendRedirect(resp.encodeRedirectURL(url.toString()));
 			} else if (type.equals("category")) {
 				repositoryService.deleteCategory(ticket, id);
 				statsService.incDeletedCategories();
@@ -635,11 +635,11 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 				DirectoryProperties properties = directory.dumpProperties();
 				directory = repositoryService.createDirectory(ticket, properties);
 				statsService.incCreatedDirectories();
-				String url = getRepositoryURL(req, repositoryName);
-				url+=directory.getPath();
-				resp.sendRedirect(resp.encodeRedirectURL(url));
+				StringBuilder url = new StringBuilder(getRepositoryURL(req, repositoryName));
+				url.append(directory.getPath());
+				resp.sendRedirect(resp.encodeRedirectURL(url.toString()));
 			} else if (type.equals("document")) {
-				String url = getRepositoryURL(req, repositoryName);
+				StringBuilder url = new StringBuilder(getRepositoryURL(req, repositoryName));
 				
 				Author author = null;
 				try {
@@ -661,7 +661,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 				metaData.setDate(new Date());
 				metaData.setTitle(name);
 				metaData.setKeywords(keywords);
-				metaData.setUrl(url);
+				metaData.setUrl(url.toString());
 				metaData.setAuthor(author);
 				document.setMetaData(metaData);
 				byte[] dataContent=null;
@@ -677,8 +677,8 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 				}else{
 					logErrorAndForward(req, resp, repositoryName, null, "There was a problem trying to upload the document.");
 				}
-				url+=document.getPath();
-				resp.sendRedirect(resp.encodeRedirectURL(url));
+				url.append(document.getPath());
+				resp.sendRedirect(resp.encodeRedirectURL(url.toString()));
 			} else if (type.equals("category")) {
 				Category category = new Category();
 				category.setId(""); //TODO: This is a bug, is to make dumpProperties work propertly
@@ -689,9 +689,9 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 				CategoryProperties properties = category.dumpProperties();
 				category = repositoryService.createCategory(ticket, properties);
 				statsService.incCreatedCategories();
-				String url = getRepositoryURL(req, repositoryName);
-				url+="/categories/"+category.getName();
-				resp.sendRedirect(resp.encodeRedirectURL(url));				
+				StringBuilder url = new StringBuilder(getRepositoryURL(req, repositoryName));
+				url.append("/categories/"+category.getName());
+				resp.sendRedirect(resp.encodeRedirectURL(url.toString()));				
 			} else {
 				String error = "Invalid operation : " + type;
 				logErrorAndForward(req, resp, repositoryName, new InvalidOperationException(error), error);
@@ -767,7 +767,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 		try {
 			Repository repository = repositoryService.findRepository(repositoryName, ticket);
 			repository.setServerProfile(profile);
-			String url = getRepositoryURL(req, repositoryName);
+			StringBuilder url = new StringBuilder(getRepositoryURL(req, repositoryName));
 			Author author = null;
 			try {
 				author = repositoryService.findAuthorByName(ticket, ticket.getUser().getName());
@@ -787,7 +787,7 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 			metaData.setDate(new Date());
 			metaData.setTitle(name);
 			metaData.setKeywords(keywords);
-			metaData.setUrl(url);
+			metaData.setUrl(url.toString());
 			metaData.setAuthor(author);
 			document.setMetaData(metaData);
 
@@ -799,8 +799,8 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 			statsService.incCreatedDocuments();
 			if( contentInputStream!=null){
 				document=(Document) repositoryService.updateContent(ticket, document.getId(), contentInputStream);
-				url+=document.getPath();
-				resp.sendRedirect(resp.encodeRedirectURL(url));
+				url.append(document.getPath());
+				resp.sendRedirect(resp.encodeRedirectURL(url.toString()));
 				return;
 			}else{
 				logErrorAndForward(req, resp, repositoryName, null, "There was a problem trying to upload the document.");
