@@ -27,6 +27,10 @@ import javax.servlet.ServletContext;
 import org.jlibrary.core.entities.Repository;
 import org.jlibrary.core.entities.Ticket;
 import org.jlibrary.web.services.ConfigurationService;
+import org.jlibrary.web.services.config.ConfigNotFoundException;
+import org.jlibrary.web.services.config.RepositoryConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -36,6 +40,12 @@ import org.springframework.context.ApplicationContext;
  */
 public class RepositoryContext {
 
+	static Logger logger = LoggerFactory.getLogger(RepositoryContext.class);
+	
+	// Fallbacks in case of exceptions
+	private static final String FALLBACK_TEMPLATE = "templates/terrafirma";
+	private static final boolean FALLBACK_REGISTRATION = false;
+	
 	private Repository repository;
 	private String templatesDirectory;
 	private Ticket ticket;
@@ -48,8 +58,18 @@ public class RepositoryContext {
 		this.repository = repository;
 		String rootPath = servletContext.getRealPath("/");
 		ConfigurationService service=(ConfigurationService) context.getBean("template");
-		registrationEnabled = service.isRegistrationEnabled();
-		templatesDirectory = rootPath+"/"+service.getTemplateDirectory();
+		
+		RepositoryConfig config;
+		try {
+			config = service.getRepositoryConfig(repository.getName());
+			registrationEnabled = config.isRegistrationEnabled();
+			templatesDirectory = rootPath+"/"+config.getTemplateDirectory();
+		} catch (ConfigNotFoundException e) {
+			logger.warn(e.getMessage(),e);
+			registrationEnabled = FALLBACK_REGISTRATION;
+			templatesDirectory = rootPath+"/"+FALLBACK_TEMPLATE;
+
+		}
 	}
 
 	public Repository getRepository() {

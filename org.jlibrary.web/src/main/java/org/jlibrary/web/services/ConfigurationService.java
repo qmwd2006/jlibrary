@@ -22,10 +22,16 @@
 */
 package org.jlibrary.web.services;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jlibrary.core.entities.User;
+import org.jlibrary.web.services.config.ConfigNotFoundException;
+import org.jlibrary.web.services.config.RepositoryConfig;
 
 /**
- * This Spring service will hold several configuration values.
+ * <p>This Spring service will hold several configuration values. It holds a collection 
+ * of configuration beans for each repository and several common configuration properties.</p>
  * 
  * @author dlatorre
  * @author mpermar
@@ -33,16 +39,15 @@ import org.jlibrary.core.entities.User;
  */
 public class ConfigurationService {
 	
-	private String templateDirectory;
-	private Boolean registrationEnabled;
-	
 	private Long operationInputBandwidth;
 	private Long operationOutputBandwidth;
 	private Long totalInputBandwidth;
 	private Long totalOutputBandwidth;
-
+	
 	// Default password
 	private String rootPassword = User.DEFAULT_PASSWORD;
+
+	private List<RepositoryConfig> configEntries = new ArrayList<RepositoryConfig>();
 	
 	public Long getOperationInputBandwidth() {
 		return operationInputBandwidth;
@@ -76,20 +81,32 @@ public class ConfigurationService {
 		this.totalOutputBandwidth = totalOutputBandwidth;
 	}
 
-	public Boolean isRegistrationEnabled() {
-		return registrationEnabled;
+	public void setConfigEntries(List<RepositoryConfig> configEntries) {
+		this.configEntries = configEntries;
 	}
-
-	public void setRegistrationEnabled(Boolean isRegistrationEnabled) {
-		this.registrationEnabled = isRegistrationEnabled;
-	}
-
-	public String getTemplateDirectory() {
-		return templateDirectory;
-	}
-
-	public void setTemplateDirectory(String templateDirectory) {
-		this.templateDirectory = templateDirectory;
+	
+	/**
+	 * Returns a configuration entry for the given repository. Whether the configuration is not found
+	 * a ConfigNotFoundException will be thrown.
+	 *  
+	 * @param repositoryName Repository for which we are looking for a configuration object
+	 * 
+	 * @return RepositoryConfig Configuration for the given repository
+	 * 
+	 * @throws ConfigNotFoundException Whether the configuration entry cannot be found
+	 */
+	public RepositoryConfig getRepositoryConfig(String repositoryName) throws ConfigNotFoundException {
+		
+		if (repositoryName == null) {
+			throw new ConfigNotFoundException("Invalid configuration for repository: " + repositoryName);
+		}
+		
+		for(RepositoryConfig config: configEntries) {
+			if (repositoryName.equals(config.getRepositoryName())) {
+				return config;
+			}
+		}
+		throw new ConfigNotFoundException();
 	}
 
 	public String getRootPassword() {
