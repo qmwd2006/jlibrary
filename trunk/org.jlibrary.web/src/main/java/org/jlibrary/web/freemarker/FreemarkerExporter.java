@@ -125,7 +125,7 @@ public class FreemarkerExporter extends BaseExporter {
 		}
 		
 		// Otherwise try to compute a relative root URL
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		String[] parts = StringUtils.split(document.getPath(),"/");
 		for (int i = 0; i<parts.length-1; i++) {
 			buffer.append("../");
@@ -153,9 +153,9 @@ public class FreemarkerExporter extends BaseExporter {
 		}
 		
 		// Otherwise try to compute a relative root URL
-		StringBuffer buffer = new StringBuffer("../");
+		StringBuilder buffer = new StringBuilder("../");
 		if (directory.getParent() == null) {
-			buffer = new StringBuffer("./");
+			buffer = new StringBuilder("./");
 		}
 		String[] parts = StringUtils.split(directory.getPath(),"/");
 		for (int i = 0; i<parts.length-1; i++) {
@@ -181,7 +181,7 @@ public class FreemarkerExporter extends BaseExporter {
 		}
 		
 		// this if for the categories/ folder
-		StringBuffer buffer = new StringBuffer("../..");
+		StringBuilder buffer = new StringBuilder("../..");
 		
 		while (category.getParent() != null) {
 			buffer.append("/..");
@@ -219,7 +219,7 @@ public class FreemarkerExporter extends BaseExporter {
 		
 		String location = node.getPath();
 
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		String[] pathParts = StringUtils.split(location,"/");
 		String href="./";
 		for (int i=pathParts.length-1;i>=0;i--) {
@@ -312,7 +312,7 @@ public class FreemarkerExporter extends BaseExporter {
 	public String getLocationURL(Category category) {
 		
 		String escapedCategoryName = Text.escape(category.getName());
-		StringBuffer path = new StringBuffer("<a href=\"" + escapedCategoryName + "\">" + 
+		StringBuilder path = new StringBuilder("<a href=\"" + escapedCategoryName + "\">" + 
 											 category.getName()+
 											 "</a>");
 		String href = "./";

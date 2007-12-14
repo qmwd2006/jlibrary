@@ -65,7 +65,7 @@ public class WordCounter {
     								   int numKeywords) {
     	
     	List keywords = busca(locale,texto);
-    	StringBuffer buffer = new StringBuffer();
+    	StringBuilder buffer = new StringBuilder();
         if (keywords.size() > 0) {
         	int i = 0;
             while ((i < keywords.size()) && (i < numKeywords)) {
