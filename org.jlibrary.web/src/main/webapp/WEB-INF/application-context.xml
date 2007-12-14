@@ -2,14 +2,43 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" 
   "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
-   	<bean id="template" class="org.jlibrary.web.services.ConfigurationService">
-         <property name="templateDirectory" value="templates/terrafirma"/>
-         <property name="registrationEnabled" value="true"/>
-         <property name="operationInputBandwidth" value="102400"/>
-         <property name="operationOutputBandwidth" value="102400"/>
-         <property name="totalInputBandwidth" value="302400"/>
-         <property name="totalOutputBandwidth" value="302400"/>
-   	</bean>
+  <bean id="template" class="org.jlibrary.web.services.ConfigurationService">
+    <property name="operationInputBandwidth" value="102400"/>
+    <property name="operationOutputBandwidth" value="102400"/>
+    <property name="totalInputBandwidth" value="302400"/>
+    <property name="totalOutputBandwidth" value="302400"/>
+    <!--
+      OPTIONAL: If password is not the default one you can set it here
+      
+      <property name="rootPassword" value="password"/>
+    -->
+    
+    <property name="configEntries">
+      <list>
+        <ref bean="demo"/>
+        <ref bean="jlibrary"/>
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="demo" class="org.jlibrary.web.services.config.RepositoryConfig">
+     <property name="repositoryName" value="demo"/>
+     <property name="templateDirectory" value="templates/terrafirma"/>
+     <property name="registrationEnabled" value="true"/>    
+     
+    <!--
+      OPTIONAL: If password is not the default one you can set it here
+      
+      <property name="adminPassword" value="password"/>
+    -->
+  </bean>
+
+  <bean id="jlibrary" class="org.jlibrary.web.services.config.RepositoryConfig">
+     <property name="repositoryName" value="jlibrary"/>
+     <property name="templateDirectory" value="templates/terrafirma"/>
+     <property name="registrationEnabled" value="true"/>    
+  </bean>
+
    
   <bean id="exporter" class="org.springframework.jmx.export.MBeanExporter" lazy-init="false">
     <property name="beans">
