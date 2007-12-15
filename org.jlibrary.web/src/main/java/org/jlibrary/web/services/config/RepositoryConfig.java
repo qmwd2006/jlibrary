@@ -7,8 +7,8 @@ public class RepositoryConfig {
 
 	private String repositoryName;
 	private String templateDirectory;
-	private Boolean registrationEnabled;
-	private Boolean loginEnabled;
+	private Boolean registrationEnabled = true;
+	private Boolean loginEnabled = true;
 	
 	// Default password
 	private String adminPassword = User.DEFAULT_PASSWORD;
@@ -45,12 +45,11 @@ public class RepositoryConfig {
 		this.repositoryName = repositoryName;
 	}
 
-	public Boolean getLoginEnabled() {
+	public Boolean isLoginEnabled() {
 		return loginEnabled;
 	}
 
 	public void setLoginEnabled(Boolean loginEnabled) {
 		this.loginEnabled = loginEnabled;
 	}
-
 }

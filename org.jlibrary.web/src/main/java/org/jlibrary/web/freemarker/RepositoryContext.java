@@ -44,12 +44,14 @@ public class RepositoryContext {
 	
 	// Fallbacks in case of exceptions
 	private static final String FALLBACK_TEMPLATE = "templates/terrafirma";
-	private static final boolean FALLBACK_REGISTRATION = false;
+	private static final boolean FALLBACK_REGISTRATION = true;
+	private static final boolean FALLBACK_LOGIN = true;
 	
 	private Repository repository;
 	private String templatesDirectory;
 	private Ticket ticket;
 	private boolean registrationEnabled;
+	private boolean loginEnabled;
 	
 	public RepositoryContext(Repository repository, 
 							 ServletContext servletContext, 
@@ -63,10 +65,12 @@ public class RepositoryContext {
 		try {
 			config = service.getRepositoryConfig(repository.getName());
 			registrationEnabled = config.isRegistrationEnabled();
+			loginEnabled = config.isLoginEnabled();
 			templatesDirectory = rootPath+"/"+config.getTemplateDirectory();
 		} catch (ConfigNotFoundException e) {
 			logger.warn(e.getMessage(),e);
 			registrationEnabled = FALLBACK_REGISTRATION;
+			loginEnabled = FALLBACK_LOGIN;
 			templatesDirectory = rootPath+"/"+FALLBACK_TEMPLATE;
 
 		}
@@ -110,4 +114,8 @@ public class RepositoryContext {
 	public boolean isRegistrationEnabled() {
 		return registrationEnabled;
 	}	
+	
+	public boolean isLoginEnabled() {
+		return loginEnabled;
+	}
 }

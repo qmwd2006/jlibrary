@@ -108,7 +108,7 @@ public abstract class BaseTemplateProcessor implements FreemarkerTemplateProcess
 		page.expose(FreemarkerVariables.REPOSITORY_URL,repositoryURL);
 		page.expose(FreemarkerVariables.CATEGORIES_ROOT_URL,categoriesRootURL);
 
-		page.expose(FreemarkerVariables.REGISTRATION_ENABLED, new Boolean(context.isRegistrationEnabled()));
+		page.expose(FreemarkerVariables.REPOSITORY_CONTEXT, context);
 		
 		exportContent(page);
 		

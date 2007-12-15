@@ -32,7 +32,8 @@ public class FreemarkerVariables {
 	/**
 	 * Registration enabled
 	 */
-	public static final String REGISTRATION_ENABLED = "registrationEnabled";
+	public static final String REPOSITORY_CONTEXT = "context";
+	
 	/**
 	 * Error string
 	 */
