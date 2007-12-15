@@ -3,42 +3,69 @@
   "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
   <bean id="template" class="org.jlibrary.web.services.ConfigurationService">
-    <property name="operationInputBandwidth" value="102400"/>
-    <property name="operationOutputBandwidth" value="102400"/>
-    <property name="totalInputBandwidth" value="302400"/>
-    <property name="totalOutputBandwidth" value="302400"/>
+
+    <!-- 
+    
+    OPTIONAL: The following properties define different bandwidths for input and output operations. You must be using the
+    limited streaming classes to have any effect.
+      
+    <property name="operationInputBandwidth" value="10240000"/>
+    <property name="operationOutputBandwidth" value="10240000"/>
+    <property name="totalInputBandwidth" value="30240000"/>
+    <property name="totalOutputBandwidth" value="30240000"/>
+    -->
+    
     <!--
-      OPTIONAL: If password is not the default one you can set it here
+      OPTIONAL: This property sets up the system password. If you have changed your system password in jLibrary you have to 
+      set this property. 
       
       <property name="rootPassword" value="password"/>
     -->
+
+  <!--
+    configEntries defines the different repositories in jLibrary. Each repository can have a different webapp configuration. 
+    You can modify the templates directory, enable or disable registration and login operations and set up the administration 
+    password. 
     
+    There is a special "default" entry that is mandatory. That configuration will be used to match all the repositories for 
+    which there is no configuration defined. So for example if you are accessing a repository "foo" and there is no configuration 
+    entry in this file then the "default" entry will be used.
+  -->    
     <property name="configEntries">
       <list>
-        <ref bean="demo"/>
+        <ref bean="default"/>
         <ref bean="jlibrary"/>
       </list>
     </property>
   </bean>
   
-  <bean id="demo" class="org.jlibrary.web.services.config.RepositoryConfig">
-     <property name="repositoryName" value="demo"/>
+  <!-- 
+    Default configuration for all repositories .
+    
+    repositoryName: Name of the repository you are configuring.
+    templateDirectory: Directory relative to webapp context. Defines where can jLibrary find all the template files. Mandatory.
+    registrationEnabled: Switch on to enable the ability to create users in jLibrary from the webapp. Optional. Default is true.
+    loginEnabled: Switch on to log into jLibrary from the webapp. Optional. Default is true.
+    adminPassword: Password for the administration users. You must enter it whether you have changed the default password. 
+                   Optional. Default is changeme.
+  -->
+  <bean id="default" class="org.jlibrary.web.services.config.RepositoryConfig">
+     <property name="repositoryName" value="default"/>
      <property name="templateDirectory" value="templates/terrafirma"/>
      <property name="registrationEnabled" value="true"/>    
-     
-    <!--
-      OPTIONAL: If password is not the default one you can set it here
-      
-      <property name="adminPassword" value="password"/>
-    -->
+     <property name="loginEnabled" value="true"/> 
+     <property name="adminPassword" value="password"/>
   </bean>
 
+  <!--
+    Sample custom repository configuration. You can add as many custom configurations as ou want.
   <bean id="jlibrary" class="org.jlibrary.web.services.config.RepositoryConfig">
      <property name="repositoryName" value="jlibrary"/>
-     <property name="templateDirectory" value="templates/terrafirma"/>
-     <property name="registrationEnabled" value="true"/>    
+     <property name="templateDirectory" value="templates/jlibrary"/>
+     <property name="registrationEnabled" value="false"/>    
+     <property name="loginEnabled" value="false"/>    
   </bean>
-
+  -->
    
   <bean id="exporter" class="org.springframework.jmx.export.MBeanExporter" lazy-init="false">
     <property name="beans">

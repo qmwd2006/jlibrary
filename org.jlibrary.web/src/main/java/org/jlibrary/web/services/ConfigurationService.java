@@ -44,9 +44,11 @@ public class ConfigurationService {
 	private Long totalInputBandwidth;
 	private Long totalOutputBandwidth;
 	
+	private static final String DEFAULT_CONFIG = "default";
+	
 	// Default password
 	private String rootPassword = User.DEFAULT_PASSWORD;
-
+	
 	private List<RepositoryConfig> configEntries = new ArrayList<RepositoryConfig>();
 	
 	public Long getOperationInputBandwidth() {
@@ -102,10 +104,18 @@ public class ConfigurationService {
 		}
 		
 		for(RepositoryConfig config: configEntries) {
-			if (repositoryName.equals(config.getRepositoryName())) {
+			if (repositoryName.equalsIgnoreCase(config.getRepositoryName())) {
 				return config;
 			}
 		}
+		
+		// Configuratoin not found try to find the default config
+		for(RepositoryConfig config: configEntries) {
+			if (DEFAULT_CONFIG.equalsIgnoreCase(config.getRepositoryName())) {
+				return config;
+			}
+		}
+		
 		throw new ConfigNotFoundException();
 	}
 
