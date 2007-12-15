@@ -49,7 +49,6 @@ public class JLibrarySessionListener implements HttpSessionListener {
 	
 	public void sessionCreated(HttpSessionEvent hse) {
 		
-		hse.getSession().setMaxInactiveInterval(60);
     	statsService.incTotalUsers();
 	}
 	
