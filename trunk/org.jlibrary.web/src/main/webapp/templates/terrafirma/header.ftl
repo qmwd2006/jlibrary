@@ -41,6 +41,7 @@
 				<p>Location: ${location_url?replace(">/","> &raquo; ")}</p>
 			</div>
 			
+		  <#if context.loginEnabled>
 			<div id="userinfo">				
 				<#if ticket.user.name="guest">
 				  <form id="login" method="post" action="${root_url}/forward?method=login&amp;repository=${repository.name}">
@@ -52,7 +53,7 @@
 				    <input type="password" class="text" maxlength="16" name="password" id="passwordheader" />
 						<input type="hidden" name="repository" value="${repository.name}"/>
 						<input class="submit" type="submit" value="log in"/>
-						<#if registrationEnabled>
+						<#if context.registrationEnabled>
 							<a href="${root_url}/forward?method=signin&amp;repository=${repository.name}">sign in</a>
 						</#if>						
 					</fieldset>
@@ -61,5 +62,6 @@
 					<p>Welcome ${username(ticket.repositoryId,ticket.user.id)} <a href="${root_url}/forward?method=logout&amp;repository=${repository.name}">(log out)</a></p>
 				</#if>
 			</div>
+			</#if>
     </div>
 </#macro>
