@@ -2048,7 +2048,17 @@ public class JCRSecurityService implements SecurityService {
 	 */
 	public void disconnect(Ticket ticket) throws SecurityException {
 		
+		if (logger.isDebugEnabled()) {
+			logger.debug("Disconnecting ticket for user " + ticket.getUser());
+		}
 		SessionManager sessionManager = SessionManager.getInstance();
+		javax.jcr.Session session = sessionManager.getSession(ticket);
+		if (session != null) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("Logging out JCR session for user " + ticket.getUser());
+			}
+			session.logout();
+		}
 		sessionManager.dettach(ticket);
 		
 		RepositoryManager repositoryManager = RepositoryManager.getInstance();
