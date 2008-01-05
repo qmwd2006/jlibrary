@@ -91,7 +91,6 @@ public class JCRSecurityService implements SecurityService {
 	
 	private static Context ctx;
 	protected static javax.jcr.Repository repository;
-	protected static Session systemSession;
 	protected static JCRSecurityService instance;
 	protected String repositoriesHome;
 	
@@ -111,12 +110,13 @@ public class JCRSecurityService implements SecurityService {
 	        repository = (javax.jcr.Repository) ctx.lookup("jackrabbit.repository");	        	
 			logger.info(
 					"jLibrary repository found!");
-	
-	        if (systemSession == null) {
+
+			javax.jcr.Session systemSession = SessionManager.getInstance().getSystemSession();
+			if (systemSession == null) {
 				logger.info(
 					"No jLibrary system session defined. Initializing jLibrary system session");
 	        	checkSystemWorkspace();
-	        }
+			}
 	        
 	        // Now lookup for pending delete operations
 	        new JCRCleanupModule().deletePendingWorkspaces(systemSession);
@@ -292,6 +292,7 @@ public class JCRSecurityService implements SecurityService {
 		try {
 			SimpleCredentials creds =
                 new SimpleCredentials("admin", "admin".toCharArray());
+			javax.jcr.Session systemSession = null;
             try {
     			logger.info("Login into system workspace...");
             	systemSession = repository.login(creds,"system");
@@ -311,6 +312,8 @@ public class JCRSecurityService implements SecurityService {
     			logger.info("Login successful.");
             }
             
+            SessionManager.getInstance().setRepository(repository);
+            SessionManager.getInstance().setSystemSession(systemSession);
             
             javax.jcr.Node root = systemSession.getRootNode();
             javax.jcr.Node securityRoot = null;
@@ -378,11 +381,10 @@ public class JCRSecurityService implements SecurityService {
 												   SecurityException {
 
 		try {
-			String repositoryId = (String)userProperties.getProperty(
-									UserProperties.USER_REPOSITORY).getValue();
-			Session session = RepositoryManager.getInstance().
-							getRepositoryState(ticket).getSession(repositoryId);
-
+			Session session = SessionManager.getInstance().getSession(ticket); 
+			if (session == null) {
+				throw new SecurityException("Session has expired. Please log in again.");
+			}
 			if (!isAdmin(session,ticket.getUser().getId())) {
 				throw new SecurityException(SecurityException.NOT_ENOUGH_PERMISSIONS);
 			}
@@ -516,8 +518,10 @@ public class JCRSecurityService implements SecurityService {
 										throws SecurityException, 
 											   UserNotFoundException {
 
-		Session session = RepositoryManager.getInstance().
-				getRepositoryState(ticket).getSession(ticket.getRepositoryId());
+		Session session = SessionManager.getInstance().getSession(ticket); 
+		if (session == null) {
+			throw new SecurityException("Session has expired. Please log in again.");
+		}
 
 		return findUserByName(ticket,session,name);
 	}
@@ -620,8 +624,11 @@ public class JCRSecurityService implements SecurityService {
 							 String id) throws SecurityException, 
 											   UserNotFoundException {
 		try {
-			javax.jcr.Session session = RepositoryManager.getInstance().
-				getRepositoryState(ticket).getSession(ticket.getRepositoryId());
+			Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new SecurityException("Session has expired. Please log in again.");
+			}
+			
 			javax.jcr.Node userNode = getUserNode(session,id);
 			return JCRAdapter.createUser(ticket,userNode);
 		} catch (javax.jcr.ItemNotFoundException infe) {
@@ -636,11 +643,11 @@ public class JCRSecurityService implements SecurityService {
 
 		List users = new ArrayList();
 		try {
-			RepositoryManager manager = RepositoryManager.getInstance();
-			
-			Session session = manager.getRepositoryState(ticket).
-										getSession(ticket.getRepositoryId());
-			
+			Session session = SessionManager.getInstance().getSession(ticket); 
+			if (session == null) {
+				throw new SecurityException("Session has expired. Please log in again.");
+			}
+
 			Workspace workspace = session.getWorkspace();
 			QueryManager queryManager = workspace.getQueryManager();
 			String statement = "//*[@jcr:primaryType='jlib:user' and @jlib:active='true']";
@@ -673,10 +680,11 @@ public class JCRSecurityService implements SecurityService {
 		List roles = new ArrayList();
 		
 		try {
-			RepositoryManager manager = RepositoryManager.getInstance();
-			String repositoryId = ticket.getRepositoryId();
-			Session session = 
-				manager.getRepositoryState(ticket).getSession(repositoryId);
+			Session session = SessionManager.getInstance().getSession(ticket); 
+			if (session == null) {
+				throw new SecurityException("Session has expired. Please log in again.");
+			}
+
 			Workspace workspace = session.getWorkspace();
 			QueryManager queryManager = workspace.getQueryManager();
 			String statement = "//*[@jcr:primaryType='jlib:rol' and @jlib:active='true']";
@@ -705,10 +713,11 @@ public class JCRSecurityService implements SecurityService {
 		List groups = new ArrayList();
 		
 		try {
-			RepositoryManager manager = RepositoryManager.getInstance();
-			String repositoryId = ticket.getRepositoryId();
-			Session session = 
-				manager.getRepositoryState(ticket).getSession(repositoryId);
+			Session session = SessionManager.getInstance().getSession(ticket); 
+			if (session == null) {
+				throw new SecurityException("Session has expired. Please log in again.");
+			}
+
 			Workspace workspace = session.getWorkspace();
 			QueryManager queryManager = workspace.getQueryManager();
 			String statement = "//*[@jcr:primaryType='jlib:group' and @jlib:active='true']";
@@ -738,11 +747,11 @@ public class JCRSecurityService implements SecurityService {
 												   RoleAlreadyExistsException {
 
 		try {						
-			String repositoryId = (String)
-				rolProperties.getProperty(RolProperties.ROL_REPOSITORY).getValue();			
-			Session session = RepositoryManager.getInstance().
-						getRepositoryState(ticket).getSession(repositoryId);
-			
+			Session session = SessionManager.getInstance().getSession(ticket); 
+			if (session == null) {
+				throw new SecurityException("Session has expired. Please log in again.");
+			}
+
 			if (!isAdmin(session,ticket.getUser().getId())) {
 				throw new SecurityException(SecurityException.NOT_ENOUGH_PERMISSIONS);
 			}
@@ -811,10 +820,11 @@ public class JCRSecurityService implements SecurityService {
 					   						RoleNotFoundException {
 
 		try {
-			String repositoryId = ticket.getRepositoryId();
-			javax.jcr.Session session = RepositoryManager.getInstance().
-							getRepositoryState(ticket).getSession(repositoryId);
-			
+			Session session = SessionManager.getInstance().getSession(ticket); 
+			if (session == null) {
+				throw new SecurityException("Session has expired. Please log in again.");
+			}
+
 			javax.jcr.Node rolNode = session.getNodeByUUID(rolId);
 			return JCRAdapter.createRol(ticket,rolNode);
 		} catch (javax.jcr.ItemNotFoundException infe) {
@@ -831,11 +841,10 @@ public class JCRSecurityService implements SecurityService {
 												   GroupAlreadyExistsException {
 
 		try {		
-			String repositoryId = (String)
-				groupProperties.getProperty(GroupProperties.GROUP_REPOSITORY).getValue();
-			
-			Session session = RepositoryManager.getInstance().
-						getRepositoryState(ticket).getSession(repositoryId);
+			Session session = SessionManager.getInstance().getSession(ticket); 
+			if (session == null) {
+				throw new SecurityException("Session has expired. Please log in again.");
+			}
 
 			if (!isAdmin(session,ticket.getUser().getId())) {
 				throw new SecurityException(SecurityException.NOT_ENOUGH_PERMISSIONS);
@@ -907,10 +916,7 @@ public class JCRSecurityService implements SecurityService {
 												   GroupNotFoundException {
 
 		try {
-			String repositoryId = ticket.getRepositoryId();
-			javax.jcr.Session session = RepositoryManager.getInstance().
-							getRepositoryState(ticket).getSession(repositoryId);
-			
+			Session session = SessionManager.getInstance().getSession(ticket); 			
 			javax.jcr.Node group = session.getNodeByUUID(id);
 			
 			return JCRAdapter.createGroup(ticket,group);
@@ -930,9 +936,10 @@ public class JCRSecurityService implements SecurityService {
 										   		 UserNotFoundException {
 
 		try {
-			String repositoryId = ticket.getRepositoryId();
-			Session session = RepositoryManager.getInstance().
-						getRepositoryState(ticket).getSession(repositoryId);
+			Session session = SessionManager.getInstance().getSession(ticket); 
+			if (session == null) {
+				throw new SecurityException("Session has expired. Please log in again.");
+			}
 
 			if (!isAdmin(session,ticket.getUser().getId())) {
 				throw new SecurityException(SecurityException.NOT_ENOUGH_PERMISSIONS);
@@ -975,9 +982,10 @@ public class JCRSecurityService implements SecurityService {
 												   GroupNotFoundException {
 
 		try {
-			String repositoryId = ticket.getRepositoryId();
-			Session session = RepositoryManager.getInstance().
-							getRepositoryState(ticket).getSession(repositoryId);
+			Session session = SessionManager.getInstance().getSession(ticket); 
+			if (session == null) {
+				throw new SecurityException("Session has expired. Please log in again.");
+			}
 
 			if (!isAdmin(session,ticket.getUser().getId())) {
 				throw new SecurityException(SecurityException.NOT_ENOUGH_PERMISSIONS);
@@ -1002,10 +1010,10 @@ public class JCRSecurityService implements SecurityService {
 						  					   RoleNotFoundException {
 
 		try {
-			String repositoryId = ticket.getRepositoryId();
-			RepositoryManager manager = RepositoryManager.getInstance();
-			Session session = 
-				manager.getRepositoryState(ticket).getSession(repositoryId);
+			Session session = SessionManager.getInstance().getSession(ticket); 
+			if (session == null) {
+				throw new SecurityException("Session has expired. Please log in again.");
+			}
 
 			if (!isAdmin(session,ticket.getUser().getId())) {
 				throw new SecurityException(SecurityException.NOT_ENOUGH_PERMISSIONS);
@@ -1032,12 +1040,11 @@ public class JCRSecurityService implements SecurityService {
 		try {
 			String userId = (String)userProperties.getProperty(
 									UserProperties.USER_ID).getValue();
-			String repositoryId = (String) 
-				userProperties.getProperty(UserProperties.USER_REPOSITORY).getValue();
-			
-			Session session = RepositoryManager.getInstance().
-						getRepositoryState(ticket).getSession(repositoryId);
-			
+			Session session = SessionManager.getInstance().getSession(ticket); 
+			if (session == null) {
+				throw new SecurityException("Session has expired. Please log in again.");
+			}
+
 			if (!isAdmin(session,ticket.getUser().getId())) {
 				throw new SecurityException(SecurityException.NOT_ENOUGH_PERMISSIONS);
 			}
@@ -1251,11 +1258,10 @@ public class JCRSecurityService implements SecurityService {
 		try {
 			String groupId = (String)groupProperties.getProperty(
 								GroupProperties.GROUP_ID).getValue();
-			String repositoryId = (String) 
-				groupProperties.getProperty(GroupProperties.GROUP_REPOSITORY).getValue();
-			
-			javax.jcr.Session session = RepositoryManager.getInstance().
-							getRepositoryState(ticket).getSession(repositoryId);
+			Session session = SessionManager.getInstance().getSession(ticket); 
+			if (session == null) {
+				throw new SecurityException("Session has expired. Please log in again.");
+			}
 
 			if (!isAdmin(session,ticket.getUser().getId())) {
 				throw new SecurityException(SecurityException.NOT_ENOUGH_PERMISSIONS);
@@ -1404,15 +1410,13 @@ public class JCRSecurityService implements SecurityService {
 
 
 		try {
-			RepositoryManager manager = RepositoryManager.getInstance();
-			
 			String rolId = (String)rolProperties.getProperty(
 					RolProperties.ROL_ID).getValue();
-			String repositoryId = (String)rolProperties.getProperty(
-					RolProperties.ROL_REPOSITORY).getValue();
-			Session session = 
-				manager.getRepositoryState(ticket).getSession(repositoryId);
-			
+			Session session = SessionManager.getInstance().getSession(ticket); 
+			if (session == null) {
+				throw new SecurityException("Session has expired. Please log in again.");
+			}
+
 			if (!isAdmin(session,ticket.getUser().getId())) {
 				throw new SecurityException(SecurityException.NOT_ENOUGH_PERMISSIONS);
 			}
@@ -1517,7 +1521,7 @@ public class JCRSecurityService implements SecurityService {
 		
 	}
 
-	private Ticket login(Credentials credentials) 
+	private Ticket systemLogin(Credentials credentials) 
 											throws UserNotFoundException, 
 												   AuthenticationException, 
 												   SecurityException, 
@@ -1534,34 +1538,13 @@ public class JCRSecurityService implements SecurityService {
 				registerRepository(this.repositoriesHome);
 			}		
 			
-			if (systemSession == null) {
-				//disconected, probably working in local mode
-				SimpleCredentials creds =
-	                new SimpleCredentials("username", "password".toCharArray());
-				systemSession = repository.login(creds,"system");
-			}
-			
-			User user = canAccessToRepository(credentials);
-
-			SimpleCredentials creds = new SimpleCredentials(
-						credentials.getUser(), 
-						credentials.getPassword().toCharArray());
-			
-			Session session = repository.login(creds);
+			User user = canAccessToRepository(credentials);			
 			ticket = new Ticket();
 			ticket.setId(UUIDGenerator.generate(ticket));
 			// The system repository always is a jLibrary repository
 			ticket.setUser(user);
-			ticket.setRepositoryId("-1");
+			ticket.setRepositoryId("-1");			
 			
-			RepositoryManager repositoryManager = 
-				RepositoryManager.getInstance();
-			RepositorySessionState state = 
-				new RepositorySessionState(session,repository);
-			state.setSystemSession(systemSession);
-			state.attach("-1",systemSession);
-			
-			repositoryManager.attach(ticket,state);
 		} catch (org.jlibrary.core.repository.exception.RepositoryException re) {
 			logger.error(re.getMessage(),re);
 			throw new SecurityException(re);
@@ -1587,7 +1570,7 @@ public class JCRSecurityService implements SecurityService {
 											RepositoryNotFoundException {
 		
 		if (name.equals(SecurityService.SYSTEM_REPOSITORY)) {
-			return login(credentials);
+			return systemLogin(credentials);
 		}
 		return internalLogin(credentials,name);
 	}
@@ -1605,8 +1588,8 @@ public class JCRSecurityService implements SecurityService {
 				// reregister repository
 				registerRepository(this.repositoriesHome);
 			}
-
 			
+			javax.jcr.Session systemSession = SessionManager.getInstance().getSystemSession();
 			SimpleCredentials creds = 
 				new SimpleCredentials(credentials.getUser(), 
 									  credentials.getPassword().toCharArray());
@@ -1628,17 +1611,9 @@ public class JCRSecurityService implements SecurityService {
 			}
 			ticket.setUser(user);
 
-			RepositoryManager repositoryManager = 
-				RepositoryManager.getInstance();
-			RepositorySessionState state = 
-				new RepositorySessionState(session,repository);
-			state.setSystemSession(systemSession);
-			repositoryManager.attach(ticket,state);
-			
 			SessionManager sessionManager = SessionManager.getInstance();
 			if (sessionManager.getSession(ticket) == null) {
 				SessionManager.getInstance().attach(ticket, session);
-				state.attach(root.getUUID(),session);
 			}
 		} catch (org.jlibrary.core.repository.exception.RepositoryException re) {
 			logger.error(re.getMessage(),re);
@@ -1667,6 +1642,7 @@ public class JCRSecurityService implements SecurityService {
 											   SecurityException {
 		
 		try {
+			javax.jcr.Session systemSession = SessionManager.getInstance().getSystemSession();
 			Workspace workspace = systemSession.getWorkspace();
 			QueryManager queryManager = workspace.getQueryManager();
 			String statement = "//*[@jcr:primaryType='jlib:user' and @jlib:name='" 
@@ -2020,12 +1996,11 @@ public class JCRSecurityService implements SecurityService {
 													throws SecurityException {
 
 		try {
-			RepositoryManager manager = RepositoryManager.getInstance();
-			
-			Session session = 
-				manager.getRepositoryState(ticket).
-							getSession(ticket.getRepositoryId());
-			
+			Session session = SessionManager.getInstance().getSession(ticket); 
+			if (session == null) {
+				throw new SecurityException("Session has expired. Please log in again.");
+			}
+
 			javax.jcr.Node node = session.getNodeByUUID(nodeId);
 			return JCRAdapter.createRestrictions(node);
 			
@@ -2048,21 +2023,8 @@ public class JCRSecurityService implements SecurityService {
 	 */
 	public void disconnect(Ticket ticket) throws SecurityException {
 		
-		if (logger.isDebugEnabled()) {
-			logger.debug("Disconnecting ticket for user " + ticket.getUser());
-		}
 		SessionManager sessionManager = SessionManager.getInstance();
-		javax.jcr.Session session = sessionManager.getSession(ticket);
-		if (session != null) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("Logging out JCR session for user " + ticket.getUser());
-			}
-			session.logout();
-		}
-		sessionManager.dettach(ticket);
-		
-		RepositoryManager repositoryManager = RepositoryManager.getInstance();
-		repositoryManager.dettach(ticket);
+		sessionManager.dettach(ticket);		
 	}	
 	
 	/**
@@ -2078,7 +2040,6 @@ public class JCRSecurityService implements SecurityService {
 				RegistryHelper.unregisterRepository(ctx,"jlibrary.repository");
 				repository = null;
 				ctx = null;
-				systemSession = null;
 			}
 		} catch (NamingException e) {
 			
