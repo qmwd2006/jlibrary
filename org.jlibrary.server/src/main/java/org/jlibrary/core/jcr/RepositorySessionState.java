@@ -57,13 +57,7 @@ public class RepositorySessionState {
 		this.repository = repository;
 	}
 
-	public javax.jcr.Session getSystemSession() {
-		return systemSession;
-	}
 
-	public void setSystemSession(javax.jcr.Session systemSession) {
-		this.systemSession = systemSession;
-	}
 	
 	/**
 	 * Attachs a JSR-170 session to an jLibrary repository 

@@ -22,11 +22,21 @@
 */
 package org.jlibrary.core.jcr;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.jcr.Session;
+import javax.jcr.SimpleCredentials;
 
 import org.jlibrary.core.entities.Ticket;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -36,20 +46,89 @@ import org.jlibrary.core.entities.Ticket;
  * @author martin
  *
  */
-//TODO: It turns out that session objects in Jackrabbit are now quite lightweight. Remove this class
-// and maintain a session object per http request.   
-// See: http://www.nabble.com/Sharing-a-Session-or-a-Session-per-web-user-tf4851166.html#a13954712
 public class SessionManager {
 
+	static Logger logger = LoggerFactory.getLogger(SessionManager.class);
+	
 	private static SessionManager instance = new SessionManager();
 	
-	private HashMap sessions = new HashMap();
+	// Currently JCRSecurity service injects this dependency
+	private javax.jcr.Session systemSession;
+	
+	private javax.jcr.Repository repository;
+	
+	private ConcurrentHashMap<Ticket, SessionEntry> sessions = 
+		new ConcurrentHashMap<Ticket, SessionEntry>();
+	
+	//TODO: remove hardcoded variable
+	private long MAX_SESSION_INACTIVE_TIMEOUT = 1800000L; // 30 min. session timeout
+	
+	private List<SessionManagerListener> listeners = 
+		new ArrayList<SessionManagerListener>();
 	
 	/**
 	 * Singleton
 	 *
 	 */
-	private SessionManager() {}
+	private SessionManager() {
+		
+		if (logger.isDebugEnabled()) {
+			logger.debug("Starting session manager");
+		}
+		ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
+		if (logger.isDebugEnabled()) {
+			logger.debug("Scheduling session eviction thread");
+		}
+		service.scheduleAtFixedRate(new Runnable() {
+			public void run() {
+				if (logger.isDebugEnabled()) {
+					logger.debug("Running session cleaning process. There are " + sessions.size() + " opened sessions");
+				}
+				long now = System.currentTimeMillis();
+				// Eviction task
+				Iterator<Map.Entry<Ticket, SessionEntry>> it = sessions.entrySet().iterator();
+				while(it.hasNext()) {
+					Map.Entry<Ticket, SessionEntry> entry = it.next();
+					if (now - entry.getValue().getLastUsed() > MAX_SESSION_INACTIVE_TIMEOUT) {
+						if (logger.isDebugEnabled()) {
+							logger.debug("Evicting session for ticket: " + entry.getKey().getId() + ", user:" + entry.getKey().getUser().getName());
+						}
+						entry.getValue().getSession().logout();
+						it.remove();
+						for (SessionManagerListener listener: listeners) {							
+							listener.sessionRemoved(entry.getKey());
+						}
+					}
+				}
+			}
+		},60,60,TimeUnit.SECONDS);
+	}
+	
+	public javax.jcr.Session getSystemSession() {
+		
+		return systemSession;
+	}
+
+	public void setSystemSession(javax.jcr.Session systemSession) {
+		
+		if (logger.isDebugEnabled()) {
+			logger.debug("Setting system session");
+		}
+		this.systemSession = systemSession;
+	}
+	
+	public void setRepository(javax.jcr.Repository repository) {
+		
+		if (logger.isDebugEnabled()) {
+			logger.debug("Setting repository");
+		}
+		this.repository = repository;
+	}
+	
+	public javax.jcr.Repository getRepository() {
+		
+		return repository;
+	}
 	
 	/**
 	 * Attachs a JSR-170 session to an user
@@ -59,7 +138,21 @@ public class SessionManager {
 	 */
 	public void attach(Ticket ticket, Session session) {
 		
-		sessions.put(ticket,session);
+		if (logger.isDebugEnabled()) {
+			logger.debug("Attaching session for ticket : " + ticket.getId() + ", user:" + ticket.getUser().getName());
+		}
+		
+		SessionEntry entry = new SessionEntry();
+		entry.setLastUsed(System.currentTimeMillis());
+		entry.setSession(session);
+		
+		sessions.put(ticket,entry);
+		
+		for (SessionManagerListener listener: listeners) {
+			
+			listener.sessionAdded(ticket);
+		}
+		
 	}
 	
 	/**
@@ -69,7 +162,22 @@ public class SessionManager {
 	 */
 	public void dettach(Ticket ticket) {
 		
+		if (logger.isDebugEnabled()) {
+			logger.debug("Dettaching session for ticket : " + ticket.getId() + ", user:" + ticket.getUser().getName());
+		}
+		SessionEntry entry = sessions.get(ticket);
+		if (entry != null) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("Logging out session for ticket: " + ticket.getId() + ", user:" + ticket.getUser().getName());
+			}
+			entry.getSession().logout();
+		}
 		sessions.remove(ticket);
+		
+		for (SessionManagerListener listener: listeners) {
+			
+			listener.sessionRemoved(ticket);
+		}
 	}
 	
 	/**
@@ -81,9 +189,45 @@ public class SessionManager {
 	 */
 	public Session getSession(Ticket ticket) {
 		
-		return (Session)sessions.get(ticket);
+		if (ticket.getRepositoryId().equals("-1")) {
+			return systemSession;
+		}
+		
+		SessionEntry entry = sessions.get(ticket);
+		
+		/*
+		if (entry == null) {
+			// Recreate a new session
+			try {
+				reconnect(ticket);
+				entry = sessions.get(ticket);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+		*/
+		if (entry == null) {
+			return null;
+		}
+		entry.setLastUsed(System.currentTimeMillis());		
+		return (Session)entry.getSession();
 	}
 	
+	private void reconnect(Ticket ticket) throws javax.jcr.RepositoryException {
+		
+		if (logger.isDebugEnabled()) {
+			logger.debug("Reconnecting session for ticket : " + ticket.getId() + ", user:" + ticket.getUser().getName());
+		}
+		
+		SimpleCredentials credentials = new SimpleCredentials(
+				ticket.getUser().getName(), ticket.getUser().getPassword().toCharArray());
+		javax.jcr.Session session = repository.login(credentials);
+		
+		attach(ticket,session);
+		
+	}
+
 	/**
 	 * Returns the number of opened sessions on this server
 	 * 
@@ -94,8 +238,20 @@ public class SessionManager {
 		return sessions.size();
 	}
 	
+	public void addSessionManagerListener(SessionManagerListener listener) {
+		
+		listeners.add(listener);
+	}
+	
+	public void removeSessionManagerListener(SessionManagerListener listener) {
+		
+		listeners.remove(listener);
+	}
+	
 	public static SessionManager getInstance() {
 		
 		return instance;
 	}
+	
+	
 }

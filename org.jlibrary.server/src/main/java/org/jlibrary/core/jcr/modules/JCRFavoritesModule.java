@@ -28,7 +28,6 @@ import java.util.List;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
-import javax.jcr.Session;
 import javax.jcr.Workspace;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
@@ -40,7 +39,7 @@ import org.jlibrary.core.jcr.JCRConstants;
 import org.jlibrary.core.jcr.JCRSecurityService;
 import org.jlibrary.core.jcr.JCRUtils;
 import org.jlibrary.core.jcr.JLibraryConstants;
-import org.jlibrary.core.jcr.RepositoryManager;
+import org.jlibrary.core.jcr.SessionManager;
 import org.jlibrary.core.repository.exception.RepositoryException;
 import org.jlibrary.core.security.SecurityException;
 import org.slf4j.Logger;
@@ -75,9 +74,10 @@ public class JCRFavoritesModule {
 
 
 		try {
-			javax.jcr.Session session = RepositoryManager.getInstance().
-								getRepositoryState(ticket).
-								getSession(ticket.getRepositoryId());
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new RepositoryException("Session has expired. Please log in again.");
+			}
 
 			javax.jcr.Node root = JCRUtils.getRootNode(session);
 			if (!JCRSecurityService.canWrite(root, ticket.getUser().getId())) {
@@ -112,9 +112,10 @@ public class JCRFavoritesModule {
 								 String favoriteId) throws RepositoryException {
 
 		try {
-			javax.jcr.Session session = RepositoryManager.getInstance().
-								getRepositoryState(ticket).
-								getSession(ticket.getRepositoryId());
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new RepositoryException("Session has expired. Please log in again.");
+			}
 			
 			javax.jcr.Node favoriteNode = 
 				session.getNodeByUUID(favoriteId);		
@@ -141,9 +142,10 @@ public class JCRFavoritesModule {
 								   							 SecurityException {
 
 		try {
-			javax.jcr.Session session = RepositoryManager.getInstance().
-								getRepositoryState(ticket).getSession(
-										ticket.getRepositoryId());
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new RepositoryException("Session has expired. Please log in again.");
+			}
 			
 			javax.jcr.Node root = JCRUtils.getRootNode(session);
 			if (!JCRSecurityService.canWrite(root, ticket.getUser().getId())) {
@@ -195,9 +197,10 @@ public class JCRFavoritesModule {
 
 		List nodes = new ArrayList();
 		try {
-			Session session = RepositoryManager.getInstance().
-						getRepositoryState(ticket).
-						getSession(ticket.getRepositoryId());
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new RepositoryException("Session has expired. Please log in again.");
+			}
 			Workspace workspace = session.getWorkspace();
 			QueryManager queryManager = workspace.getQueryManager();
 

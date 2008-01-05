@@ -27,7 +27,6 @@ import java.util.List;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.NodeIterator;
-import javax.jcr.Session;
 import javax.jcr.Workspace;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.QueryManager;
@@ -40,7 +39,7 @@ import org.jlibrary.core.jcr.JCRConstants;
 import org.jlibrary.core.jcr.JCRSecurityService;
 import org.jlibrary.core.jcr.JCRUtils;
 import org.jlibrary.core.jcr.JLibraryConstants;
-import org.jlibrary.core.jcr.RepositoryManager;
+import org.jlibrary.core.jcr.SessionManager;
 import org.jlibrary.core.properties.AuthorProperties;
 import org.jlibrary.core.repository.exception.AuthorAlreadyExistsException;
 import org.jlibrary.core.repository.exception.AuthorNotFoundException;
@@ -66,9 +65,10 @@ public class JCRAuthorsModule {
 		List authors = new ArrayList();
 		
 		try {
-			Session session = RepositoryManager.getInstance().
-							getRepositoryState(ticket).
-							getSession(ticket.getRepositoryId());
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new RepositoryException("Session has expired. Please log in again.");
+			}
 			
 			Workspace workspace = session.getWorkspace();
 			QueryManager queryManager = workspace.getQueryManager();
@@ -100,9 +100,10 @@ public class JCRAuthorsModule {
 			   				   					  AuthorAlreadyExistsException {
 
 		try {
-			Session session = RepositoryManager.getInstance().
-							getRepositoryState(ticket).getSession(
-									ticket.getRepositoryId());
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new SecurityException("Session has expired. Please log in again.");
+			}
 
 			javax.jcr.Node root = JCRUtils.getRootNode(session);
 			if (!JCRSecurityService.canAdmin(root, ticket.getUser().getId())) {
@@ -153,9 +154,10 @@ public class JCRAuthorsModule {
 							 					   	   AuthorNotFoundException {
 
 		try {
-			Session session = RepositoryManager.getInstance().
-						getRepositoryState(ticket).getSession(
-								ticket.getRepositoryId());
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new SecurityException("Session has expired. Please log in again.");
+			}
 
 			javax.jcr.Node root = JCRUtils.getRootNode(session);
 			if (!JCRSecurityService.canAdmin(root, ticket.getUser().getId())) {
@@ -192,9 +194,10 @@ public class JCRAuthorsModule {
 		// In the default implementation repositoryId is used to find if the 
 		// user had permissions. Here is not needed
 		try {
-			Session session = RepositoryManager.getInstance().
-						getRepositoryState(ticket).getSession(
-								ticket.getRepositoryId());
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new SecurityException("Session has expired. Please log in again.");
+			}
 
 			javax.jcr.Node root = JCRUtils.getRootNode(session);
 			if (!JCRSecurityService.canAdmin(root, ticket.getUser().getId())) {
@@ -221,8 +224,10 @@ public class JCRAuthorsModule {
 								   					   RepositoryException {
 
 		try {
-			Session session = RepositoryManager.getInstance().
-				getRepositoryState(ticket).getSession(ticket.getRepositoryId());
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new RepositoryException("Session has expired. Please log in again.");
+			}
 
 			Workspace workspace = session.getWorkspace();
 			QueryManager queryManager = workspace.getQueryManager();
@@ -256,8 +261,10 @@ public class JCRAuthorsModule {
 				return Author.UNKNOWN;
 			}
 			
-			Session session = RepositoryManager.getInstance().
-				getRepositoryState(ticket).getSession(ticket.getRepositoryId());
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new RepositoryException("Session has expired. Please log in again.");
+			}
 			
 			javax.jcr.Node authorNode = session.getNodeByUUID(id);
 			return JCRAdapter.createAuthor(authorNode);
@@ -277,8 +284,10 @@ public class JCRAuthorsModule {
 									throws RepositoryException {
 		
 		try {
-			Session session = RepositoryManager.getInstance().
-				getRepositoryState(ticket).getSession(ticket.getRepositoryId());
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new RepositoryException("Session has expired. Please log in again.");
+			}
 
 			javax.jcr.Node systemNode = JCRUtils.getSystemNode(session); 
 			

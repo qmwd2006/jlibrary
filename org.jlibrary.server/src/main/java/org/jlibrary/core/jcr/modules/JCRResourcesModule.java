@@ -34,7 +34,6 @@ import java.util.List;
 
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
-import javax.jcr.Session;
 import javax.jcr.Value;
 
 import org.apache.commons.io.IOUtils;
@@ -50,7 +49,7 @@ import org.jlibrary.core.jcr.JCRSecurityService;
 import org.jlibrary.core.jcr.JCRUtils;
 import org.jlibrary.core.jcr.JLibraryConstants;
 import org.jlibrary.core.jcr.LockUtility;
-import org.jlibrary.core.jcr.RepositoryManager;
+import org.jlibrary.core.jcr.SessionManager;
 import org.jlibrary.core.properties.ResourceNodeProperties;
 import org.jlibrary.core.repository.exception.RepositoryException;
 import org.jlibrary.core.security.SecurityException;
@@ -75,10 +74,10 @@ public class JCRResourcesModule {
 											throws RepositoryException, 
 												   SecurityException {
 
-		Session session = RepositoryManager.getInstance().
-			getRepositoryState(ticket).getSession(ticket.getRepositoryId());
-
-		
+		javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+		if (session == null) {
+			throw new RepositoryException("Session has expired. Please log in again.");
+		}		
 		try {
 			javax.jcr.Node resource = session.getNodeByUUID(resourceId);
 			javax.jcr.Node document = session.getNodeByUUID(documentId);
@@ -127,11 +126,11 @@ public class JCRResourcesModule {
 					ResourceNodeProperties.RESOURCE_DESCRIPTION).getValue());
 			Integer typecode = ((Integer)properties.getProperty(
 					ResourceNodeProperties.RESOURCE_TYPECODE).getValue());
-
 			
-			Session session = RepositoryManager.getInstance().
-				getRepositoryState(ticket).getSession(ticket.getRepositoryId());
-			
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new RepositoryException("Session has expired. Please log in again.");
+			}			
 			javax.jcr.Node root = JCRUtils.getRootNode(session);
 			javax.jcr.Node parent = session.getNodeByUUID(parentId);
 			
@@ -220,9 +219,10 @@ public class JCRResourcesModule {
 									 String resourceId) 
 										throws RepositoryException {
 
-		Session session = RepositoryManager.getInstance().
-			getRepositoryState(ticket).getSession(ticket.getRepositoryId());
-		
+		javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+		if (session == null) {
+			throw new RepositoryException("Session has expired. Please log in again.");
+		}		
 		ArrayList nodes = new ArrayList();
 		try {
 			javax.jcr.Node root = JCRUtils.getRootNode(session);
@@ -284,9 +284,10 @@ public class JCRResourcesModule {
 												throws RepositoryException, 
 													   SecurityException {
 
-		Session session = RepositoryManager.getInstance().
-			getRepositoryState(ticket).getSession(ticket.getRepositoryId());
-		
+		javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+		if (session == null) {
+			throw new RepositoryException("Session has expired. Please log in again.");
+		}		
 		InputStream is = null;
 		try {
 			javax.jcr.Node resource = session.getNodeByUUID(resourceId);
@@ -324,9 +325,10 @@ public class JCRResourcesModule {
 										throws RepositoryException, 
 											   SecurityException {
 
-		Session session = RepositoryManager.getInstance().
-			getRepositoryState(ticket).getSession(ticket.getRepositoryId());
-		
+		javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+		if (session == null) {
+			throw new RepositoryException("Session has expired. Please log in again.");
+		}		
 		try {
 			javax.jcr.Node resource = session.getNodeByUUID(resourceId);
 			javax.jcr.Node document = session.getNodeByUUID(documentId);
@@ -354,9 +356,10 @@ public class JCRResourcesModule {
 										throws RepositoryException, 
 											   SecurityException {
 
-		Session session = RepositoryManager.getInstance().
-			getRepositoryState(ticket).getSession(ticket.getRepositoryId());
-		
+		javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+		if (session == null) {
+			throw new RepositoryException("Session has expired. Please log in again.");
+		}		
 		try {
 			javax.jcr.Node resource = session.getNodeByUUID(resourceId);
 			
@@ -387,9 +390,10 @@ public class JCRResourcesModule {
 													   SecurityException {
 
 		try {
-			Session session = RepositoryManager.getInstance().
-				getRepositoryState(ticket).getSession(ticket.getRepositoryId());
-			
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new RepositoryException("Session has expired. Please log in again.");
+			}			
 			String resourceId = (String)properties.getProperty(
 					ResourceNodeProperties.RESOURCE_ID).getValue();
 			String parentId = (String)properties.getProperty(
