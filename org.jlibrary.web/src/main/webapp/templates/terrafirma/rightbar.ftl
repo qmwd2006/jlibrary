@@ -5,10 +5,8 @@
 			<#assign hasDirectories=false/>
 			<#list directory.nodes as menuitem>
 				<#if menuitem.directory>
-					<#if !isResourcesDir(menuitem.id)>
-  					<#assign hasDirectories=true/>
-  					<li class="first"><a href="${repository_url}${menuitem.path}">${menuitem.name}</a></li>
-					</#if>
+  				  <#assign hasDirectories=true/>
+  				  <li class="first"><a href="${repository_url}${menuitem.path}">${menuitem.name}</a></li>
 				</#if>	    	
 			</#list>
 			<#if !hasDirectories> 
