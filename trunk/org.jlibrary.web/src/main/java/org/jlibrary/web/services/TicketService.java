@@ -22,6 +22,8 @@
 */
 package org.jlibrary.web.services;
 
+import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +36,8 @@ import org.jlibrary.core.entities.User;
 import org.jlibrary.core.factory.JLibraryServiceFactory;
 import org.jlibrary.core.jcr.RepositoryManager;
 import org.jlibrary.core.jcr.RepositorySessionState;
+import org.jlibrary.core.jcr.SessionManager;
+import org.jlibrary.core.jcr.SessionManagerListener;
 import org.jlibrary.core.profiles.LocalServerProfile;
 import org.jlibrary.core.properties.UserProperties;
 import org.jlibrary.core.security.SecurityException;
@@ -52,7 +56,7 @@ import org.jlibrary.web.services.config.RepositoryConfig;
  * 
  * @author mpermar
  */
-public class TicketService {
+public class TicketService implements SessionManagerListener {
 
 	private static Logger logger = Logger.getLogger(TicketService.class);
 	
@@ -64,6 +68,9 @@ public class TicketService {
 	 */
 	private Ticket systemTicket;
 	
+	//TODO: javax.jcr.Session objects are not thread safe. Therefore, caching these
+	// tickets could be potentially dangerous in a highly concurrent environment
+    // See: http://www.nabble.com/Sharing-a-Session-or-a-Session-per-web-user-tf4851166.html#a13954712
 	private ConcurrentHashMap<String, Ticket> guestTickets = new ConcurrentHashMap<String, Ticket>();
 
 	private ConfigurationService configService;
@@ -108,6 +115,7 @@ public class TicketService {
 		Ticket ticket = null;
 		
 		HttpSession session = request.getSession(true);
+		session.setMaxInactiveInterval(1800); // 30 minutes session expiry time
 		ticket = (Ticket)session.getAttribute((SESSION_TICKET_ID+repositoryName).toLowerCase());
 		if (ticket == null) {
 			ticket = guestTickets.get(repositoryName);
@@ -279,6 +287,27 @@ public class TicketService {
 			systemTicket = service.login(credentials, "system");
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
+		}
+		if (logger.isDebugEnabled()) {
+			logger.debug("Adding session manager listener");
+		}
+		SessionManager.getInstance().addSessionManagerListener(this);
+	}
+	
+	public void sessionAdded(Ticket arg0) {
+
+		// We won't add sessions
+	}
+	
+	public void sessionRemoved(Ticket ticket) {
+
+		// Try to remove it because it is obsolete
+		Iterator<Entry<String,Ticket>> it = guestTickets.entrySet().iterator();
+		while (it.hasNext()) {
+			Entry<String,Ticket> entry = it.next();
+			if (entry.getValue().equals(ticket)) {
+				it.remove();
+			}
 		}
 	}
 }
