@@ -42,12 +42,18 @@ public class AddRoleTest extends AbstractRepositoryTest {
 		try {
 			Collection roles = securityService.findAllRoles(testTicket);
 			Rol writerRole = null;
+			Rol adminRole =  null;
 			Iterator it = roles.iterator();
 			while (it.hasNext()) {
 				Rol rol = (Rol)it.next();
 				if (rol.getName().equals(Rol.PUBLISHER_ROLE_NAME)) {
 					writerRole = rol;
-					break;
+				}
+				// We add the admin role because the test suite is based on a 
+				// root node created by an administrator. Only admins will be 
+				// able to create content on a node that was created by an admin
+				if (rol.getName().equals(Rol.ADMIN_ROLE_NAME)) {
+					adminRole = rol;
 				}
 			}
 			
@@ -55,6 +61,7 @@ public class AddRoleTest extends AbstractRepositoryTest {
 			userProperties.addProperty(UserProperties.USER_REPOSITORY, repository.getId());
 			userProperties.addProperty(UserProperties.USER_ID, testUser.getId());
 			userProperties.addProperty(UserProperties.USER_ADD_ROL,writerRole);
+			userProperties.addProperty(UserProperties.USER_ADD_ROL,adminRole);
 			testUser = securityService.updateUser(adminTicket, userProperties);
 	
 			roles = testUser.getRoles(repository.getId());

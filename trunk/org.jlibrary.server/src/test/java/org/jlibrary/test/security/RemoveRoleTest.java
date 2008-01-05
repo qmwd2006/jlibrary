@@ -41,13 +41,16 @@ public class RemoveRoleTest extends AbstractRepositoryTest {
 		
 		try {
 			Rol writerRole = null;
+			Rol adminRole =  null;
 			Collection roles = testUser.getRoles(repository.getId());
 			Iterator it = roles.iterator();
 			while (it.hasNext()) {
 				Rol rol = (Rol)it.next();
 				if (rol.getName().equals(Rol.PUBLISHER_ROLE_NAME)) {
 					writerRole = rol;
-					break;
+				}
+				if (rol.getName().equals(Rol.ADMIN_ROLE_NAME)) {
+					adminRole = rol;
 				}
 			}
 			
@@ -55,6 +58,7 @@ public class RemoveRoleTest extends AbstractRepositoryTest {
 			userProperties.addProperty(UserProperties.USER_REPOSITORY, repository.getId());
 			userProperties.addProperty(UserProperties.USER_ID, testUser.getId());
 			userProperties.addProperty(UserProperties.USER_DELETE_ROL,writerRole);
+			userProperties.addProperty(UserProperties.USER_DELETE_ROL,adminRole);
 			testUser = securityService.updateUser(adminTicket, userProperties);
 
 			roles = testUser.getRoles(repository.getId());

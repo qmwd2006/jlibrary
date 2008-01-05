@@ -49,7 +49,7 @@ public class UpdateRepositoryTest extends AbstractContentTest {
 					RepositoryProperties.REPOSITORY_DESCRIPTION, newDescription);
 			
 			Repository updatedRepository = 
-				repositoryService.updateRepository(testTicket, repositoryProperties);
+				repositoryService.updateRepository(adminTicket, repositoryProperties);
 
 			
 			assertNotNull(updatedRepository);
