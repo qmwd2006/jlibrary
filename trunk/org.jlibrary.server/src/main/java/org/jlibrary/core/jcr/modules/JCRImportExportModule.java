@@ -48,8 +48,7 @@ import org.jlibrary.core.entities.Ticket;
 import org.jlibrary.core.jcr.JCRSecurityService;
 import org.jlibrary.core.jcr.JCRUtils;
 import org.jlibrary.core.jcr.JLibraryConstants;
-import org.jlibrary.core.jcr.RepositoryManager;
-import org.jlibrary.core.jcr.RepositorySessionState;
+import org.jlibrary.core.jcr.SessionManager;
 import org.jlibrary.core.jcr.compatibility.CompatibilityFilter1_0;
 import org.jlibrary.core.jcr.compatibility.VersionChecker;
 import org.jlibrary.core.jcr.nodetypes.NodeTypeManager;
@@ -89,10 +88,10 @@ public class JCRImportExportModule {
 												   SecurityException {
 		
 		try {
-			Session session = RepositoryManager.getInstance().
-							getRepositoryState(ticket).getSession(
-									ticket.getRepositoryId());
-			
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new RepositoryException("Session has expired. Please log in again.");
+			}			
 			javax.jcr.Node root = 
 				JCRUtils.getRootNode(session);
 			if (!JCRSecurityService.canRead(root, ticket.getUser().getId())) {
@@ -157,10 +156,10 @@ public class JCRImportExportModule {
 												   SecurityException {
 		
 		try {
-			Session session = RepositoryManager.getInstance().
-							getRepositoryState(ticket).getSession(
-									ticket.getRepositoryId());
-			
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new RepositoryException("Session has expired. Please log in again.");
+			}			
 			javax.jcr.Node root = 
 				JCRUtils.getRootNode(session);
 			if (!JCRSecurityService.canRead(root, ticket.getUser().getId())) {
@@ -246,20 +245,17 @@ public class JCRImportExportModule {
 				throw new SecurityException(SecurityException.NOT_ENOUGH_PERMISSIONS);
 			}
 			
-			RepositorySessionState state = RepositoryManager.getInstance().
-								getRepositoryState(ticket);
-			Session session = state.getSystemSession();
-			
-			WorkspaceImpl workspace = checkWorkspaceExists(name, session);
+			javax.jcr.Session systemSession = SessionManager.getInstance().getSystemSession();
+			WorkspaceImpl workspace = checkWorkspaceExists(name, systemSession);
 			// Always change to lowercase
 			name = name.toLowerCase();
 			workspace.createWorkspace(name);
 			
-			javax.jcr.Repository repository = state.getRepository();
+			javax.jcr.Repository repository = SessionManager.getInstance().getRepository();
 			SimpleCredentials creds =
 			    new SimpleCredentials("username", "password".toCharArray());
 			
-			session = repository.login(creds,name);
+			systemSession = repository.login(creds,name);
 			
 			byte[] content = unzipContent(zippedContent);			
 			
@@ -292,25 +288,25 @@ public class JCRImportExportModule {
 			systemContent = filterForCompatibility(systemContent);			
 			ByteArrayInputStream bais2 = new ByteArrayInputStream(systemContent);
 
-			session.importXML("/",
+			systemSession.importXML("/",
 					  bais1,
 					  ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
 
-			session.importXML("/",
+			systemSession.importXML("/",
 					  bais2,
 					  ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
 			
-			checkCustomProperties(session);
+			checkCustomProperties(systemSession);
 			
 			
 			bais1.close();
 			bais2.close();
 						
-			session.save();
+			systemSession.save();
 			
 			// Finally check versions compatibility
 			VersionChecker checker = new VersionChecker();
-			checker.checkSession(session);
+			checker.checkSession(systemSession);
 		} catch (ConfigurationException ce) {
 			//TODO: Remove this catch block when Jackrabbit supports workspace deletes
 			throw new RecentlyRemovedRepositoryException();			
@@ -346,20 +342,17 @@ public class JCRImportExportModule {
 				throw new SecurityException(SecurityException.NOT_ENOUGH_PERMISSIONS);
 			}
 			
-			RepositorySessionState state = RepositoryManager.getInstance().
-								getRepositoryState(ticket);
-			Session session = state.getSystemSession();
-			
-			WorkspaceImpl workspace = checkWorkspaceExists(name, session);
+			javax.jcr.Session systemSession = SessionManager.getInstance().getSystemSession();			
+			WorkspaceImpl workspace = checkWorkspaceExists(name, systemSession);
 			// Always change to lowercase
 			name = name.toLowerCase();
 			workspace.createWorkspace(name);
 			
-			javax.jcr.Repository repository = state.getRepository();
+			javax.jcr.Repository repository = SessionManager.getInstance().getRepository();
 			SimpleCredentials creds =
 			    new SimpleCredentials("username", "password".toCharArray());
 			
-			session = repository.login(creds,name);
+			systemSession = repository.login(creds,name);
 			
 			// Copy to temp file. We cannot wrap to zip input stream due to incompatibilities
 			// between apache implementation and java.util implementation
@@ -409,7 +402,7 @@ public class JCRImportExportModule {
 						lengthString.substring(0,lengthString.length()));
 			
 			InputStream wrapzis = new ImportInputStream(zis,contentLength);
-			session.importXML("/",
+			systemSession.importXML("/",
 					  wrapzis,
 					  ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);			
 
@@ -418,19 +411,19 @@ public class JCRImportExportModule {
 			zis.skip(i+1+contentLength);
 			
 			// Now import the remaining info
-			session.importXML("/",
+			systemSession.importXML("/",
 					  zis,
 					  ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
 			
 			tempFile.delete();
 			
-			checkCustomProperties(session);
+			checkCustomProperties(systemSession);
 						
-			session.save();
+			systemSession.save();
 			
 			// Finally check versions compatibility
 			VersionChecker checker = new VersionChecker();
-			checker.checkSession(session);
+			checker.checkSession(systemSession);
 		} catch (ConfigurationException ce) {
 			//TODO: Remove this catch block when Jackrabbit supports workspace deletes
 			throw new RecentlyRemovedRepositoryException();			

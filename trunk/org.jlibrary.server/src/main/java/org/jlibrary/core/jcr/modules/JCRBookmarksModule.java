@@ -22,15 +22,13 @@
 */
 package org.jlibrary.core.jcr.modules;
 
-import javax.jcr.Session;
-
 import org.jlibrary.core.entities.Bookmark;
 import org.jlibrary.core.entities.Ticket;
 import org.jlibrary.core.jcr.JCRAdapter;
 import org.jlibrary.core.jcr.JCRConstants;
 import org.jlibrary.core.jcr.JCRSecurityService;
 import org.jlibrary.core.jcr.JLibraryConstants;
-import org.jlibrary.core.jcr.RepositoryManager;
+import org.jlibrary.core.jcr.SessionManager;
 import org.jlibrary.core.repository.exception.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,8 +52,10 @@ public class JCRBookmarksModule {
 								 String bookmarkId) throws RepositoryException {
 
 		try {
-			Session session = RepositoryManager.getInstance().
-				getRepositoryState(ticket).getSession(ticket.getRepositoryId());
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new RepositoryException("Session has expired. Please log in again.");
+			}
 
 			javax.jcr.Node bookmarkNode = 
 				session.getNodeByUUID(bookmarkId);		
@@ -70,9 +70,10 @@ public class JCRBookmarksModule {
 								   Bookmark bookmark) throws RepositoryException {
 		
 		try {
-			String repositoryId = bookmark.getRepository();
-			javax.jcr.Session session = RepositoryManager.getInstance().
-								getRepositoryState(ticket).getSession(repositoryId);
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new RepositoryException("Session has expired. Please log in again.");
+			}
 			javax.jcr.Node parentNode = null;
 			if (bookmark.getParent() == null) {
 				javax.jcr.Node userNode = 
@@ -127,9 +128,10 @@ public class JCRBookmarksModule {
 							   String bookmarkId) throws RepositoryException {
 		
 		try {
-			Session session = RepositoryManager.getInstance().
-								getRepositoryState(ticket).
-								getSession(ticket.getRepositoryId());
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new RepositoryException("Session has expired. Please log in again.");
+			}
 
 			javax.jcr.Node favoriteNode = 
 				session.getNodeByUUID(bookmarkId);		
@@ -147,9 +149,10 @@ public class JCRBookmarksModule {
 							   Bookmark bookmark) throws RepositoryException {
 		
 		try {
-			String repositoryId = bookmark.getRepository();
-			Session session = RepositoryManager.getInstance().
-								getRepositoryState(ticket).getSession(repositoryId);
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new RepositoryException("Session has expired. Please log in again.");
+			}
 			
 			javax.jcr.Node node = session.getNodeByUUID(bookmark.getId());
 			

@@ -46,13 +46,11 @@ import org.jlibrary.core.jcr.JCRConstants;
 import org.jlibrary.core.jcr.JCRSecurityService;
 import org.jlibrary.core.jcr.JCRUtils;
 import org.jlibrary.core.jcr.JLibraryConstants;
-import org.jlibrary.core.jcr.RepositoryManager;
 import org.jlibrary.core.jcr.SessionManager;
 import org.jlibrary.core.properties.CategoryProperties;
 import org.jlibrary.core.properties.PropertyDef;
 import org.jlibrary.core.repository.exception.CategoryAlreadyExistsException;
 import org.jlibrary.core.repository.exception.CategoryNotFoundException;
-import org.jlibrary.core.repository.exception.NodeNotFoundException;
 import org.jlibrary.core.repository.exception.RepositoryException;
 import org.jlibrary.core.security.SecurityException;
 import org.slf4j.Logger;
@@ -89,8 +87,10 @@ public class JCRCategoriesModule {
 		// TODO: Check name updates with new web app
 		
 		try {
-			Session session = RepositoryManager.getInstance().
-				getRepositoryState(ticket).getSession(ticket.getRepositoryId());
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new RepositoryException("Session has expired. Please log in again.");
+			}
 			javax.jcr.Node systemNode = JCRUtils.getSystemNode(session);
 			
 			javax.jcr.Node root = JCRUtils.getRootNode(session);
@@ -213,8 +213,10 @@ public class JCRCategoriesModule {
 												   RepositoryException {
 
 		try {
-			Session session = RepositoryManager.getInstance().
-				getRepositoryState(ticket).getSession(ticket.getRepositoryId());
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new RepositoryException("Session has expired. Please log in again.");
+			}
 
 			Workspace workspace = session.getWorkspace();
 			QueryManager queryManager = workspace.getQueryManager();
@@ -253,8 +255,10 @@ public class JCRCategoriesModule {
 											throws CategoryNotFoundException,
 												   RepositoryException {
 
-		Session session = RepositoryManager.getInstance().
-			getRepositoryState(ticket).getSession(ticket.getRepositoryId());
+		javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+		if (session == null) {
+			throw new RepositoryException("Session has expired. Please log in again.");
+		}
 		
 		ArrayList nodes = new ArrayList();
 		try {
@@ -304,8 +308,10 @@ public class JCRCategoriesModule {
 									  String nodeId) throws RepositoryException,
 															SecurityException {
 
-		Session session = RepositoryManager.getInstance().
-			getRepositoryState(ticket).getSession(ticket.getRepositoryId());
+		javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+		if (session == null) {
+			throw new RepositoryException("Session has expired. Please log in again.");
+		}
 		
 		ArrayList categories = new ArrayList();
 		try {
@@ -354,8 +360,10 @@ public class JCRCategoriesModule {
 		List categories = new ArrayList();
 		
 		try {
-			Session session = RepositoryManager.getInstance().
-				getRepositoryState(ticket).getSession(ticket.getRepositoryId());
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new RepositoryException("Session has expired. Please log in again.");
+			}
 
 			javax.jcr.Node systemNode = JCRUtils.getSystemNode(session); 
 			javax.jcr.Node categoriesNode = systemNode.getNode(
@@ -388,8 +396,10 @@ public class JCRCategoriesModule {
 	        					  			   SecurityException {
 
 		try {
-			Session session = RepositoryManager.getInstance().
-				getRepositoryState(ticket).getSession(ticket.getRepositoryId());
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new RepositoryException("Session has expired. Please log in again.");
+			}
 
 			javax.jcr.Node parentNode = null;
 			
@@ -470,8 +480,10 @@ public class JCRCategoriesModule {
 
 
 		try {
-			Session session = RepositoryManager.getInstance().
-				getRepositoryState(ticket).getSession(ticket.getRepositoryId());
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new RepositoryException("Session has expired. Please log in again.");
+			}
 
 			javax.jcr.Node category = getCategoryNode(session,id);
 			
@@ -501,8 +513,10 @@ public class JCRCategoriesModule {
 										throws RepositoryException, 
 											   SecurityException {
 		
-		Session session = RepositoryManager.getInstance().
-			getRepositoryState(ticket).getSession(ticket.getRepositoryId());
+		javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+		if (session == null) {
+			throw new RepositoryException("Session has expired. Please log in again.");
+		}
 		
 		try {
 			
@@ -563,8 +577,7 @@ public class JCRCategoriesModule {
 	public javax.jcr.Node findUnknownCategory(Ticket ticket) 
 											throws javax.jcr.RepositoryException {
 
-		Session session = RepositoryManager.getInstance().
-			getRepositoryState(ticket).getSession(ticket.getRepositoryId());
+		javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
 
 		return findUnknownCategory(session);
 	}

@@ -27,7 +27,6 @@ import java.util.List;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
-import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.ValueFormatException;
 import javax.jcr.Workspace;
@@ -42,7 +41,7 @@ import org.jlibrary.core.jcr.JCRConstants;
 import org.jlibrary.core.jcr.JCRSecurityService;
 import org.jlibrary.core.jcr.JCRUtils;
 import org.jlibrary.core.jcr.JLibraryConstants;
-import org.jlibrary.core.jcr.RepositoryManager;
+import org.jlibrary.core.jcr.SessionManager;
 import org.jlibrary.core.locking.ResourceLockedException;
 import org.jlibrary.core.repository.exception.RepositoryException;
 import org.jlibrary.core.security.SecurityException;
@@ -71,8 +70,10 @@ public class JCRLocksModule {
 
 		try {
 			
-			Session session = RepositoryManager.getInstance().
-				getRepositoryState(ticket).getSession(ticket.getRepositoryId());
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new RepositoryException("Session has expired. Please log in again.");
+			}
 			javax.jcr.Node node = session.getNodeByUUID(docId);
 			
 			if (!JCRSecurityService.canWrite(node, ticket.getUser().getId())) {
@@ -106,9 +107,10 @@ public class JCRLocksModule {
 							   						ResourceLockedException {
 
 		try {
-			Session session = RepositoryManager.getInstance().
-				getRepositoryState(ticket).getSession(ticket.getRepositoryId());
-
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new RepositoryException("Session has expired. Please log in again.");
+			}
 			javax.jcr.Node node = session.getNodeByUUID(docId);
 			
 			if (!JCRSecurityService.canWrite(node, ticket.getUser().getId())) {
@@ -139,9 +141,10 @@ public class JCRLocksModule {
 		List locks = new ArrayList();
 
 		try {
-			Session session = RepositoryManager.getInstance().
-				getRepositoryState(ticket).getSession(ticket.getRepositoryId());
-			
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new RepositoryException("Session has expired. Please log in again.");
+			}			
 			javax.jcr.Node root = JCRUtils.getRootNode(session);
 			if (!JCRSecurityService.canRead(root, ticket.getUser().getId())) {
 				throw new SecurityException(SecurityException.NOT_ENOUGH_PERMISSIONS);
