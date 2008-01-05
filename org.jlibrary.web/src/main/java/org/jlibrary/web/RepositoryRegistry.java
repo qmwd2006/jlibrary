@@ -60,10 +60,7 @@ public class RepositoryRegistry {
 							  String repositoryName) {
 		
 		
-		repositories.put(repository.getId(), repository);
-		
-		// Adds all the nodes to the node registry
-		EntityRegistry.getInstance().addRepository(repository);
+		repositories.put(repository.getId(), repository);		
 	}
 
 	/**
@@ -73,12 +70,7 @@ public class RepositoryRegistry {
 	 */
 	public void removeRepository(Repository repository) {
 
-		repositories.remove(repository.getId());
-		
-		// Removes all the nodes from the node registry
-		if (repository.isConnected()) {
-			EntityRegistry.getInstance().removeRepository(repository);
-		}
+		repositories.remove(repository.getId());		
 	}
 
 	/**
