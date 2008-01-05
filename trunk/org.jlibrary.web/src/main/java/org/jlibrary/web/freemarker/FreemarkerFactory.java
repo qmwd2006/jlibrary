@@ -25,8 +25,6 @@ package org.jlibrary.web.freemarker;
 import java.io.File;
 
 import org.jlibrary.web.freemarker.methods.CategoryPathMethod;
-import org.jlibrary.web.freemarker.methods.FileMethod;
-import org.jlibrary.web.freemarker.methods.IsResourcesDirectoryMethod;
 import org.jlibrary.web.freemarker.methods.NodeMethod;
 import org.jlibrary.web.freemarker.methods.NodePathMethod;
 import org.jlibrary.web.freemarker.methods.UserMethod;
@@ -93,10 +91,8 @@ public class FreemarkerFactory {
     
     cfg.setSharedVariable("node",new NodeMethod(exporter));
     cfg.setSharedVariable("username",new UserMethod(exporter));
-    cfg.setSharedVariable("filename",new FileMethod());
     cfg.setSharedVariable("nodeURL",new NodePathMethod(exporter));
     cfg.setSharedVariable("categoryURL",new CategoryPathMethod(exporter));
-    cfg.setSharedVariable("isResourcesDir", new IsResourcesDirectoryMethod());
     
     try {
       Logger.selectLoggerLibrary(Logger.LIBRARY_NONE);
