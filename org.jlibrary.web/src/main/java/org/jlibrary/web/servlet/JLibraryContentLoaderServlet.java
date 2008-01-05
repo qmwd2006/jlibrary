@@ -32,6 +32,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
@@ -55,6 +56,7 @@ import org.jlibrary.core.repository.exception.RepositoryNotFoundException;
 import org.jlibrary.core.security.SecurityException;
 import org.jlibrary.core.util.FileUtils;
 import org.jlibrary.web.RepositoryRegistry;
+import org.jlibrary.web.WebConstants;
 import org.jlibrary.web.freemarker.FreemarkerExporter;
 import org.jlibrary.web.freemarker.RepositoryContext;
 import org.jlibrary.web.services.ConfigurationService;
@@ -108,8 +110,67 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-
+		
+		logger.debug("DOGET!!");
 		processContent(req,resp);
+	}
+	
+	@Override
+	protected long getLastModified(HttpServletRequest req) {
+
+		String appURL = req.getContextPath();
+		String uri = req.getRequestURI();
+		String path = StringUtils.difference(appURL+"/repositories",uri);
+		if (path.equals("") || path.equals("/")) {
+			// call to /repositories
+			return super.getLastModified(req);
+		}
+		
+		String[] pathElements = StringUtils.split(path,"/");
+		
+		if ((pathElements.length > 1) && (pathElements[1].equals("categories"))) {
+			//TODO: Cache categories
+			return super.getLastModified(req);	
+		}
+		
+		try {
+			String repositoryName = getRepositoryName(req);
+			HttpSession session = req.getSession(false);
+			if ((repositoryName == null) || (session == null)) {
+				return super.getLastModified(req);
+			}
+			Ticket ticket = (Ticket)session.getAttribute(
+					(TicketService.SESSION_TICKET_ID+repositoryName).toLowerCase());
+
+			if (ticket == null) {
+				return super.getLastModified(req);
+			}
+			
+			Node node = null;
+			Repository repository = loadRepository(repositoryName,ticket);
+			String nodePath = StringUtils.difference(appURL+"/repositories/"+repositoryName,uri);
+			if (pathElements.length == 1) {
+				// TODO: cache repository root
+				node = repository.getRoot();
+			} else {							
+				node = findNode(ticket, repositoryService, nodePath);
+			}
+			if (node.isResource()) {
+				// We will cache all resources
+				return node.getDate().getTime();
+			} else if (node.isDocument()) {
+				
+				if (ticket.getUser().getName().equals(WebConstants.ANONYMOUS_WEB_USERNAME) ||
+					"true".equals(req.getParameter("download"))) {
+					// We will cache downloads or guest pages
+					return node.getDate().getTime();
+				}
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			return super.getLastModified(req);
+		}
+		return super.getLastModified(req);
 	}
 
 	private void processContent(HttpServletRequest req, HttpServletResponse resp) {
@@ -179,6 +240,8 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 			} else {
 				req.setAttribute("node", node);
 
+				resp.setDateHeader("Last-Modified", node.getDate().getTime());
+				resp.setDateHeader("Age", 86400); // cache a day
 				if (node.isDocument()) {
 					Document document=(Document) node;
 					byte[] output;
@@ -224,8 +287,12 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 		RepositoryRegistry registry = RepositoryRegistry.getInstance();
 		repository = registry.getRepository(repositoryName);
 		if (repository == null) {
-			Ticket ticket = TicketService.getTicketService().getSystemTicket();
-			repository = repositoryService.findRepository(repositoryName, ticket);
+			//TODO: Probably this could be improved. We can use guest tickets 
+			// for holding all the information we need (categories and some 
+			// user ids). However, note that holding a repository loaded with 
+			// a constrained permission set (guest) could be insufficient for 
+			// other scenarios.
+			repository = repositoryService.findRepository(repositoryName, userTicket);
 			repository.setServerProfile(profile);
 			RepositoryRegistry.getInstance().addRepository(repository, repositoryName);
 		}
