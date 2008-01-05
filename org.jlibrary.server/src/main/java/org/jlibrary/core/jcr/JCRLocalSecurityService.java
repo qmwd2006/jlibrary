@@ -81,6 +81,7 @@ public class JCRLocalSecurityService extends JCRSecurityService {
 			this.repositoriesHome = repositoriesHome;
 	        registerRepository(repositoriesHome);
 			
+	        javax.jcr.Session systemSession = SessionManager.getInstance().getSystemSession();
 	        if (systemSession == null) {
 	        	checkSystemWorkspace();
 	        }

@@ -311,11 +311,8 @@ public class JCRRepositoryService implements RepositoryService {
 	
 	public List findAllRepositoriesInfo(Ticket ticket) throws RepositoryException {
 
-		try {
-			RepositoryManager manager = RepositoryManager.getInstance();
-			RepositorySessionState state = manager.getRepositoryState(ticket);			
-			javax.jcr.Session systemSession = state.getSystemSession();
-			
+		try {		
+			javax.jcr.Session systemSession = SessionManager.getInstance().getSystemSession();			
 			String[] workspaces = 
 				systemSession.getWorkspace().getAccessibleWorkspaceNames();
 			
@@ -339,19 +336,18 @@ public class JCRRepositoryService implements RepositoryService {
 										throws RepositoryNotFoundException, 
 											   RepositoryException, 
 											   SecurityException {
-		
-		try {
-			RepositoryManager manager = RepositoryManager.getInstance();
-			RepositorySessionState state = manager.getRepositoryState(ticket);
-			
-			SimpleCredentials creds = 
-				new SimpleCredentials(ticket.getUser().getName(), 
-						  ticket.getUser().getPassword().toCharArray());
 
-			javax.jcr.Repository repository = state.getRepository();
+		javax.jcr.Session session = null;
+		try {
+			SimpleCredentials creds =
+				  new SimpleCredentials(
+						  ticket.getUser().getName(),
+						  ticket.getUser().getPassword().toCharArray());
+				  
+			javax.jcr.Repository repository = SessionManager.getInstance().getRepository();
 			// Change the name to lowercase
 			name = name.toLowerCase();
-			javax.jcr.Session session = repository.login(creds,name);
+			session = repository.login(creds,name);			 
 			
 			Repository jLibraryRepository = null;
 
@@ -362,16 +358,9 @@ public class JCRRepositoryService implements RepositoryService {
 				throw new SecurityException(SecurityException.NOT_ENOUGH_PERMISSIONS);
 			}
 			
-			SessionManager sessionManager = SessionManager.getInstance();
-			if (sessionManager.getSession(ticket) == null) {			
-				SessionManager.getInstance().attach(ticket, session);
-				state.attach(jLibraryRootNode.getUUID(),session);
-			}
-			
 			jLibraryRepository = JCRAdapter.createRepository(ticket,
 															 name,
 															 jLibraryRootNode);
-
 			
 			return jLibraryRepository;
 			
@@ -380,6 +369,10 @@ public class JCRRepositoryService implements RepositoryService {
 		} catch (javax.jcr.RepositoryException e) {
 			logger.error(e.getMessage(),e);
 			throw new RepositoryException(e);
+		} finally {
+			if (session != null) {
+				session.logout();
+			}
 		}
 	}
 
@@ -390,14 +383,13 @@ public class JCRRepositoryService implements RepositoryService {
 		//TODO: Improve this method when Jackrabbit support workspace deletes
 		
 		try {
-			RepositorySessionState state = RepositoryManager.getInstance().
-														getRepositoryState(ticket);
-			javax.jcr.Session session = state.getSession(ticket.getRepositoryId());		
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new RepositoryException("Session has expired. Please log in again.");
+			}
 			javax.jcr.Node repositoryNode = JCRUtils.getRootNode(session);
 			String name = repositoryNode.getProperty(
 					JLibraryConstants.JLIBRARY_NAME).getString();
-			
-			javax.jcr.Session systemSession = state.getSystemSession();
 			
 			String workspacePath = 
 				((WorkspaceImpl)session.getWorkspace()).getConfig().getHomeDir();
@@ -411,7 +403,7 @@ public class JCRRepositoryService implements RepositoryService {
 			} catch (IOException e) {
 				//logger.error(e.getMessage(),e);
 			}	
-			
+			javax.jcr.Session systemSession = SessionManager.getInstance().getSystemSession();			
 			cleanupModule.scheduleForDelete(systemSession,name,workspacePath);
 		} catch (javax.jcr.RepositoryException e) {
 			logger.error(e.getMessage(),e);
@@ -804,6 +796,7 @@ public class JCRRepositoryService implements RepositoryService {
 					Version currenVersion = vi.nextVersion();
 					String versionName = currenVersion.getName();
                     if (!versionName.equals("jcr:rootVersion") &&
+                        !versionName.equals("1.0") &&
                     	!versionName.equals("1.1") &&
                     	!versionName.equals("1.2") &&
                     	!versionName.equals("1.3")) {
@@ -1038,8 +1031,10 @@ public class JCRRepositoryService implements RepositoryService {
 
 		ArrayList documents = new ArrayList();
 		try {
-			Session session = RepositoryManager.getInstance().
-			getRepositoryState(ticket).getSession(ticket.getRepositoryId());
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new RepositoryException("Session has expired. Please log in again.");
+			}
 			javax.jcr.Node root = JCRUtils.getRootNode(session);			
 			String rootPath = root.getPath();
 
@@ -1482,11 +1477,10 @@ public class JCRRepositoryService implements RepositoryService {
 
 		try {
 			
-			String repositoryId = (String)repositoryProperties.getProperty(
-					RepositoryProperties.REPOSITORY_ID).getValue();
-			
-			Session session = RepositoryManager.getInstance().
-						getRepositoryState(ticket).getSession(repositoryId);
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new RepositoryException("Session has expired. Please log in again.");
+			}
 			
 			javax.jcr.Node repositoryNode = JCRUtils.getRootNode(session);
 			
@@ -1788,17 +1782,12 @@ public class JCRRepositoryService implements RepositoryService {
 										throws javax.jcr.RepositoryException, 
 											   RepositoryException {
 		
-		RepositorySessionState state = RepositoryManager.getInstance().
-												getRepositoryState(ticket);
-		javax.jcr.Repository repository = state.getRepository();
+		javax.jcr.Repository repository = SessionManager.getInstance().getRepository();
 		SimpleCredentials creds =
 		    new SimpleCredentials(ticket.getUser().getName(), 
 		    					  ticket.getUser().getPassword().toCharArray());
 		
 		javax.jcr.Session session = repository.login(creds,name);
-
-		javax.jcr.Session systemSession = state.getSystemSession();
-
 		String workspacePath = 
 			((WorkspaceImpl)session.getWorkspace()).getConfig().getHomeDir();
 		session.logout();
@@ -1809,6 +1798,8 @@ public class JCRRepositoryService implements RepositoryService {
 		} catch (IOException e) {
 			//logger.error(e.getMessage(),e);
 		}				
+		
+		javax.jcr.Session systemSession = SessionManager.getInstance().getSystemSession();
 		cleanupModule.scheduleForDelete(systemSession,name,workspacePath);
 	}
 
@@ -2413,10 +2404,10 @@ public class JCRRepositoryService implements RepositoryService {
 	 */
 	public void saveSession(Ticket ticket) throws RepositoryException {
 		
-		RepositoryManager repositoryManager = RepositoryManager.getInstance();
-		RepositorySessionState state = 
-			repositoryManager.getRepositoryState(ticket);
-		javax.jcr.Session session = state.getSession(ticket.getRepositoryId());
+		javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+		if (session == null) {
+			throw new RepositoryException("Session has expired. Please log in again.");
+		}
 		try {
 			session.save();
 		} catch (Exception e) {

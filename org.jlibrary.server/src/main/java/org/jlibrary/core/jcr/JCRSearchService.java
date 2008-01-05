@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.NodeIterator;
 import javax.jcr.Session;
 import javax.jcr.Value;
@@ -38,6 +39,7 @@ import javax.jcr.query.RowIterator;
 import org.apache.commons.lang.StringUtils;
 import org.jlibrary.core.entities.SearchResult;
 import org.jlibrary.core.entities.Ticket;
+import org.jlibrary.core.repository.exception.RepositoryException;
 import org.jlibrary.core.search.SearchException;
 import org.jlibrary.core.search.SearchHit;
 import org.jlibrary.core.search.SearchService;
@@ -91,10 +93,10 @@ public class JCRSearchService implements SearchService {
 					"') and @jlib:active='true']/(@jlib:description|rep:excerpt(.))";
 		}		
 
-		RepositoryManager manager = RepositoryManager.getInstance();
-		
-		Session session = manager.getRepositoryState(ticket).
-								getSession(ticket.getRepositoryId());
+		javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+		if (session == null) {
+			throw new SearchException("Session has expired. Please log in again.");
+		}
 		
 		return search(ticket,session,query,init,end);		
 	}
@@ -112,10 +114,10 @@ public class JCRSearchService implements SearchService {
 
 		String query = "//element(*,nt:file)" + xpathQuery; 
 		
-		RepositoryManager manager = RepositoryManager.getInstance();
-
-		Session session = manager.getRepositoryState(ticket).
-										getSession(ticket.getRepositoryId());
+		javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+		if (session == null) {
+			throw new SearchException("Session has expired. Please log in again.");
+		}
 
 		return search(ticket,session,query,init,end);
 	}	
@@ -159,8 +161,11 @@ public class JCRSearchService implements SearchService {
 					init++;
 				}
 				javax.jcr.query.Row row = (javax.jcr.query.Row) it.nextRow();
-				Value excerpt = row.getValue("rep:excerpt()");
-				String textExcerpt = excerpt.getString();
+				String textExcerpt = "";
+				try {
+					Value excerpt = row.getValue("rep:excerpt()");
+					textExcerpt = excerpt.getString();
+				} catch (ItemNotFoundException infe) {}
 				javax.jcr.Node node = (javax.jcr.Node)nodeIterator.nextNode();
 				if (node.isNodeType("nt:frozenNode")) continue;
 				if (node.isNodeType(JLibraryConstants.CONTENT_MIXIN)) {

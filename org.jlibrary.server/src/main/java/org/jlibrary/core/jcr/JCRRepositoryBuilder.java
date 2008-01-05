@@ -24,7 +24,6 @@ package org.jlibrary.core.jcr;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.InvalidItemStateException;
@@ -44,7 +43,6 @@ import org.apache.jackrabbit.core.nodetype.InvalidNodeTypeDefException;
 import org.apache.jackrabbit.name.QName;
 import org.jlibrary.core.entities.Author;
 import org.jlibrary.core.entities.Category;
-import org.jlibrary.core.entities.Group;
 import org.jlibrary.core.entities.Node;
 import org.jlibrary.core.entities.Repository;
 import org.jlibrary.core.entities.Ticket;
@@ -94,12 +92,8 @@ public class JCRRepositoryBuilder {
 				throw new SecurityException(
 						SecurityException.NOT_ENOUGH_PERMISSIONS);
 			}
-			RepositoryManager repositoryManager = RepositoryManager.getInstance();
-			RepositorySessionState state = 
-				repositoryManager.getRepositoryState(ticket);
-			
-			javax.jcr.Session systemSession = state.getSystemSession();
-			
+
+			javax.jcr.Session systemSession = SessionManager.getInstance().getSystemSession();			
 			WorkspaceImpl workspace = 
 				importExportModule.checkWorkspaceExists(name,systemSession); 
 
@@ -109,7 +103,8 @@ public class JCRRepositoryBuilder {
 			workspace.createWorkspace(workspaceName);
 			logger.info("Workspace created successfully.");
 			
-			javax.jcr.Repository repository = state.getRepository();
+			javax.jcr.Repository repository = 
+				SessionManager.getInstance().getRepository(); 
 			SimpleCredentials creds =
                 new SimpleCredentials("username", "password".toCharArray());
 			
@@ -123,8 +118,6 @@ public class JCRRepositoryBuilder {
 												  name,
 												  description,
 												  creator);
-
-			state.attach(node.getUUID(),session);
 
 			logger.info("Repository built successfully. Returning repository instance.");
 			return JCRAdapter.createRepository(ticket,name,node);
@@ -281,10 +274,10 @@ public class JCRRepositoryBuilder {
 	public void registerCustomProperty(Ticket ticket, 
 									   CustomPropertyDefinition property) throws RepositoryException {
 		
-		RepositoryManager repositoryManager = RepositoryManager.getInstance();
-		RepositorySessionState state = 
-			repositoryManager.getRepositoryState(ticket);
-		javax.jcr.Session session = state.getSession(ticket.getRepositoryId());
+		javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+		if (session == null) {
+			throw new RepositoryException("Session has expired. Please log in again.");
+		}
 		try {
 			nodetypeManager.registerCustomProperty(session, property);
 			addPropertyToRepository(session,property);
@@ -335,10 +328,10 @@ public class JCRRepositoryBuilder {
 	public void unregisterCustomProperty(Ticket ticket, 
 			   							 CustomPropertyDefinition property) throws RepositoryException {
 
-		RepositoryManager repositoryManager = RepositoryManager.getInstance();
-		RepositorySessionState state = 
-			repositoryManager.getRepositoryState(ticket);
-		javax.jcr.Session session = state.getSession(ticket.getRepositoryId());
+		javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+		if (session == null) {
+			throw new RepositoryException("Session has expired. Please log in again.");
+		}
 		try {
 			if (property.getQName() != null) {
 				nodetypeManager.unregisterCustomProperty(session, property.getQName());
@@ -379,10 +372,10 @@ public class JCRRepositoryBuilder {
 										String uri, 
 										String propertyName) throws RepositoryException {
 
-		RepositoryManager repositoryManager = RepositoryManager.getInstance();
-		RepositorySessionState state = 
-			repositoryManager.getRepositoryState(ticket);
-		javax.jcr.Session session = state.getSession(ticket.getRepositoryId());
+		javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+		if (session == null) {
+			throw new RepositoryException("Session has expired. Please log in again.");
+		}
 		try {
 			if (uri != null) {
 				QName qName = new QName(uri,propertyName);
@@ -399,10 +392,10 @@ public class JCRRepositoryBuilder {
 	public boolean isPropertyInRepository(Ticket ticket, String propertyName) throws RepositoryException {
 
 		try {
-			RepositoryManager repositoryManager = RepositoryManager.getInstance();
-			RepositorySessionState state = 
-				repositoryManager.getRepositoryState(ticket);
-			javax.jcr.Session session = state.getSession(ticket.getRepositoryId());
+			javax.jcr.Session session = SessionManager.getInstance().getSession(ticket);
+			if (session == null) {
+				throw new RepositoryException("Session has expired. Please log in again.");
+			}
 			
 			javax.jcr.Node systemNode = JCRUtils.getSystemNode(session);		
 			javax.jcr.Node propertiesNode = 
