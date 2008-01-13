@@ -40,6 +40,7 @@ import javax.jcr.AccessDeniedException;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
+import javax.jcr.ReferentialIntegrityException;
 import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
 import javax.jcr.Value;
@@ -800,7 +801,11 @@ public class JCRRepositoryService implements RepositoryService {
                     	!versionName.equals("1.1") &&
                     	!versionName.equals("1.2") &&
                     	!versionName.equals("1.3")) {
-                        vh.removeVersion(versionName);     
+                    	try {
+                    		vh.removeVersion(versionName);
+                    	} catch (ReferentialIntegrityException rif) {
+                    		logger.error("Unable to remove version: " + rif.getMessage());
+                    	}
                     } 					
                 } 				
 				
