@@ -6,8 +6,14 @@
   <artifactId>org.jlibrary.client</artifactId>
   <packaging>zip</packaging>
   <name>Simple Product PDE Example</name>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.2-SNAPSHOT</version>
   <description>A Simple Product PDE Example</description>
+  <repositories>
+    <repository>
+      <id>local-repository</id>
+      <url>file://${basedir}/../repository</url>
+    </repository>      
+  </repositories>  
   <dependencies>
     <dependency>
       <groupId>jlibrary</groupId>
@@ -61,7 +67,7 @@
         <configuration>
           <eclipseInstall>E:\eclipse-final</eclipseInstall>
           <pdeProductFilename>jlibrary.product</pdeProductFilename>
-          <pdeBuildVersion>3.2.1.r321_v20060823</pdeBuildVersion> 
+          <pdeBuildVersion>3.3.2.R331_v20071019</pdeBuildVersion> 
           <format>folder</format>         
         </configuration>
       </plugin>
