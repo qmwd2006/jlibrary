@@ -111,10 +111,9 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		
-		logger.debug("DOGET!!");
 		processContent(req,resp);
 	}
-	
+	/*
 	@Override
 	protected long getLastModified(HttpServletRequest req) {
 
@@ -172,7 +171,7 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 		}
 		return super.getLastModified(req);
 	}
-
+	*/
 	private void processContent(HttpServletRequest req, HttpServletResponse resp) {
 
 		String appURL = req.getContextPath();
@@ -239,9 +238,10 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 				logger.debug("Node could not be found");
 			} else {
 				req.setAttribute("node", node);
-
+				/*
 				resp.setDateHeader("Last-Modified", node.getDate().getTime());
 				resp.setDateHeader("Age", 86400); // cache a day
+				*/
 				if (node.isDocument()) {
 					Document document=(Document) node;
 					byte[] output;
