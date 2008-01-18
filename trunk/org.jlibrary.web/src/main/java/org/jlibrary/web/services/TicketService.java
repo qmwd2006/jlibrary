@@ -34,8 +34,6 @@ import org.jlibrary.core.entities.Credentials;
 import org.jlibrary.core.entities.Ticket;
 import org.jlibrary.core.entities.User;
 import org.jlibrary.core.factory.JLibraryServiceFactory;
-import org.jlibrary.core.jcr.RepositoryManager;
-import org.jlibrary.core.jcr.RepositorySessionState;
 import org.jlibrary.core.jcr.SessionManager;
 import org.jlibrary.core.jcr.SessionManagerListener;
 import org.jlibrary.core.profiles.LocalServerProfile;
@@ -122,15 +120,6 @@ public class TicketService implements SessionManagerListener {
 			if (ticket == null) {
 				ticket = createGuestSession(session, repositoryName);
 			}			
-		} else {
-			// Check that the session is still valid, e.g. between server restarts
-			
-			RepositoryManager manager = RepositoryManager.getInstance();
-			RepositorySessionState state = manager.getRepositoryState(ticket);
-			if (state == null) {
-				// Session not active
-				ticket = createGuestSession(session, repositoryName);
-			}
 		}
 		
 		return ticket;
