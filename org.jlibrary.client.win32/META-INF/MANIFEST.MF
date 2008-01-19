@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Win32 Fragment
 Bundle-SymbolicName: org.jlibrary.client.win32;singleton:=true
-Bundle-Version: 1.1.0
-Fragment-Host: org.jlibrary.client;bundle-version="1.1.0"
+Bundle-Version: 1.2.0
+Fragment-Host: org.jlibrary.client;bundle-version="1.2.0"
 Bundle-Localization: plugin
 Eclipse-PlatformFilter: (& (osgi.os=win32))
 Require-Bundle: org.eclipse.core.runtime,
