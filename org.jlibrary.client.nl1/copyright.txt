@@ -1,4 +1,4 @@
-jLibrary, Copyright (c) 2003-2006, Martín Pérez Mariñán, and individual 
+jLibrary, Copyright (c) 2003-2008, Martín Pérez Mariñán, and individual 
 contributors, and is licensed under the New BSD. A summary of the individual
 contributors in alphabetical order is given below. Any omission should be 
 sent to mpermar@gmail.com.
