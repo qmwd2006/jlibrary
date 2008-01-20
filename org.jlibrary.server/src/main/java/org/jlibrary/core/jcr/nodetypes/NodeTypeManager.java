@@ -1,7 +1,7 @@
 /*
 * jLibrary, Open Source Document Management System
 * 
-* Copyright (c) 2003-2006, Martín Pérez Mariñán, and individual 
+* Copyright (c) 2003-2006, Martï¿½n Pï¿½rez Mariï¿½ï¿½n, and individual 
 * contributors as indicated by the @authors tag. See copyright.txt in the
 * distribution for a full listing of individual contributors.
 * All rights reserved.
@@ -49,6 +49,8 @@ import org.apache.jackrabbit.core.nodetype.compact.CompactNodeTypeDefReader;
 import org.apache.jackrabbit.core.nodetype.compact.ParseException;
 import org.apache.jackrabbit.core.value.InternalValue;
 import org.apache.jackrabbit.name.QName;
+import org.apache.jackrabbit.spi.Name;
+import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.jlibrary.core.jcr.JCRUtils;
 import org.jlibrary.core.jcr.JLibraryConstants;
 import org.jlibrary.core.properties.CustomPropertyDefinition;
@@ -157,20 +159,20 @@ public class NodeTypeManager {
 	 * @param autocreated <code>true</code> if the property is autocreated and <code>false</code> otherwise.
 	 * @param defaultValues Default values if autocreated, <code>null</code> otherwise.
 	 * 
-	 * @throws RepositoryException If the property can´t be created
+	 * @throws RepositoryException If the property canï¿½t be created
 	 */
 	public void registerCustomProperty(
 			javax.jcr.Session session, 
 			CustomPropertyDefinition property) throws RepositoryException {
 		
-		QName jlibDocument = new QName(JLibraryConstants.JLIBRARY_URL,"document");
+		Name jlibDocument = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"document");
 		try {
 			InternalValue[] values = null;
 			if (property.getDefaultValues() != null) {
 				values = JCRUtils.getInternalValues(property.getDefaultValues());
 			}			
 			
-			QName propertyName = null;
+			Name propertyName = null;
 			if (property.getQName() != null) {
 				propertyName = property.getQName();
 			} else {
@@ -213,23 +215,23 @@ public class NodeTypeManager {
 	 * will be unregistered from the repository. All the documents will have that custom property 
 	 * unregistered.
 	 * <p/>
-	 * Currently Jackrabbit <b>doesn´t support mandatory properties removal</b>, so the behaviour of this 
+	 * Currently Jackrabbit <b>doesnï¿½t support mandatory properties removal</b>, so the behaviour of this 
 	 * method is not so predictable as it should be. Extensive testing needs to be done. Be sure to 
-	 * don´t use this method with mandatory properties.
+	 * donï¿½t use this method with mandatory properties.
 	 * <p/>
-	 * This method doesn´t remove the properties from the documents. Properties should be removed 
+	 * This method doesnï¿½t remove the properties from the documents. Properties should be removed 
 	 * manually.
 	 * 
 	 * @param session Session
 	 * @param propertyName Name of the property
 	 * 
-	 * @throws RepositoryException If the property can´t be unregistered
+	 * @throws RepositoryException If the property canï¿½t be unregistered
 	 */
 	public void unregisterCustomProperty(
 					javax.jcr.Session session, 
 					String propertyName) throws RepositoryException {
 		
-		QName propQName = createCustomPropertyType(propertyName);
+		Name propQName = createCustomPropertyType(propertyName);
 		unregisterCustomProperty(session, propQName);
 	}
 	
@@ -238,24 +240,24 @@ public class NodeTypeManager {
 	 * will be unregistered from the repository. All the documents will have that custom property 
 	 * unregistered.
 	 * <p/>
-	 * Currently Jackrabbit <b>doesn´t support mandatory properties removal</b>, so the behaviour of this 
+	 * Currently Jackrabbit <b>doesnï¿½t support mandatory properties removal</b>, so the behaviour of this 
 	 * method is not so predictable as it should be. Extensive testing needs to be done. Be sure to 
-	 * don´t use this method with mandatory properties.
+	 * donï¿½t use this method with mandatory properties.
 	 * <p/>
-	 * This method doesn´t remove the properties from the documents. Properties should be removed 
+	 * This method doesnï¿½t remove the properties from the documents. Properties should be removed 
 	 * manually.
 	 * 
 	 * @param session Session
 	 * @param propQName QName of the property
 	 * 
-	 * @throws RepositoryException If the property can´t be unregistered
+	 * @throws RepositoryException If the property canï¿½t be unregistered
 	 */
 	public void unregisterCustomProperty(
 			javax.jcr.Session session, 
-			QName propQName) throws RepositoryException {
+			Name propName) throws RepositoryException {
 		
 		try {			
-			QName jlibDocument = new QName(JLibraryConstants.JLIBRARY_URL,"document");
+			Name jlibDocument = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"document");
 			
 			Workspace wsp = session.getWorkspace();
 			javax.jcr.nodetype.NodeTypeManager ntMgr = wsp.getNodeTypeManager();
@@ -264,11 +266,11 @@ public class NodeTypeManager {
 			NodeTypeDef def = ntReg.getNodeTypeDef(jlibDocument);
 			PropDef[] properties = def.getPropertyDefs();
 
-			if (isCustomPropertyRegistered(session, propQName)) {
+			if (isCustomPropertyRegistered(session, propName)) {
 				PropDef[] newProps = new PropDef[properties.length-1];
 				int j = 0;
 				for (int i=0;i<properties.length;i++) {
-					if (!properties[i].getName().equals(propQName)) {
+					if (!properties[i].getName().equals(propName)) {
 						newProps[j] = properties[i];
 						j++;
 					}
@@ -300,8 +302,8 @@ public class NodeTypeManager {
 			javax.jcr.Session session, String propertyName) throws RepositoryException {
 				
 		// Externally, with this method we can only check jLibrary extended properties
-		QName propQName = createCustomPropertyType(propertyName);
-		return isCustomPropertyRegistered(session, propQName);	
+		Name propName = createCustomPropertyType(propertyName);
+		return isCustomPropertyRegistered(session, propName);	
 	}
 	
 	/**
@@ -315,9 +317,9 @@ public class NodeTypeManager {
 	 * @throws RepositoryException If the check cannot be performed
 	 */
 	public boolean isCustomPropertyRegistered(
-			javax.jcr.Session session, QName propQName) throws RepositoryException {
+			javax.jcr.Session session, Name propQName) throws RepositoryException {
 		
-		QName jlibDocument = new QName(JLibraryConstants.JLIBRARY_URL,"document");
+		Name jlibDocument = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"document");
 		Workspace wsp = session.getWorkspace();
 		javax.jcr.nodetype.NodeTypeManager ntMgr = wsp.getNodeTypeManager();
 		NodeTypeRegistry ntReg = 
@@ -336,24 +338,24 @@ public class NodeTypeManager {
 		return found;	
 	}
 	
-	private QName createCustomPropertyType(String propertyName) {
+	private Name createCustomPropertyType(String propertyName) {
 		
 		int colon = propertyName.lastIndexOf(":");
 		propertyName = propertyName.substring(colon+1,propertyName.length());
-		return new QName(JLibraryConstants.JLIBRARY_EXTENDED_URL,propertyName);
+		return NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_EXTENDED_URL,propertyName);
 	}
 	
 	private PropDef createCustomPropertyDef(
-			QName propQName, 
+			Name propName, 
 			boolean multivalued, 
 			int type,
 			boolean autocreated,
 			InternalValue[] defaultValues) {
 		
-		QName jlibDocument = new QName(JLibraryConstants.JLIBRARY_URL,"document");
+		Name jlibDocument = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"document");
 		
 		PropDef customProperty = 
-			createPropertyDef(propQName,
+			createPropertyDef(propName,
 							  false, // This should be mandatory
 							  multivalued,
 							  type,
@@ -364,11 +366,11 @@ public class NodeTypeManager {
 		return customProperty;
 	}
 	
-	private PropDef createPropertyDef(QName name,
+	private PropDef createPropertyDef(Name name,
 									  boolean mandatory,
 									  boolean multivalued,
 									  int type,
-									  QName declaringType,
+									  Name declaringType,
 									  int onParentVersionAction,
 									  boolean autocreated,
 									  InternalValue[] defaultValues) {

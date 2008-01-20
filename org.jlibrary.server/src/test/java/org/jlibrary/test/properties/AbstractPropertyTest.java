@@ -1,7 +1,7 @@
 /*
 * jLibrary, Open Source Document Management System
 * 
-* Copyright (c) 2003-2006, Martín Pérez Mariñán, and individual 
+* Copyright (c) 2003-2006, Martï¿½n Pï¿½rez Mariï¿½ï¿½n, and individual 
 * contributors as indicated by the @authors tag. See copyright.txt in the
 * distribution for a full listing of individual contributors.
 * All rights reserved.
@@ -27,6 +27,7 @@ import java.util.Properties;
 
 import org.apache.commons.lang.math.RandomUtils;
 import org.apache.jackrabbit.name.QName;
+import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.jlibrary.core.properties.CustomPropertyDefinition;
 import org.jlibrary.core.properties.PropertyType;
 import org.jlibrary.test.AbstractRepositoryTest;
@@ -66,7 +67,7 @@ public abstract class AbstractPropertyTest extends AbstractRepositoryTest {
 		customProperty.setMultivalued(false);
 		
 		customPropertyURI = (String)properties.get("test.custom.property.uri");
-		customProperty.setQName(new QName(customPropertyURI,customPropertyName));
+		customProperty.setQName(NameFactoryImpl.getInstance().create(customPropertyURI,customPropertyName));
 		
 		cndPropertyName = (String)properties.get("test.cnd.property.name");
 		cndPropertyURI = (String)properties.get("test.cnd.property.uri");
