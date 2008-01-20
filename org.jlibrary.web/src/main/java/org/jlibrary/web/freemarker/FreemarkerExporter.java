@@ -74,6 +74,13 @@ public class FreemarkerExporter extends BaseExporter {
 		return new DocumentTemplateProcessor(this,document,context,ftl).processTemplate(factory);
 	}
 	
+	public String exportDocumentRelation(Document document, 
+			     RepositoryContext context,
+			     String ftl, 
+			     String parentId) throws ExportException {
+	return new DocumentRelationTemplateProcessor(this,document,context,ftl,parentId).processTemplate(factory);
+	}
+	
 	public String exportResource(ResourceNode resource, 
 							   RepositoryContext context) throws ExportException {
 		
