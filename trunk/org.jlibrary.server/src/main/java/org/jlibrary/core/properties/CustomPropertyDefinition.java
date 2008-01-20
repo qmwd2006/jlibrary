@@ -1,7 +1,7 @@
 /*
 * jLibrary, Open Source Document Management System
 * 
-* Copyright (c) 2003-2006, Martín Pérez Mariñán, and individual 
+* Copyright (c) 2003-2006, Martï¿½n Pï¿½rez Mariï¿½ï¿½n, and individual 
 * contributors as indicated by the @authors tag. See copyright.txt in the
 * distribution for a full listing of individual contributors.
 * All rights reserved.
@@ -24,13 +24,14 @@ package org.jlibrary.core.properties;
 
 import java.io.Serializable;
 
-import org.apache.jackrabbit.name.QName;
+import org.apache.jackrabbit.spi.Name;
+
 
 public class CustomPropertyDefinition implements Serializable {
 
 	private static final long serialVersionUID = 1668088359345704027L;
 	
-	private QName qName = null;
+	private Name qName = null;
 	
 	private String name;
 	private int type;
@@ -88,11 +89,16 @@ public class CustomPropertyDefinition implements Serializable {
 		buffer.append("]");
 		return buffer.toString();
 	}
-	public QName getQName() {
+	
+	/*
+	 * 
+	 * TODO .. please check whether it's ok to place here Name instead of QName 
+	 */
+	public Name getQName() {
 		return qName;
 	}
 	
-	public void setQName(QName namespace) {
+	public void setQName(Name namespace) {
 		this.qName = namespace;
 	}
 }

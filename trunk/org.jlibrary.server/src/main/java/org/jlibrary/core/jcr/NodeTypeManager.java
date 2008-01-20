@@ -1,7 +1,7 @@
 /*
 * jLibrary, Open Source Document Management System
 * 
-* Copyright (c) 2003-2006, Martín Pérez Mariñán, and individual 
+* Copyright (c) 2003-2006, Martï¿½n Pï¿½rez Mariï¿½ï¿½n, and individual 
 * contributors as indicated by the @authors tag. See copyright.txt in the
 * distribution for a full listing of individual contributors.
 * All rights reserved.
@@ -38,6 +38,8 @@ import org.apache.jackrabbit.core.nodetype.PropDef;
 import org.apache.jackrabbit.core.nodetype.PropDefImpl;
 import org.apache.jackrabbit.core.value.InternalValue;
 import org.apache.jackrabbit.name.QName;
+import org.apache.jackrabbit.spi.Name;
+import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.jlibrary.core.properties.CustomPropertyDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,68 +48,68 @@ public class NodeTypeManager {
 
 	static Logger logger = LoggerFactory.getLogger(NodeTypeManager.class);
 	
-	private static final QName ntBase =	new QName(JCRConstants.JCR_NT_URL,"base");
+	private static final Name ntBase =	NameFactoryImpl.getInstance().create(JCRConstants.JCR_NT_URL,"base");
 	
 	// jLibrary types
-	private static final QName jlibBase = new QName(JLibraryConstants.JLIBRARY_URL,"jlibrary");
-	private static final QName jlibInternal = new QName(JLibraryConstants.JLIBRARY_URL,"internal");
-	private static final QName jlibNode = new QName(JLibraryConstants.JLIBRARY_URL,"node");
-	private static final QName jlibDirectory = new QName(JLibraryConstants.JLIBRARY_URL,"directory");
-	private static final QName jlibResource = new QName(JLibraryConstants.JLIBRARY_URL,"resource");
-	private static final QName jlibDocument = new QName(JLibraryConstants.JLIBRARY_URL,"document");
-	private static final QName jlibAuthor = new QName(JLibraryConstants.JLIBRARY_URL,"author");
-	private static final QName jlibCategory = new QName(JLibraryConstants.JLIBRARY_URL,"category");
-	private static final QName jlibNote = new QName(JLibraryConstants.JLIBRARY_URL,"note");
-	private static final QName jlibUser = new QName(JLibraryConstants.JLIBRARY_URL,"user");
-	private static final QName jlibGroup = new QName(JLibraryConstants.JLIBRARY_URL,"group");
-	private static final QName jlibRol = new QName(JLibraryConstants.JLIBRARY_URL,"rol");
-	private static final QName jlibContent = new QName(JLibraryConstants.JLIBRARY_URL,"content");
-	private static final QName jlibFavorite = new QName(JLibraryConstants.JLIBRARY_URL,"favorite");
-	private static final QName jlibBookmark = new QName(JLibraryConstants.JLIBRARY_URL,"bookmark");
-	private static final QName jlibFavorites = new QName(JLibraryConstants.JLIBRARY_URL,"favorites");
-	private static final QName jlibBookmarks = new QName(JLibraryConstants.JLIBRARY_URL,"bookmarks");
+	private static final Name jlibBase = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"jlibrary");
+	private static final Name jlibInternal = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"internal");
+	private static final Name jlibNode = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"node");
+	private static final Name jlibDirectory = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"directory");
+	private static final Name jlibResource = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"resource");
+	private static final Name jlibDocument = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"document");
+	private static final Name jlibAuthor = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"author");
+	private static final Name jlibCategory = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"category");
+	private static final Name jlibNote = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"note");
+	private static final Name jlibUser = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"user");
+	private static final Name jlibGroup = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"group");
+	private static final Name jlibRol = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"rol");
+	private static final Name jlibContent = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"content");
+	private static final Name jlibFavorite = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"favorite");
+	private static final Name jlibBookmark = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"bookmark");
+	private static final Name jlibFavorites = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"favorites");
+	private static final Name jlibBookmarks = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"bookmarks");
 	
 	// jLibrary properties
-	private static final QName pjlibName = new QName(JLibraryConstants.JLIBRARY_URL,"name");
-	private static final QName pjlibDescription = new QName(JLibraryConstants.JLIBRARY_URL,"description");
-	private static final QName pjlibCreator = new QName(JLibraryConstants.JLIBRARY_URL,"creator");
-	private static final QName pjlibImportance = new QName(JLibraryConstants.JLIBRARY_URL,"importance");
-	private static final QName pjlibTypecode = new QName(JLibraryConstants.JLIBRARY_URL,"typecode");
-	private static final QName pjlibCreated = new QName(JLibraryConstants.JLIBRARY_URL,"created");
-	private static final QName pjlibPath = new QName(JLibraryConstants.JLIBRARY_URL,"path");
-	private static final QName pjlibPosition = new QName(JLibraryConstants.JLIBRARY_URL,"position");
-	private static final QName pjlibAuthor = new QName(JLibraryConstants.JLIBRARY_URL,"author");
-	private static final QName pjlibLanguage = new QName(JLibraryConstants.JLIBRARY_URL,"language");
-	private static final QName pjlibKeywords = new QName(JLibraryConstants.JLIBRARY_URL,"keywords");
-	private static final QName pjlibCreationDate = new QName(JLibraryConstants.JLIBRARY_URL,"creationDate");
-	private static final QName pjlibURL = new QName(JLibraryConstants.JLIBRARY_URL,"url");
-	private static final QName pjlibTitle = new QName(JLibraryConstants.JLIBRARY_URL,"title");
-	private static final QName pjlibSize = new QName(JLibraryConstants.JLIBRARY_URL,"size");
-	private static final QName pjlibCategories = new QName(JLibraryConstants.JLIBRARY_URL,"categories");
-	private static final QName pjlibResources = new QName(JLibraryConstants.JLIBRARY_URL,"resources");
-	private static final QName pjlibRestrictions = new QName(JLibraryConstants.JLIBRARY_URL,"restrictions");
-	private static final QName pjlibRelations = new QName(JLibraryConstants.JLIBRARY_URL,"relations");
-	private static final QName pjlibNodes = new QName(JLibraryConstants.JLIBRARY_URL,"nodes");
-	private static final QName pjlibDate = new QName(JLibraryConstants.JLIBRARY_URL,"date");
-	private static final QName pjlibText = new QName(JLibraryConstants.JLIBRARY_URL,"text");
-	private static final QName pjlibBio = new QName(JLibraryConstants.JLIBRARY_URL,"bio");
-	private static final QName pjlibUser = new QName(JLibraryConstants.JLIBRARY_URL,"user");
-	private static final QName pjlibUsers = new QName(JLibraryConstants.JLIBRARY_URL,"users");
-	private static final QName pjlibMembers = new QName(JLibraryConstants.JLIBRARY_URL,"members");
-	private static final QName pjlibRoles = new QName(JLibraryConstants.JLIBRARY_URL,"roles");
-	private static final QName pjlibGroups = new QName(JLibraryConstants.JLIBRARY_URL,"groups");
-	private static final QName pjlibFirstName = new QName(JLibraryConstants.JLIBRARY_URL,"firstname");
-	private static final QName pjlibLastName = new QName(JLibraryConstants.JLIBRARY_URL,"lastname");
-	private static final QName pjlibEmail = new QName(JLibraryConstants.JLIBRARY_URL,"email");
-	private static final QName pjlibPassword = new QName(JLibraryConstants.JLIBRARY_URL,"password");
-	private static final QName pjlibIsAdmin = new QName(JLibraryConstants.JLIBRARY_URL,"isAdmin");
-	private static final QName pjlibIsSysadmin = new QName(JLibraryConstants.JLIBRARY_URL,"sysAdmin");
-	private static final QName pjlibNode = new QName(JLibraryConstants.JLIBRARY_URL,"node");
-	private static final QName pjlibLockUser = new QName(JLibraryConstants.JLIBRARY_URL,"lockUser");
-	private static final QName pjlibActive = new QName(JLibraryConstants.JLIBRARY_URL,"active");
+	private static final Name pjlibName = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"name");
+	private static final Name pjlibDescription = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"description");
+	private static final Name pjlibCreator = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"creator");
+	private static final Name pjlibImportance = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"importance");
+	private static final Name pjlibTypecode = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"typecode");
+	private static final Name pjlibCreated = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"created");
+	private static final Name pjlibPath = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"path");
+	private static final Name pjlibPosition = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"position");
+	private static final Name pjlibAuthor = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"author");
+	private static final Name pjlibLanguage = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"language");
+	private static final Name pjlibKeywords = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"keywords");
+	private static final Name pjlibCreationDate = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"creationDate");
+	private static final Name pjlibURL = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"url");
+	private static final Name pjlibTitle = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"title");
+	private static final Name pjlibSize = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"size");
+	private static final Name pjlibCategories = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"categories");
+	private static final Name pjlibResources = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"resources");
+	private static final Name pjlibRestrictions = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"restrictions");
+	private static final Name pjlibRelations = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"relations");
+	private static final Name pjlibNodes = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"nodes");
+	private static final Name pjlibDate = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"date");
+	private static final Name pjlibText = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"text");
+	private static final Name pjlibBio = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"bio");
+	private static final Name pjlibUser = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"user");
+	private static final Name pjlibUsers = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"users");
+	private static final Name pjlibMembers = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"members");
+	private static final Name pjlibRoles = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"roles");
+	private static final Name pjlibGroups = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"groups");
+	private static final Name pjlibFirstName = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"firstname");
+	private static final Name pjlibLastName = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"lastname");
+	private static final Name pjlibEmail = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"email");
+	private static final Name pjlibPassword = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"password");
+	private static final Name pjlibIsAdmin = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"isAdmin");
+	private static final Name pjlibIsSysadmin = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"sysAdmin");
+	private static final Name pjlibNode = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"node");
+	private static final Name pjlibLockUser = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"lockUser");
+	private static final Name pjlibActive = NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_URL,"active");
 
 	// Additional properties
-	QName pmixLockToken = new QName(JCRConstants.JCR_MIX_URL,"lockToken");
+	Name pmixLockToken = NameFactoryImpl.getInstance().create(JCRConstants.JCR_MIX_URL,"lockToken");
 
 	// Node definitions
 	private NodeTypeDef ntdJLibrary;
@@ -131,11 +133,11 @@ public class NodeTypeManager {
 		buildNodeTypes();
 	}
 	
-	private QName createCustomPropertyType(String propertyName) {
+	private Name createCustomPropertyType(String propertyName) {
 		
 		int colon = propertyName.lastIndexOf(":");
 		propertyName = propertyName.substring(colon+1,propertyName.length());
-		return new QName(JLibraryConstants.JLIBRARY_EXTENDED_URL,propertyName);
+		return NameFactoryImpl.getInstance().create(JLibraryConstants.JLIBRARY_EXTENDED_URL,propertyName);
 	}
 	
 	private PropDef createCustomPropertyDef(
@@ -145,9 +147,9 @@ public class NodeTypeManager {
 			boolean autocreated,
 			InternalValue[] defaultValues) {
 		
-		QName propQName = createCustomPropertyType(propertyName);
+		Name propName = createCustomPropertyType(propertyName);
 		PropDef customProperty = 
-			createPropertyDef(propQName,
+			createPropertyDef(propName,
 							  false, // This should be mandatory
 							  multivalued,
 							  type,
@@ -176,7 +178,7 @@ public class NodeTypeManager {
 	 * @param autocreated <code>true</code> if the property is autocreated and <code>false</code> otherwise.
 	 * @param defaultValues Default values if autocreated, <code>null</code> otherwise.
 	 * 
-	 * @throws RepositoryException If the property can´t be created
+	 * @throws RepositoryException If the property canï¿½t be created
 	 */
 	public void registerCustomProperty(
 			javax.jcr.Session session, 
@@ -223,24 +225,24 @@ public class NodeTypeManager {
 	 * will be unregistered from the repository. All the documents will have that custom property 
 	 * unregistered.
 	 * <p/>
-	 * Currently Jackrabbit <b>doesn´t support mandatory properties removal</b>, so the behaviour of this 
+	 * Currently Jackrabbit <b>doesnï¿½t support mandatory properties removal</b>, so the behaviour of this 
 	 * method is not so predictable as it should be. Extensive testing needs to be done. Be sure to 
-	 * don´t use this method with mandatory properties.
+	 * donï¿½t use this method with mandatory properties.
 	 * <p/>
-	 * This method doesn´t remove the properties from the documents. Properties should be removed 
+	 * This method doesnï¿½t remove the properties from the documents. Properties should be removed 
 	 * manually.
 	 * 
 	 * @param session Session
 	 * @param propertyName Name of the property
 	 * 
-	 * @throws RepositoryException If the property can´t be unregistered
+	 * @throws RepositoryException If the property canï¿½t be unregistered
 	 */
 	public void unregisterCustomProperty(
 			javax.jcr.Session session, 
 			String propertyName) throws RepositoryException {
 		
 		try {
-			QName propQName = createCustomPropertyType(propertyName);
+			Name propName = createCustomPropertyType(propertyName);
 			
 			Workspace wsp = session.getWorkspace();
 			javax.jcr.nodetype.NodeTypeManager ntMgr = wsp.getNodeTypeManager();
@@ -253,7 +255,7 @@ public class NodeTypeManager {
 				PropDef[] newProps = new PropDef[properties.length-1];
 				int j = 0;
 				for (int i=0;i<properties.length;i++) {
-					if (!properties[i].getName().equals(propQName)) {
+					if (!properties[i].getName().equals(propName)) {
 						newProps[j] = properties[i];
 						j++;
 					}
@@ -285,7 +287,7 @@ public class NodeTypeManager {
 	public boolean isCustomPropertyRegistered(
 			javax.jcr.Session session, String propertyName) throws RepositoryException {
 		
-		QName propQName = createCustomPropertyType(propertyName);
+		Name propName = createCustomPropertyType(propertyName);
 		Workspace wsp = session.getWorkspace();
 		javax.jcr.nodetype.NodeTypeManager ntMgr = wsp.getNodeTypeManager();
 		NodeTypeRegistry ntReg = 
@@ -295,7 +297,7 @@ public class NodeTypeManager {
 		// check
 		boolean found = false;
 		for (int i = 0; i < properties.length; i++) {
-			if (properties[i].getName().equals(propQName)) {
+			if (properties[i].getName().equals(propName)) {
 				// Already exists
 				found = true;
 				break;
@@ -459,13 +461,13 @@ public class NodeTypeManager {
 	
 	private void buildNodeTypes() {
 		
-		ntdJLibrary = createNodeTypeDef(new QName[]{ntBase},jlibBase,true);
+		ntdJLibrary = createNodeTypeDef(new Name[]{ntBase},jlibBase,true);
 		
-		ntdInternal = createNodeTypeDef(new QName[]{jlibBase},jlibInternal,true);
+		ntdInternal = createNodeTypeDef(new Name[]{jlibBase},jlibInternal,true);
 		
 		NodeDefImpl residual = new NodeDefImpl();
 		residual.setAllowsSameNameSiblings(true);
-		residual.setName(new QName("","*"));
+		residual.setName(NameFactoryImpl.getInstance().create("","*"));
 		residual.setDeclaringNodeType(jlibInternal);
 		ntdInternal.setChildNodeDefs(new NodeDef[]{residual});
 		PropDefImpl residualProp = new PropDefImpl();
@@ -474,46 +476,46 @@ public class NodeTypeManager {
 		residualProp.setDeclaringNodeType(jlibInternal);
 		ntdInternal.setPropertyDefs(new PropDef[]{residualProp});		
 		
-		ntdNode = createNodeTypeDef(new QName[]{jlibBase},jlibNode,true);		
-		ntdResource = createNodeTypeDef(new QName[]{jlibNode},jlibResource,true);
-		ntdDirectory = createNodeTypeDef(new QName[]{jlibNode},jlibDirectory,true);
-		ntdDocument = createNodeTypeDef(new QName[]{jlibNode},jlibDocument,true);
-		ntdAuthor = createNodeTypeDef(new QName[]{jlibBase},jlibAuthor,true);
-		ntdCategory = createNodeTypeDef(new QName[]{jlibBase},jlibCategory,true);			
-		ntdNote = createNodeTypeDef(new QName[]{jlibBase},jlibNote,true);	
-		ntdUser = createNodeTypeDef(new QName[]{jlibBase},jlibUser,true);			
-		ntdGroup = createNodeTypeDef(new QName[]{jlibBase},jlibGroup,true);			
-		ntdRol = createNodeTypeDef(new QName[]{jlibBase},jlibRol,true);	
-		ntdContent = createNodeTypeDef(new QName[]{jlibBase},jlibContent,true);			
-		ntdFavorite = createNodeTypeDef(new QName[]{jlibBase},jlibFavorite,true);			
-		ntdBookmark = createNodeTypeDef(new QName[]{jlibBase},jlibBookmark,true);					
+		ntdNode = createNodeTypeDef(new Name[]{jlibBase},jlibNode,true);		
+		ntdResource = createNodeTypeDef(new Name[]{jlibNode},jlibResource,true);
+		ntdDirectory = createNodeTypeDef(new Name[]{jlibNode},jlibDirectory,true);
+		ntdDocument = createNodeTypeDef(new Name[]{jlibNode},jlibDocument,true);
+		ntdAuthor = createNodeTypeDef(new Name[]{jlibBase},jlibAuthor,true);
+		ntdCategory = createNodeTypeDef(new Name[]{jlibBase},jlibCategory,true);			
+		ntdNote = createNodeTypeDef(new Name[]{jlibBase},jlibNote,true);	
+		ntdUser = createNodeTypeDef(new Name[]{jlibBase},jlibUser,true);			
+		ntdGroup = createNodeTypeDef(new Name[]{jlibBase},jlibGroup,true);			
+		ntdRol = createNodeTypeDef(new Name[]{jlibBase},jlibRol,true);	
+		ntdContent = createNodeTypeDef(new Name[]{jlibBase},jlibContent,true);			
+		ntdFavorite = createNodeTypeDef(new Name[]{jlibBase},jlibFavorite,true);			
+		ntdBookmark = createNodeTypeDef(new Name[]{jlibBase},jlibBookmark,true);					
 		
-		registerNodeDef(new QName[]{jlibBase}, 
+		registerNodeDef(new Name[]{jlibBase}, 
 									jlibBase, ntdJLibrary,
 						new int[]{OnParentVersionAction.COPY,
 								  OnParentVersionAction.COPY});
 		
-		registerNodeDef(new QName[]{jlibDirectory,jlibDocument,jlibResource}, 
+		registerNodeDef(new Name[]{jlibDirectory,jlibDocument,jlibResource}, 
 									jlibDirectory,ntdDirectory,
 						new int[]{OnParentVersionAction.COPY,
 				  				  OnParentVersionAction.COPY,
 				  				  OnParentVersionAction.COPY});
 		
-		registerNodeDef(new QName[]{jlibContent,jlibNote},
+		registerNodeDef(new Name[]{jlibContent,jlibNote},
 									jlibDocument,ntdDocument,
 						new int[]{OnParentVersionAction.COPY,
 								  OnParentVersionAction.COPY});
 		
-		registerNodeDef(new QName[]{jlibCategory,jlibFavorites},
+		registerNodeDef(new Name[]{jlibCategory,jlibFavorites},
 									jlibCategory,ntdCategory,
 						new int[]{OnParentVersionAction.COPY,
 								  OnParentVersionAction.IGNORE});
 		
-		registerNodeDef(new QName[]{jlibBookmarks},
+		registerNodeDef(new Name[]{jlibBookmarks},
 									jlibUser,ntdUser,
 						new int[]{OnParentVersionAction.IGNORE});
 
-		registerNodeDef(new QName[]{jlibBookmark},
+		registerNodeDef(new Name[]{jlibBookmark},
 									jlibBookmark,ntdBookmark,
                         new int[]{OnParentVersionAction.IGNORE});
 		
@@ -634,28 +636,28 @@ public class NodeTypeManager {
 		
 	}
 	
-	private void registerNodeDef(QName[] qnameDefs,
-								 QName declaringNodeType,
+	private void registerNodeDef(Name[] nameDefs,
+								 Name declaringNodeType,
 								 NodeTypeDef nodeType,
 								 int[] onParentVersionAction) {
 		
-		NodeDefImpl[] defs = new NodeDefImpl[qnameDefs.length];
+		NodeDefImpl[] defs = new NodeDefImpl[nameDefs.length];
 		
 		for (int i = 0; i < defs.length; i++) {
 			defs[i] = new NodeDefImpl();
 			defs[i].setAllowsSameNameSiblings(true);
-			defs[i].setName(qnameDefs[i]);
+			defs[i].setName(nameDefs[i]);
 			defs[i].setDeclaringNodeType(declaringNodeType);
 			defs[i].setOnParentVersion(onParentVersionAction[i]);
 		}
 		nodeType.setChildNodeDefs(defs);
 	}
 
-	private PropDef createPropertyDef(QName name,
+	private PropDef createPropertyDef(Name name,
 									  boolean mandatory,
 									  boolean multivalued,
 									  int type,
-									  QName declaringType,
+									  Name declaringType,
 									  int onParentVersionAction,
 									  boolean autocreated,
 									  InternalValue[] defaultValues) {
@@ -674,8 +676,8 @@ public class NodeTypeManager {
 		return pdef;
 	}	
 	
-	private NodeTypeDef createNodeTypeDef(QName[] supertypes, 
-										  QName name,
+	private NodeTypeDef createNodeTypeDef(Name[] supertypes, 
+										  Name name,
 										  boolean mixin) {
 		
 		NodeTypeDef nodeDef = new NodeTypeDef();

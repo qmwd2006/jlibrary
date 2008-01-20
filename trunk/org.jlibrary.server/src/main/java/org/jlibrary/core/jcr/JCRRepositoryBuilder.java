@@ -1,7 +1,7 @@
 /*
 * jLibrary, Open Source Document Management System
 * 
-* Copyright (c) 2003-2006, Martín Pérez Mariñán, and individual 
+* Copyright (c) 2003-2006, Martï¿½n Pï¿½rez Mariï¿½ï¿½n, and individual 
 * contributors as indicated by the @authors tag. See copyright.txt in the
 * distribution for a full listing of individual contributors.
 * All rights reserved.
@@ -41,6 +41,8 @@ import org.apache.jackrabbit.core.WorkspaceImpl;
 import org.apache.jackrabbit.core.config.ConfigurationException;
 import org.apache.jackrabbit.core.nodetype.InvalidNodeTypeDefException;
 import org.apache.jackrabbit.name.QName;
+import org.apache.jackrabbit.spi.Name;
+import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.jlibrary.core.entities.Author;
 import org.jlibrary.core.entities.Category;
 import org.jlibrary.core.entities.Node;
@@ -378,8 +380,8 @@ public class JCRRepositoryBuilder {
 		}
 		try {
 			if (uri != null) {
-				QName qName = new QName(uri,propertyName);
-				return nodetypeManager.isCustomPropertyRegistered(session, qName);
+				Name name = NameFactoryImpl.getInstance().create(uri,propertyName);
+				return nodetypeManager.isCustomPropertyRegistered(session, name);
 			}
 			return nodetypeManager.isCustomPropertyRegistered(session, propertyName);
 		} catch (javax.jcr.RepositoryException e) {

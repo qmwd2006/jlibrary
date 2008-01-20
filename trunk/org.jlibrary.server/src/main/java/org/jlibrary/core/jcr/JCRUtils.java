@@ -1,7 +1,7 @@
 /*
 * jLibrary, Open Source Document Management System
 * 
-* Copyright (c) 2003-2006, Martín Pérez Mariñán, and individual 
+* Copyright (c) 2003-2006, Martï¿½n Pï¿½rez Mariï¿½ï¿½n, and individual 
 * contributors as indicated by the @authors tag. See copyright.txt in the
 * distribution for a full listing of individual contributors.
 * All rights reserved.
@@ -712,7 +712,7 @@ public class JCRUtils {
 		} else if (object instanceof InputStream) {
 			try {
 				return InternalValue.create((InputStream)object);
-			} catch (IOException ioe) {logger.error(ioe.getMessage(),ioe);}
+			} catch (RepositoryException re) {logger.error(re.getMessage(),re);}
 		} else if (object instanceof byte[]) {
 			return InternalValue.create((byte[])object);
 		}
