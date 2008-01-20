@@ -107,6 +107,16 @@ public class FreemarkerVariables {
 	public static final String DOCUMENT_CATEGORIES = "document_categories";
 	
 	/**
+	 * Key string for the document's list for relations
+	 */
+	public static final String NODE_COLLECTION = "node_collection";
+	
+	/**
+	 * Key string for the selected document from list
+	 */
+	public static final String DOCUMENT_PARENT = "parent";
+	
+	/**
 	 * Key string for the document's contents
 	 */
 	public static final String DOCUMENT_CONTENT = "document_content";

@@ -27,7 +27,10 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -40,7 +43,6 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.FileUploadBase.SizeLimitExceededException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
-import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.util.Text;
 import org.apache.log4j.Logger;
 import org.jlibrary.core.entities.Author;
@@ -51,6 +53,7 @@ import org.jlibrary.core.entities.Document;
 import org.jlibrary.core.entities.DocumentMetaData;
 import org.jlibrary.core.entities.Node;
 import org.jlibrary.core.entities.Note;
+import org.jlibrary.core.entities.Relation;
 import org.jlibrary.core.entities.Repository;
 import org.jlibrary.core.entities.ServerProfile;
 import org.jlibrary.core.entities.Ticket;
@@ -162,7 +165,15 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 			createform(req,resp);
 		} else if (method.equals("upload")) {
 			upload(req,resp);
-		} else{
+		} else if(method.equals("documentcategories")){
+			documentCategoriesForm(req, resp);
+		} else if(method.equals("updatedocumentcategories")){
+			updateDocumentCategories(req, resp);
+		}else if(method.equals("documentdocuments")){
+			documentDocumentsForm(req, resp);
+		}else if(method.equals("updatedocumentrelations")){
+			updateDocumentRelations(req, resp);
+		}else{
 			try {
 				if (logger.isDebugEnabled()) { logger.error("The operation " + method + " is not supported.");}
 				String repositoryName = getField(req, resp, "repository");
@@ -437,9 +448,8 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 						repositoryService.updateContent(ticket, document.getId(), dataContent);
 					}
 					statsService.incUpdatedDocuments();
-					StringBuilder url = new StringBuilder(getRepositoryURL(req, repositoryName));
-					url.append(document.getPath());
-					resp.sendRedirect(resp.encodeRedirectURL(url.toString()));
+					String url=getRootURL(req) +"/forward?method=documentcategories&repository="+repositoryName+"&id="+document.getId();
+					resp.sendRedirect(resp.encodeRedirectURL(url));
 					
 				}
 			} else if (type.equals("category")) {
@@ -450,9 +460,8 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 				CategoryProperties properties = category.dumpProperties();
 				category = repositoryService.updateCategory(ticket, id, properties);
 				statsService.incUpdatedCategories();
-				StringBuilder url = new StringBuilder(getRepositoryURL(req, repositoryName));
-				url.append("/categories/"+category.getName());
-				resp.sendRedirect(resp.encodeRedirectURL(url.toString()));	
+				String url = getRepositoryURL(req, repositoryName)+"/categories/"+category.getName();
+				resp.sendRedirect(resp.encodeRedirectURL(url));	
 			} else {
 				String error = "Invalid operation : " + type;
 				logErrorAndForward(req, resp, repositoryName, new InvalidOperationException(error), error);
@@ -677,8 +686,8 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 				}else{
 					logErrorAndForward(req, resp, repositoryName, null, "There was a problem trying to upload the document.");
 				}
-				url.append(document.getPath());
-				resp.sendRedirect(resp.encodeRedirectURL(url.toString()));
+				String redirectUrl=getRootURL(req) +"/forward?method=documentcategories&repository="+repositoryName+"&id="+document.getId();
+				resp.sendRedirect(resp.encodeRedirectURL(redirectUrl));
 			} else if (type.equals("category")) {
 				Category category = new Category();
 				category.setId(""); //TODO: This is a bug, is to make dumpProperties work propertly
@@ -689,9 +698,8 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 				CategoryProperties properties = category.dumpProperties();
 				category = repositoryService.createCategory(ticket, properties);
 				statsService.incCreatedCategories();
-				StringBuilder url = new StringBuilder(getRepositoryURL(req, repositoryName));
-				url.append("/categories/"+category.getName());
-				resp.sendRedirect(resp.encodeRedirectURL(url.toString()));				
+				String url = getRepositoryURL(req, repositoryName)+"/categories/"+category.getName();
+				resp.sendRedirect(resp.encodeRedirectURL(url));			
 			} else {
 				String error = "Invalid operation : " + type;
 				logErrorAndForward(req, resp, repositoryName, new InvalidOperationException(error), error);
@@ -876,5 +884,156 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 	private String processNote(String text) {
 
 		return text.replaceAll("\n", "<br/>");
+	}
+	
+	private void updateDocumentCategories(HttpServletRequest req, HttpServletResponse resp){
+		String id;
+		String repositoryName;
+		String[] categories=req.getParameterValues("categories");
+		try {
+			id = getField(req, resp, "id");
+			repositoryName = getField(req, resp, "repository");
+		} catch (FieldNotFoundException e) {
+			return;
+		}
+		try{
+			Ticket ticket = TicketService.getTicketService().getTicket(req, repositoryName);
+			RepositoryService repositoryService = 
+				JLibraryServiceFactory.getInstance(profile).getRepositoryService();
+			Repository repository = repositoryService.findRepository(repositoryName, ticket);
+			repository.setServerProfile(profile);
+			Document doc = repositoryService.findDocument(ticket, id);
+			DocumentProperties docProperties=doc.dumpProperties();
+			List<Category> nodeCategories=repositoryService.findCategoriesForNode(ticket, doc.getId());
+			Iterator<Category> ite=nodeCategories.iterator();
+			while(ite.hasNext()){
+				Category category=ite.next();
+				docProperties.addProperty(DocumentProperties.DOCUMENT_DELETE_CATEGORY, category.getId());
+			}
+			if(categories!=null){
+				for(int cont=0;categories.length>cont;cont++){
+					docProperties.addProperty(DocumentProperties.DOCUMENT_ADD_CATEGORY, categories[cont]);
+				}
+			}
+			repositoryService.updateDocument(ticket, docProperties);
+			
+			String url=getRootURL(req) +"/forward?method=documentdocuments&repository="+repositoryName+"&id="+doc.getId();
+			resp.sendRedirect(resp.encodeRedirectURL(url));
+		} catch (Exception e) {
+			logErrorAndForward(req, resp, repositoryName, e, "There was a problem adding categories.");
+		}
+	}
+	
+	private void updateDocumentRelations(HttpServletRequest req, HttpServletResponse resp){
+		String id;
+		String repositoryName;
+		String[] documents=req.getParameterValues("relations");
+		try {
+			id = getField(req, resp, "id");
+			repositoryName = getField(req, resp, "repository");
+		} catch (FieldNotFoundException e) {
+			return;
+		}
+		try{
+			Ticket ticket = TicketService.getTicketService().getTicket(req, repositoryName);
+			RepositoryService repositoryService = 
+				JLibraryServiceFactory.getInstance(profile).getRepositoryService();
+			Repository repository = repositoryService.findRepository(repositoryName, ticket);
+			repository.setServerProfile(profile);
+			Document doc = repositoryService.findDocument(ticket, id);
+			DocumentProperties docProperties=doc.dumpProperties();
+			Set<Document> nodeRelations=doc.getRelations();
+			Iterator<Document> ite=nodeRelations.iterator();
+			while(ite.hasNext()){
+				Relation relation = new Relation();
+				relation.setBidirectional(true);
+				relation.setDestinationNode(ite.next());
+				docProperties.addProperty(DocumentProperties.DOCUMENT_DELETE_RELATION, relation);
+			}
+			if(documents!=null){
+				for(int cont=0;documents.length>cont;cont++){
+					Relation relation = new Relation();
+					relation.setBidirectional(true);
+					relation.setDestinationNode(repositoryService.findDocument(ticket, documents[cont]));
+					docProperties.addProperty(DocumentProperties.DOCUMENT_ADD_RELATION, relation);
+				}
+			}
+			repositoryService.updateDocument(ticket, docProperties);
+			
+			String url = getRepositoryURL(req, repositoryName)+doc.getPath();
+			resp.sendRedirect(resp.encodeRedirectURL(url));
+		} catch (Exception e) {
+			logErrorAndForward(req, resp, repositoryName, e, "There was a problem adding relations.");
+		}
+	}
+	
+	private void documentCategoriesForm(HttpServletRequest req, HttpServletResponse resp){
+		String id;
+		String repositoryName;
+		try {
+			id = getField(req, resp, "id");
+			repositoryName = getField(req, resp, "repository");
+		} catch (FieldNotFoundException e) {
+			return;
+		}
+		try{
+			Ticket ticket = TicketService.getTicketService().getTicket(req, repositoryName);
+			RepositoryService repositoryService = 
+				JLibraryServiceFactory.getInstance(profile).getRepositoryService();
+			Repository repository = repositoryService.findRepository(repositoryName, ticket);
+			repository.setServerProfile(profile);
+			Document doc = repositoryService.findDocument(ticket, id);
+			
+			RepositoryContext context = 
+				new RepositoryContext(repository,getServletContext(),getContext());
+			context.setTicket(ticket);
+			FreemarkerExporter exporter = new FreemarkerExporter();
+			exporter.setRootURL(getRootURL(req));
+			exporter.setRepositoryURL(getRepositoryURL(req, repositoryName));
+			exporter.initExportProcess(context);
+			resp.getOutputStream().write(
+					exporter.exportDocument(doc, context, "document-categories.ftl").getBytes());
+		} catch (Exception e) {
+			logErrorAndForward(req, resp, repositoryName, e, "There was a problem adding categories.");
+		}
+	}
+	
+	private void documentDocumentsForm(HttpServletRequest req, HttpServletResponse resp){
+		String id;
+		String repositoryName;
+		String parentId;
+		try {
+			id = getField(req, resp, "id");
+			repositoryName = getField(req, resp, "repository");
+		} catch (FieldNotFoundException e) {
+			return;
+		}
+		try{
+			Ticket ticket = TicketService.getTicketService().getTicket(req, repositoryName);
+			RepositoryService repositoryService = 
+				JLibraryServiceFactory.getInstance(profile).getRepositoryService();
+			Repository repository = repositoryService.findRepository(repositoryName, ticket);
+			repository.setServerProfile(profile);
+			Document doc = repositoryService.findDocument(ticket, id);
+			
+			RepositoryContext context = 
+				new RepositoryContext(repository,getServletContext(),getContext());
+			context.setTicket(ticket);
+			parentId=req.getParameter("parentId");
+			String template="document-documents-ajax.ftl";
+			if(parentId==null || "".equals(parentId)){
+				parentId=repository.getId();
+				template="document-documents.ftl";
+			}
+			logger.debug(parentId);
+			FreemarkerExporter exporter = new FreemarkerExporter();
+			exporter.setRootURL(getRootURL(req));
+			exporter.setRepositoryURL(getRepositoryURL(req, repositoryName));
+			exporter.initExportProcess(context);
+			resp.getOutputStream().write(
+					exporter.exportDocumentRelation(doc, context, template, parentId).getBytes());
+		} catch (Exception e) {
+			logErrorAndForward(req, resp, repositoryName, e, "There was a problem adding relations.");
+		}
 	}
 }
