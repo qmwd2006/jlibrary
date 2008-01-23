@@ -23,6 +23,7 @@
 			<br/><br/>
 		</div>			
 		<div class="footer">
+		<#if context.loginEnabled>
 			<h3>Comments</h3>
 			<#if document.notes?size != 0>
       <#list document.notes as note>
@@ -38,8 +39,9 @@
 					<input class="submit" type="submit" value="Comment!"/>				
   			</form>
 			</div>
+		</#if>
 		</div>
-	</div>			
+	</div>
 </#macro>
 
 <#macro directoryContent>
@@ -74,6 +76,7 @@
 </#macro>
 
 <#macro notesDocument>
+<#if context.loginEnabled>
   <#if document.notes?size != 0>
   	  <div id ="comments"></div>
       <h2>Comments</h2>
@@ -84,7 +87,7 @@
   </#if>
   <br/>
   <a href="${root_url}/forward?method=comment&amp;repository=${repository.name}&amp;id=${document.id}">Add new comment</a>
-
+</#if>
 </#macro>
 
 <#macro listCategory>
