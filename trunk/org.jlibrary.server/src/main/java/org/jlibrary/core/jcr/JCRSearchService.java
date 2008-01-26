@@ -165,7 +165,9 @@ public class JCRSearchService implements SearchService {
 				try {
 					Value excerpt = row.getValue("rep:excerpt()");
 					textExcerpt = excerpt.getString();
-				} catch (ItemNotFoundException infe) {}
+				} catch (Exception e) {
+					logger.warn("Exception getting excerpt: " + e.getMessage());
+				}
 				javax.jcr.Node node = (javax.jcr.Node)nodeIterator.nextNode();
 				if (node.isNodeType("nt:frozenNode")) continue;
 				if (node.isNodeType(JLibraryConstants.CONTENT_MIXIN)) {
