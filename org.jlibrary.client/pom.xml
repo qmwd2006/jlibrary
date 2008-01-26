@@ -8,12 +8,12 @@
   <name>Simple Product PDE Example</name>
   <version>1.2-SNAPSHOT</version>
   <description>A Simple Product PDE Example</description>
-  <repositories>
-    <repository>
+  <pluginRepositories>
+    <pluginRepository>
       <id>local-repository</id>
       <url>file://${basedir}/../repository</url>
-    </repository>      
-  </repositories>  
+    </pluginRepository>      
+  </pluginRepositories>  
   <dependencies>
     <dependency>
       <groupId>jlibrary</groupId>
@@ -63,6 +63,7 @@
         <!-- Maven PDE Eclipse Plugin configuration -->
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>pde-maven-plugin</artifactId>
+	<version>1.0-alpha-2</version>
         <extensions>true</extensions>
         <configuration>
           <eclipseInstall>E:\eclipse-final</eclipseInstall>
