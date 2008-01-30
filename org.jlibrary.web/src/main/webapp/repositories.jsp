@@ -8,7 +8,7 @@
 
 <body>
 	<div id="header">
-		<h1><A href="http://jlibrary.sourceforge.net">jLibrary</A></h1>
+		<h1><a href="http://www.jlibrary.org">jLibrary</a></h1>
 		<h2>Open Source Document Management System from your Desktop ... and the Web.</h2>
 	</div>
 	
@@ -30,7 +30,7 @@
 		</div>
 	</div>
 	<div id="footer">
-		<p>This demo has been written by Daniel Latorre and Martin Perez. Created with <a href="http://jlibrary.sourceforge.net">jLibrary</A>.</p>
+		<p>This demo has been written by Daniel Latorre and Martin Perez. Created with <a href="http://www.jlibrary.org">jLibrary</a>.</p>
 	</div>
 </body>
 </html>
