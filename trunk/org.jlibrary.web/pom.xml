@@ -1,4 +1,5 @@
-<?xml version="1.0"?><project>
+<?xml version="1.0"?>
+<project>
     <parent>
     <artifactId>org.jlibrary</artifactId>
     <groupId>jlibrary</groupId>
@@ -46,33 +47,6 @@
       <scope>provided</scope>     
     </dependency>    
     <dependency>
-	    <groupId>org.apache.myfaces.core</groupId>
-	    <artifactId>myfaces-impl</artifactId>
-	    <version>1.1.5</version>
-	    <scope>compile</scope>
-	</dependency>
-    <dependency>
-	    <groupId>org.apache.myfaces.tomahawk</groupId>
-	    <artifactId>tomahawk</artifactId>
-	    <version>1.1.5</version>
-	</dependency>
-	<dependency>
-	    <groupId>org.apache.myfaces.core</groupId>
-	    <artifactId>myfaces-api</artifactId>
-	    <version>1.1.5</version>
-	    <scope>compile</scope>
-	</dependency>
-  <dependency>
-	  <groupId>com.sun.facelets</groupId>
-	  <artifactId>jsf-facelets</artifactId>
-	  <version>1.1.11</version>
-	</dependency>
-	<dependency>
-	  <groupId>jsf-comp</groupId>
-	  <artifactId>taghandlers</artifactId>
-	  <version>0.9</version>	  
-	</dependency>
-    <dependency>
 	  <groupId>javax.el</groupId>
 	  <artifactId>el-ri</artifactId>
 	  <version>1.0</version>	  
@@ -82,23 +56,12 @@
       <artifactId>freemarker</artifactId>
       <version>2.3.8</version>
     </dependency>
-    <!-- FCKEditor -->		
     <dependency>
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
       <version>1.2</version>
-    </dependency> 
-    <dependency>
-      <groupId>FCKEditor</groupId>
-      <artifactId>FCKEditor</artifactId>
-      <version>2.3</version>
-    </dependency> 
-    <dependency>
-      <groupId>fck-faces</groupId>
-      <artifactId>fck-faces</artifactId>
-      <version>1.7.26</version>
     </dependency>
-	<dependency>
+    <dependency>
 		<groupId>org.springframework</groupId>
 		<artifactId>spring</artifactId>
 		<version>2.0</version>
@@ -108,7 +71,13 @@
 		<groupId>com.octo.captcha</groupId>
 		<artifactId>jcaptcha-all</artifactId>
 		<version>1.0-RC6</version>
-	</dependency>	
+	</dependency>
+	<!-- FCKEditor --> 
+    <dependency>
+      <groupId>FCKEditor</groupId>
+      <artifactId>FCKEditor</artifactId>
+      <version>2.3</version>
+    </dependency>
     <dependency>
       <groupId>jlibrary</groupId>
       <artifactId>org.jlibrary.server.web</artifactId>
