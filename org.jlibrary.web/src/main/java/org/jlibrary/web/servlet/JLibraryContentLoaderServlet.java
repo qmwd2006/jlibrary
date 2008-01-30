@@ -23,6 +23,7 @@
 package org.jlibrary.web.servlet;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -173,7 +174,12 @@ public class JLibraryContentLoaderServlet extends JLibraryServlet {
 	}
 	*/
 	private void processContent(HttpServletRequest req, HttpServletResponse resp) {
-
+		try{
+			resp.setCharacterEncoding("ISO-8859-1");
+			req.setCharacterEncoding("ISO-8859-1");
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
 		String appURL = req.getContextPath();
 		String uri = req.getRequestURI();
 		String path = StringUtils.difference(appURL+"/repositories",uri);

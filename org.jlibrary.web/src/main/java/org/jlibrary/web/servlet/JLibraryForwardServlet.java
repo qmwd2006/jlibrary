@@ -24,6 +24,7 @@ package org.jlibrary.web.servlet;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -128,6 +129,12 @@ public class JLibraryForwardServlet extends JLibraryServlet {
 	}
 
 	private void processRequest(HttpServletRequest req, HttpServletResponse resp) {
+		try {
+			req.setCharacterEncoding("ISO-8859-1");
+			resp.setCharacterEncoding("ISO-8859-1");
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
 		if(ServletFileUpload.isMultipartContent(req)){
 			upload(req,resp);
 			

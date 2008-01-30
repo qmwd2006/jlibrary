@@ -23,6 +23,7 @@
 package org.jlibrary.web.servlet;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -70,7 +71,12 @@ public class JLibrarySearchServlet extends JLibraryServlet {
 	}
 
 	private void processContent(HttpServletRequest req, HttpServletResponse resp) {
-		
+		try {
+			req.setCharacterEncoding("ISO-8859-1");
+			resp.setCharacterEncoding("ISO-8859-1");
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
 		if (logger.isDebugEnabled()) {
 			logger.debug("Received search request");
 		}

@@ -88,7 +88,7 @@ public class FreemarkerFactory {
 	  
     Configuration cfg = Configuration.getDefaultConfiguration();
     cfg.setNumberFormat("0");
-    
+    cfg.setDefaultEncoding("ISO-8859-1");
     cfg.setSharedVariable("node",new NodeMethod(exporter));
     cfg.setSharedVariable("username",new UserMethod(exporter));
     cfg.setSharedVariable("nodeURL",new NodePathMethod(exporter));
