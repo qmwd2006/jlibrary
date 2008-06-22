@@ -8,6 +8,13 @@
   <name>Simple Product PDE Example</name>
   <version>1.2-SNAPSHOT</version>
   <description>A Simple Product PDE Example</description>
+	<properties>
+		<eclipse.dir>C:/jlibraryEclipse/eclipse</eclipse.dir>
+		<workspace>..</workspace>
+		<buildDirectory>
+			${project.build.directory}/buildDirectory
+		</buildDirectory>
+	</properties>  
   <pluginRepositories>
     <pluginRepository>
       <id>local-repository</id>
@@ -59,16 +66,70 @@
           <target>1.5</target>
         </configuration>
       </plugin>     
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>synchronize</id>
+						<phase>generate-sources</phase>
+						<configuration>
+
+							<tasks>
+								<echo message="checking JAVA_HOME property" />
+								<available file="${java.home}/../lib/tools.jar" property="tools.jar.exists"/>
+								<fail unless="tools.jar.exists" message="JAVA_HOME property not set or $JAVA_HOME/../lib/tools.jar missing"/>
+								<echo message="copying plugins &amp; features from the workspace" />							
+								<!--  delete dir="${buildDirectory}" /-->
+								<mkdir dir="${buildDirectory}" />
+								<mkdir dir="${buildDirectory}/plugins" />
+								<mkdir dir="${buildDirectory}/features" />
+								<sync
+									todir="${buildDirectory}/plugins">
+									<fileset dir="${workspace}">
+										<exclude name="**/target/**" />
+										<exclude name="**/*.feature/**" />
+										<exclude name="**/.svn/**" />
+										<exclude name="**/.metadata/**" />
+									</fileset>
+								</sync>
+								<sync
+									todir="${buildDirectory}/features">
+									<fileset dir="${workspace}">
+										<exclude name="**/target/**" />
+										<include name="**/*.feature/**" />
+										<exclude name="**/.svn/**" />
+										<exclude name="**/.metadata/**" />
+									</fileset>
+								</sync>
+								<copy
+									file="${buildDirectory}/plugins/org.jlibrary.client/jlibrary.product"
+									todir="${buildDirectory}" />
+								<copy todir="${buildDirectory}">
+									<fileset
+										dir="${buildDirectory}/plugins/org.jlibrary.client">
+										<include
+											name="**/buildConfiguration/**" />
+									</fileset>
+								</copy>
+							</tasks>
+
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>      
       <plugin>
         <!-- Maven PDE Eclipse Plugin configuration -->
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>pde-maven-plugin</artifactId>
-	<version>1.0-alpha-2</version>
+	<version>1.0-alpha-4</version>
         <extensions>true</extensions>
         <configuration>
-          <eclipseInstall>E:\eclipse-final</eclipseInstall>
+          <eclipseInstall>${eclipse.dir}</eclipseInstall>
           <pdeProductFilename>jlibrary.product</pdeProductFilename>
-          <pdeBuildVersion>3.3.2.R331_v20071019</pdeBuildVersion> 
           <format>folder</format>         
         </configuration>
       </plugin>
