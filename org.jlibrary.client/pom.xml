@@ -5,9 +5,9 @@
   <groupId>jlibrary</groupId>
   <artifactId>org.jlibrary.client</artifactId>
   <packaging>zip</packaging>
-  <name>Simple Product PDE Example</name>
-  <version>1.2-SNAPSHOT</version>
-  <description>A Simple Product PDE Example</description>
+  <name>jLibrary PDE build</name>
+  <version>1.2.1-SNAPSHOT</version>
+  <description>jLibrary product description file</description>
 	<properties>
 		<eclipse.dir>C:/jlibraryEclipse/eclipse</eclipse.dir>
 		<workspace>..</workspace>
