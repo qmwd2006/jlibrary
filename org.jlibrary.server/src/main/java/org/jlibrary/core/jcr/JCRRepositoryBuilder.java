@@ -43,6 +43,7 @@ import org.apache.jackrabbit.core.nodetype.InvalidNodeTypeDefException;
 import org.apache.jackrabbit.name.QName;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
+import org.jlibrary.core.config.JLibraryProperties;
 import org.jlibrary.core.entities.Author;
 import org.jlibrary.core.entities.Category;
 import org.jlibrary.core.entities.Node;
@@ -108,7 +109,7 @@ public class JCRRepositoryBuilder {
 			javax.jcr.Repository repository = 
 				SessionManager.getInstance().getRepository(); 
 			SimpleCredentials creds =
-                new SimpleCredentials("username", "password".toCharArray());
+                new SimpleCredentials(JLibraryProperties.getProperty(JLibraryProperties.JLIBRARY_SYSTEM_USERNAME, "username"), JLibraryProperties.getProperty(JLibraryProperties.JLIBRARY_SYSTEM_PASSWORD, "password").toCharArray());
 			
 			logger.info("Trying to login into the repository.");
 			javax.jcr.Session session = repository.login(creds,workspaceName);
