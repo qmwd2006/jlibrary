@@ -163,7 +163,7 @@ public class JCRSearchService implements SearchService {
 				javax.jcr.query.Row row = (javax.jcr.query.Row) it.nextRow();
 				String textExcerpt = "";
 				try {
-					Value excerpt = row.getValue("rep:excerpt()");
+					Value excerpt = row.getValue("rep:excerpt(.)");
 					textExcerpt = excerpt.getString();
 				} catch (Exception e) {
 					logger.warn("Exception getting excerpt: " + e.getMessage());
