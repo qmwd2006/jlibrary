@@ -265,7 +265,7 @@ public abstract class GenericProperties implements Serializable {
 	public void addCustomProperty(Object key, 
 								  Object value) {
 		
-		if (value != null) {
+//		if (value != null) {
 			PropertyDef property = new PropertyDef();
 			property.setKey(key);
 			property.setValue(value);
@@ -275,7 +275,7 @@ public abstract class GenericProperties implements Serializable {
 			} catch (Exception e) {
 				// No exceptions will be thrown for custom properties
 			}
-		}
+//		}
 	}	
 	
 	/**
