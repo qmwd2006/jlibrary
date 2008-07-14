@@ -515,7 +515,9 @@ public class JCRAdapter {
 			javax.jcr.Node authorNode = 
 				node.getSession().getNodeByUUID(authorUUID);
 			metadata.setAuthor(createAuthor(authorNode));	
-		}
+		} else {
+            metadata.setAuthor(Author.UNKNOWN);
+        }
 		
 		if (node.hasProperty(JLibraryConstants.JLIBRARY_KEYWORDS)) {
 			metadata.setKeywords(node.getProperty(
