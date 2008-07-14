@@ -59,6 +59,7 @@ import org.jlibrary.core.repository.exception.NodeNotFoundException;
 import org.jlibrary.core.repository.exception.RepositoryAlreadyExistsException;
 import org.jlibrary.core.repository.exception.RepositoryException;
 import org.jlibrary.core.repository.exception.RepositoryNotFoundException;
+import org.jlibrary.core.repository.exception.UnknownMethodException;
 import org.jlibrary.core.security.SecurityException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -424,6 +425,30 @@ public class HTTPRepositoryDelegate extends HTTPDelegate implements RepositorySe
 		}				
 	}
 
+    public Document createDocument( Ticket ticket,
+                                    DocumentProperties docProperties,
+                                    InputStream content) throws RepositoryException,
+											 									 SecurityException {
+		
+		try {
+			Document d = (Document)doRepositoryStreamedRequest(
+					"createDocument",
+					new Object [] {ticket,docProperties}, 
+                    Document.class,
+                    content);
+			return d;
+		} catch (RuntimeException e) {
+            throw e;
+        } catch (RepositoryException e) {
+			if (e.getCause() != null) {
+				if (e.getCause().getClass() == SecurityException.class) {
+					throw (SecurityException)e.getCause();
+				}
+			}
+			throw e;
+		}				
+	}
+
 	public List createDocuments( Ticket ticket,
 								 List properties) throws RepositoryException,
 					 									 SecurityException {
@@ -471,16 +496,15 @@ public class HTTPRepositoryDelegate extends HTTPDelegate implements RepositorySe
 		
 	}
 
-	public Document updateDocument(Ticket ticket,
+    public Document updateDocument(Ticket ticket,
 							   	   DocumentProperties docProperties) throws RepositoryException, 
 							   						 	 					SecurityException,
 							   						 	 					ResourceLockedException {
-
-		try {
+    	try {
 			Document d = (Document)doRepositoryRequest(
 					"updateDocument",
 					new Object [] {ticket,docProperties}, 
-					Document.class);
+                    Document.class);
 			return d;	
 		} catch (Exception e) {
 			if (e.getCause() != null) {
@@ -492,7 +516,33 @@ public class HTTPRepositoryDelegate extends HTTPDelegate implements RepositorySe
 				}
 			}
 			throw (RepositoryException)e;
-		}			
+		}
+    }
+
+	public Document updateDocument(Ticket ticket,
+                                   DocumentProperties docProperties,
+                                   InputStream content) throws RepositoryException, 
+							   						 	 					SecurityException,
+							   						 	 					ResourceLockedException {
+
+		try {
+			Document d = (Document)doRepositoryStreamedRequest(
+					"updateDocument",
+					new Object [] {ticket,docProperties},
+                    Document.class,
+                    content);
+			return d;
+		} catch (Exception e) {
+			if (e.getCause() != null) {
+				if (e.getCause().getClass() == SecurityException.class) {
+					throw (SecurityException)e.getCause();
+				}
+				if (e.getCause().getClass() == ResourceLockedException.class) {
+					throw (ResourceLockedException)e.getCause();
+				}
+			}
+			throw (RepositoryException)e;
+		}
 	}
 	
 	public Directory updateDirectory(Ticket ticket,
@@ -1309,24 +1359,26 @@ public class HTTPRepositoryDelegate extends HTTPDelegate implements RepositorySe
 	
 		try {
 			doVoidRequest(methodName,params);
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (RepositoryException e) {
+            throw e;
 		} catch (Exception e) {
-			if (e instanceof RepositoryException) {
-				throw (RepositoryException)e;
-			}
-			throw new RepositoryException(e);			
+			throw new RepositoryException(e);
 		}
 	}
 	
 	public Object doRepositoryRequest(
-			String methodName, Object[] params, Class returnClass) throws RepositoryException {
+            String methodName, Object[] params, Class returnClass) throws RepositoryException {
 	
 		try {
 			return doRequest(methodName,params,returnClass,null);
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (RepositoryException e) {
+            throw e;
 		} catch (Exception e) {
-			if (e instanceof RepositoryException) {
-				throw (RepositoryException)e;
-			}		
-			throw new RepositoryException(e);			
+			throw new RepositoryException(e);
 		}
 	}
 	
@@ -1337,11 +1389,12 @@ public class HTTPRepositoryDelegate extends HTTPDelegate implements RepositorySe
 	
 		try {
 			doVoidRequest(methodName,params,stream);
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (RepositoryException e) {
+            throw e;
 		} catch (Exception e) {
-			if (e instanceof RepositoryException) {
-				throw (RepositoryException)e;
-			}
-			throw new RepositoryException(e);			
+			throw new RepositoryException(e);
 		}
 	}
 	
@@ -1353,11 +1406,12 @@ public class HTTPRepositoryDelegate extends HTTPDelegate implements RepositorySe
 	
 		try {
 			return doRequest(methodName,params,returnClass,stream);
+		} catch (RuntimeException e) {
+            throw e;
+        } catch (RepositoryException e) {
+            throw e;
 		} catch (Exception e) {
-			if (e instanceof RepositoryException) {
-				throw (RepositoryException)e;
-			}		
-			throw (RepositoryException)e;			
+			throw new RepositoryException(e);
 		}
 	}
 
@@ -1534,5 +1588,24 @@ public class HTTPRepositoryDelegate extends HTTPDelegate implements RepositorySe
 				}
 			}			
 			throw (RepositoryException)e;
-		}	}	
+		}
+    }
+
+    public String getJLibraryAPIVersion() throws UnknownMethodException {
+        try {
+            String version = (String) doRepositoryRequest(
+                    "getJLibraryAPIVersion",
+                    new Object[] {},
+                    String.class);
+            return version;
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (RepositoryException e) {
+            // TODO: another way?
+            if (e.getCause() != null && (e.getCause() instanceof NoSuchMethodException)) {
+                throw new UnknownMethodException(e.getCause());
+            }
+            throw new RuntimeException(e);
+        }
+    }
 }

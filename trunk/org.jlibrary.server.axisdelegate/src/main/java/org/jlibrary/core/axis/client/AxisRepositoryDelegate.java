@@ -83,7 +83,9 @@ import org.jlibrary.core.properties.CustomPropertyDefinition;
 import org.jlibrary.core.properties.DirectoryProperties;
 import org.jlibrary.core.properties.DocumentProperties;
 import org.jlibrary.core.properties.GenericProperties;
+import org.jlibrary.core.properties.InvalidPropertyTypeException;
 import org.jlibrary.core.properties.PropertyDef;
+import org.jlibrary.core.properties.PropertyNotFoundException;
 import org.jlibrary.core.properties.RepositoryProperties;
 import org.jlibrary.core.properties.ResourceNodeProperties;
 import org.jlibrary.core.repository.RepositoryService;
@@ -96,6 +98,7 @@ import org.jlibrary.core.repository.exception.RecentlyRemovedRepositoryException
 import org.jlibrary.core.repository.exception.RepositoryAlreadyExistsException;
 import org.jlibrary.core.repository.exception.RepositoryException;
 import org.jlibrary.core.repository.exception.RepositoryNotFoundException;
+import org.jlibrary.core.repository.exception.UnknownMethodException;
 import org.jlibrary.core.security.SecurityException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -659,6 +662,29 @@ public class AxisRepositoryDelegate implements RepositoryService {
 		}
 	}
 
+    public Document createDocument( Ticket ticket,
+                                    DocumentProperties docProperties,
+                                    InputStream contentStream) throws RepositoryException,
+											 									 SecurityException {
+    	byte[] content;
+		try {
+			content = IOUtils.toByteArray(contentStream);
+		} catch (IOException e) {
+			logger.error(e.getMessage(),e);
+			throw new RepositoryException(e);
+		}
+        try {
+            docProperties.setProperty(DocumentProperties.DOCUMENT_CONTENT, content);
+        } catch (PropertyNotFoundException e) {
+    		logger.error(e.getMessage(),e);
+			throw new RepositoryException(e);
+        } catch (InvalidPropertyTypeException e) {
+    		logger.error(e.getMessage(),e);
+			throw new RepositoryException(e);
+        }
+        return createDocument(ticket, docProperties);
+    }
+
 	public List createDocuments( Ticket ticket,
 								 List properties) throws RepositoryException,
 					 									 SecurityException {
@@ -783,6 +809,30 @@ public class AxisRepositoryDelegate implements RepositoryService {
 		}
 			
 	}
+
+    public Document updateDocument(Ticket ticket,
+                                   DocumentProperties docProperties,
+                                   InputStream contentStream) throws RepositoryException, 
+							   						 	 					SecurityException,
+							   						 	 					ResourceLockedException {
+    	byte[] content;
+		try {
+			content = IOUtils.toByteArray(contentStream);
+		} catch (IOException e) {
+			logger.error(e.getMessage(),e);
+			throw new RepositoryException(e);
+		}
+        try {
+            docProperties.setProperty(DocumentProperties.DOCUMENT_CONTENT, content);
+        } catch (PropertyNotFoundException e) {
+    		logger.error(e.getMessage(),e);
+			throw new RepositoryException(e);
+        } catch (InvalidPropertyTypeException e) {
+    		logger.error(e.getMessage(),e);
+			throw new RepositoryException(e);
+        }
+        return updateDocument(ticket, docProperties);
+    }
 	
 	public Directory updateDirectory(Ticket ticket,
 									 DirectoryProperties directoryProperties) throws RepositoryException,
@@ -2442,5 +2492,30 @@ public class AxisRepositoryDelegate implements RepositoryService {
 			    throw new RepositoryException(fault.getFaultString());
 			}
 		}
-	}	
+	}
+
+    public String getJLibraryAPIVersion() throws UnknownMethodException {
+    	try {
+			call.removeAllParameters();
+
+			call.setTargetEndpointAddress(new java.net.URL(endpoint));
+			call.setOperationName("getJLibraryAPIVersion");
+
+			call.setReturnType(XMLType.XSD_STRING);
+
+			String version = (String) call.invoke(new Object[] {});
+            return version;
+        } catch (RuntimeException e) {
+            throw e;
+		} catch (Exception e) {
+			// I don't know if there is a better way to do this
+			AxisFault fault = (AxisFault) e;
+            if (fault.getFaultString().indexOf("UnknownMethodException") != -1
+                    || fault.getFaultString().indexOf("NoSuchMethodException") != -1) {
+				throw new UnknownMethodException(fault.getFaultString());
+			} else {
+    			throw new RuntimeException(fault.getFaultString());
+            }
+		}
+    }
 }

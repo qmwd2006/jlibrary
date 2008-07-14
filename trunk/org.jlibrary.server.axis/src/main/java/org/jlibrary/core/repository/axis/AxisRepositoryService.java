@@ -73,6 +73,7 @@ import org.jlibrary.core.repository.exception.NodeNotFoundException;
 import org.jlibrary.core.repository.exception.RepositoryAlreadyExistsException;
 import org.jlibrary.core.repository.exception.RepositoryException;
 import org.jlibrary.core.repository.exception.RepositoryNotFoundException;
+import org.jlibrary.core.repository.exception.UnknownMethodException;
 import org.jlibrary.core.security.SecurityException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -307,6 +308,13 @@ public class AxisRepositoryService implements RepositoryService {
 		
 		return service.createDocument(ticket,docProperties);	
 	}
+
+    public Document createDocument( Ticket ticket,
+                                    DocumentProperties docProperties,
+                                    InputStream content) throws RepositoryException,	
+		 	 								 									 SecurityException {
+        throw new UnsupportedOperationException();
+    }
 			
 	public List createDocuments( Ticket ticket,
 								 List properties) throws RepositoryException,	
@@ -497,6 +505,14 @@ public class AxisRepositoryService implements RepositoryService {
 		}		
 		return service.updateDocument(ticket,docProperties);	
 	}
+
+    public Document updateDocument(Ticket ticket,
+                                   DocumentProperties docProperties,
+                                   InputStream content) throws RepositoryException, 
+								   					     					SecurityException,
+								   					     					ResourceLockedException {
+        throw new UnsupportedOperationException();
+    }
 
 	public Author findAuthorByName(Ticket ticket,
 								   String name) throws AuthorNotFoundException,
@@ -1092,4 +1108,10 @@ public class AxisRepositoryService implements RepositoryService {
 			JLibraryServiceFactory.getInstance(localProfile).getRepositoryService();
 		return service.updateContent(ticket, docId,content);
 	}
+
+    public String getJLibraryAPIVersion() throws UnknownMethodException {
+    	org.jlibrary.core.repository.RepositoryService service = 
+			JLibraryServiceFactory.getInstance(localProfile).getRepositoryService();
+		return service.getJLibraryAPIVersion();
+    }
 }

@@ -29,6 +29,7 @@ public class JLibraryConstants {
 	public static final String VERSION_1_0_2 = "1.0.2";
 	public static final String VERSION_1_0_3 = "1.0.3";
 	public static final String VERSION_1_1 = "1.1";
+    public static final String VERSION_1_2 = "1.2";
 	
     /**
      * Prefix reserved for names of the items defined in the built-in node
