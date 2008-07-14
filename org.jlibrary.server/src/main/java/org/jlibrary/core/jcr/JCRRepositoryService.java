@@ -100,6 +100,7 @@ import org.jlibrary.core.repository.exception.RepositoryException;
 import org.jlibrary.core.repository.exception.RepositoryNotFoundException;
 import org.jlibrary.core.security.SecurityException;
 import org.jlibrary.core.util.FileUtils;
+import org.jlibrary.core.util.SaveUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -220,7 +221,7 @@ public class JCRRepositoryService implements RepositoryService {
 												   ticket.getUser().getId());
 				addRestrictionsToNode(child,parent,userNode);
 				if (ticket.isAutocommit()) {
-					session.save();
+                    SaveUtils.safeSaveSession(session);
 				}
 			}
 			return JCRAdapter.createDirectory(child,
@@ -301,7 +302,7 @@ public class JCRRepositoryService implements RepositoryService {
 			}			
 						
 			if (ticket.isAutocommit()) {
-				session.save();
+                SaveUtils.safeSaveSession(session);
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
@@ -539,11 +540,12 @@ public class JCRRepositoryService implements RepositoryService {
 				
 					javax.jcr.Node node = internalCreateDocument(session,
 										 						 ticket,
-										 						 docProperties);
+                                                                 docProperties,
+                                                                 null);
 					nodes.add(node);
 				}
 				if (ticket.isAutocommit()) {
-					session.save();
+                    SaveUtils.safeSaveSession(session);
 				}
 			}
 			it = nodes.iterator();
@@ -565,9 +567,17 @@ public class JCRRepositoryService implements RepositoryService {
 		
 		return documents;
 	}	
+
+    public Document createDocument(Ticket ticket, 
+			   					   DocumentProperties properties) 
+													throws RepositoryException, 
+														   SecurityException {
+        return createDocument(ticket, properties, null);
+    }
 	
 	public Document createDocument(Ticket ticket, 
-			   					   DocumentProperties properties) 
+                                   DocumentProperties properties,
+                                   InputStream content) 
 													throws RepositoryException, 
 														   SecurityException {
 		
@@ -579,9 +589,15 @@ public class JCRRepositoryService implements RepositoryService {
 			javax.jcr.Node parent = session.getNodeByUUID(parentId);
 			javax.jcr.Node node = null;
 			synchronized (LockUtility.obtainLock(parent)) {
-				node = internalCreateDocument(session,ticket,properties);
+				node = internalCreateDocument(session,ticket,properties,content);
 				if (ticket.isAutocommit()) {
-					session.save();
+                    SaveUtils.safeSaveSession(session);
+                    if (content != null) {
+                        // data stream has been given, so we should probably
+                        // create a version
+                        node.checkin();
+                        node.checkout();
+                    }
 				}
 			}
 			javax.jcr.Node root = JCRUtils.getRootNode(session);
@@ -599,7 +615,8 @@ public class JCRRepositoryService implements RepositoryService {
 	
 	private javax.jcr.Node internalCreateDocument(javax.jcr.Session session,
 												  Ticket ticket, 
-								   				  DocumentProperties properties) 
+                                                  DocumentProperties properties,
+                                                  InputStream contentStream) 
 													throws RepositoryException, 
 														   SecurityException {
 	
@@ -727,14 +744,20 @@ public class JCRRepositoryService implements RepositoryService {
 												   JCRConstants.JCR_RESOURCE);
 			resNode.addMixin(JLibraryConstants.CONTENT_MIXIN);
 	
-			byte[] content = (byte[])properties.getProperty(
+            InputStream streamToSet;
+            if (contentStream == null) {
+			    byte[] content = (byte[])properties.getProperty(
 								DocumentProperties.DOCUMENT_CONTENT).getValue();
-			if (content == null) {
-				// Empty file
-				content = new byte[]{};
-			}
-	
-			bais = new ByteArrayInputStream(content);
+			    if (content == null) {
+				    // Empty file
+				    content = new byte[]{};
+			    }
+			    bais = new ByteArrayInputStream(content);
+                streamToSet = bais;
+            } else {
+                streamToSet = contentStream;
+            }
+
 			//TODO: Handle encoding
 			String mimeType = 
 				Types.getMimeTypeForExtension(FileUtils.getExtension(path));
@@ -742,12 +765,12 @@ public class JCRRepositoryService implements RepositoryService {
 	        resNode.setProperty (JCRConstants.JCR_ENCODING, 
 	        					 JCRConstants.DEFAULT_ENCODING);
 	        resNode.setProperty (JCRConstants.JCR_DATA, 
-	        					 new ByteArrayInputStream(content));
+	        					 streamToSet);
 	        Calendar lastModified = Calendar.getInstance ();
 	        lastModified.setTimeInMillis (new Date().getTime());
 	        resNode.setProperty (JCRConstants.JCR_LAST_MODIFIED, lastModified);
 	
-			child.setProperty(JLibraryConstants.JLIBRARY_SIZE,content.length);
+			child.setProperty(JLibraryConstants.JLIBRARY_SIZE,resNode.getProperty(JCRConstants.JCR_DATA).getLength());
 	        
 			return child;
 		} catch (Throwable e) {
@@ -814,7 +837,7 @@ public class JCRRepositoryService implements RepositoryService {
 				JCRUtils.deactivate(document);
 			}
 			if (ticket.isAutocommit()) {
-				session.save();
+                SaveUtils.safeSaveSession(session);
 			}
 		} catch (ResourceLockedException rle) {
 			throw rle;
@@ -1108,8 +1131,17 @@ public class JCRRepositoryService implements RepositoryService {
 		}
 	}
 
-	public Document updateDocument(Ticket ticket, 
+    public Document updateDocument(Ticket ticket, 
 								   DocumentProperties properties) 
+										throws RepositoryException, 
+											   SecurityException, 
+											   ResourceLockedException {
+        return updateDocument(ticket, properties, null);
+    }
+
+	public Document updateDocument(Ticket ticket, 
+                                   DocumentProperties properties,
+                                   InputStream contentStream) 
 										throws RepositoryException, 
 											   SecurityException, 
 											   ResourceLockedException {
@@ -1343,29 +1375,37 @@ public class JCRRepositoryService implements RepositoryService {
 				}
 				
 				// Handle content
+                byte[] content = null;
 				if (properties.getProperty(
 						DocumentProperties.DOCUMENT_CONTENT) != null) {
-					byte[] content = (byte[])properties.getProperty(
+					content = (byte[])properties.getProperty(
 							DocumentProperties.DOCUMENT_CONTENT).getValue();
-					if (content != null) {
-						javax.jcr.Node child = node.getNode(JCRConstants.JCR_CONTENT); 				
-						
-						bais = new ByteArrayInputStream(content);
-						String path = node.getProperty(
-								JLibraryConstants.JLIBRARY_PATH).getString();
-						String mimeType = 
-							Types.getMimeTypeForExtension(FileUtils.getExtension(path));
-				        child.setProperty (JCRConstants.JCR_MIME_TYPE, mimeType);
-				        child.setProperty (JCRConstants.JCR_ENCODING, 
-				        					 JCRConstants.DEFAULT_ENCODING);
-				        child.setProperty (JCRConstants.JCR_DATA, 
-				        					 new ByteArrayInputStream(content));
-				        Calendar lastModified = Calendar.getInstance ();
-				        lastModified.setTimeInMillis (new Date().getTime());
-				        child.setProperty (JCRConstants.JCR_LAST_MODIFIED, lastModified);
-											
-						node.setProperty(JLibraryConstants.JLIBRARY_SIZE,content.length);
-					}
+                }
+				if (contentStream != null || content != null) {
+                    // need to update content too
+					javax.jcr.Node child = node.getNode(JCRConstants.JCR_CONTENT);
+					
+                    InputStream streamToSet;
+                    if (contentStream == null) {
+					    bais = new ByteArrayInputStream(content);
+                        streamToSet = bais;
+                    } else {
+                        streamToSet = contentStream;
+                    }
+					String path = node.getProperty(
+							JLibraryConstants.JLIBRARY_PATH).getString();
+					String mimeType = 
+						Types.getMimeTypeForExtension(FileUtils.getExtension(path));
+			        child.setProperty (JCRConstants.JCR_MIME_TYPE, mimeType);
+			        child.setProperty (JCRConstants.JCR_ENCODING, 
+			        					 JCRConstants.DEFAULT_ENCODING);
+			        child.setProperty (JCRConstants.JCR_DATA, 
+			        					 streamToSet);
+			        Calendar lastModified = Calendar.getInstance ();
+			        lastModified.setTimeInMillis (new Date().getTime());
+			        child.setProperty (JCRConstants.JCR_LAST_MODIFIED, lastModified);
+										
+					node.setProperty(JLibraryConstants.JLIBRARY_SIZE,child.getProperty(JCRConstants.JCR_DATA).getLength());
 				}
 								
 				String previousName = 
@@ -1389,7 +1429,7 @@ public class JCRRepositoryService implements RepositoryService {
 				
 				
 				if (ticket.isAutocommit()) {
-					session.save();
+                    SaveUtils.safeSaveSession(session);
 				}
 				
 				// create first version
@@ -1463,7 +1503,7 @@ public class JCRRepositoryService implements RepositoryService {
 				}
 				
 				if (ticket.isAutocommit()) {
-					session.save();
+                    SaveUtils.safeSaveSession(session);
 				}
 			}
 			return JCRAdapter.createDirectory(directory,
@@ -1528,7 +1568,7 @@ public class JCRRepositoryService implements RepositoryService {
 				}
 				
 				if (ticket.isAutocommit()) {
-					session.save();
+                    SaveUtils.safeSaveSession(session);
 				}
 			}			
 			return JCRAdapter.createRepository(ticket,name,repositoryNode);
@@ -1578,7 +1618,7 @@ public class JCRRepositoryService implements RepositoryService {
 							 node.getParent().getPath() + "/" + escapedName);
 				
 				if (ticket.isAutocommit()) {
-					session.save();
+                    SaveUtils.safeSaveSession(session);
 				}
 				if (node.isNodeType(JLibraryConstants.RESOURCE_MIXIN) ||
 					node.isNodeType(JLibraryConstants.DOCUMENT_MIXIN)) {
@@ -2053,7 +2093,7 @@ public class JCRRepositoryService implements RepositoryService {
 				changePathRecursively(resultNode,destination);
 				
 				if (ticket.isAutocommit()) {
-					session.save();
+                    SaveUtils.safeSaveSession(session);
 				}
 			}			
 			return resultNode;
@@ -2148,7 +2188,12 @@ public class JCRRepositoryService implements RepositoryService {
 				changePathRecursively(resultNode,destination);	
 				
 				if (ticket.isAutocommit()) {
-					session.save();
+                    SaveUtils.safeSaveSession(session);
+                    if (source.isNodeType(JLibraryConstants.DOCUMENT_MIXIN)) {
+                        // that's document, let's make its version
+                        resultNode.checkin();
+                        resultNode.checkout();
+                    }
 				}
 			}
 			return resultNode;
@@ -2414,7 +2459,7 @@ public class JCRRepositoryService implements RepositoryService {
 			throw new RepositoryException("Session has expired. Please log in again.");
 		}
 		try {
-			session.save();
+            SaveUtils.safeSaveSession(session);
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 			throw new RepositoryException(e);
@@ -2528,7 +2573,7 @@ public class JCRRepositoryService implements RepositoryService {
 			    //TODO: Check how to update size						
 			    //node.setProperty(JLibraryConstants.JLIBRARY_SIZE,content.length);
 				if (ticket.isAutocommit()) {
-					session.save();
+                    SaveUtils.safeSaveSession(session);
 					
 					if (node.isNodeType(JCRConstants.JCR_VERSIONABLE)) {
 						// create first version
@@ -2550,6 +2595,14 @@ public class JCRRepositoryService implements RepositoryService {
 			logger.error(e.getMessage(),e);
 			throw new RepositoryException(e);
 		}
-	}	
-	
+	}
+
+	public String getJLibraryAPIVersion() {
+        // Implementation note: this method should be as simple as possible,
+        // so when the callers get the NoSuchMethodException when calling this
+        // method, they could be sure that this is because the server API is
+        // old and it does not contain this method, and not because of some
+        // induced exception.
+        return JLibraryConstants.VERSION_1_2;
+    }
 }

@@ -55,6 +55,7 @@ import org.jlibrary.core.repository.exception.NodeNotFoundException;
 import org.jlibrary.core.repository.exception.RepositoryAlreadyExistsException;
 import org.jlibrary.core.repository.exception.RepositoryException;
 import org.jlibrary.core.repository.exception.RepositoryNotFoundException;
+import org.jlibrary.core.repository.exception.UnknownMethodException;
 import org.jlibrary.core.security.SecurityException;
 
 /**
@@ -262,6 +263,24 @@ public interface RepositoryService {
 	 * 
 	 * @param ticket Ticket with user information
 	 * @param docProperties Properties of the document
+     * @param content input stream with data, if not null it takes presedence over
+     * content in docProperties
+	 * 
+	 * @return Document New created document
+	 * 
+	 * @throws RepositoryException If the document can't be added to the repository
+	 * @throws SecurityException If the user don't have enough permisssions to add a document to the repository
+	 */
+	public Document createDocument( Ticket ticket,
+                                    DocumentProperties docProperties,
+                                    InputStream content) throws RepositoryException,
+										 	 									 	  SecurityException;
+
+    /**
+	 * Adds a document to a repository in a given directory
+	 * 
+	 * @param ticket Ticket with user information
+	 * @param docProperties Properties of the document
 	 * 
 	 * @return Document New created document
 	 * 
@@ -415,6 +434,24 @@ public interface RepositoryService {
 			   				   	   DocumentProperties docProperties) throws RepositoryException, 
 								   						 					SecurityException,
 								   						 					ResourceLockedException;
+
+    /**
+	 * @param ticket Ticket with user information
+	 * @param docProperties updated properties
+     * @param content input stream with data, if not null it takes presedence over
+     * content in docProperties
+	 * 
+	 * @return Document updated document instance
+	 * 
+	 * @throws RepositoryException if the document can't be updated
+	 * @throws SecurityException If the user don't have enough permissions to update the document
+	 * @throws ResourceLockedException If the document is locked by another user
+	 */
+    public Document updateDocument(Ticket ticket,
+			   				   	   DocumentProperties docProperties,
+                                   InputStream content) throws RepositoryException, 
+								   						  SecurityException,
+								   						  ResourceLockedException;
 
 	/**
 	 * Updates directory properties
@@ -1127,6 +1164,15 @@ public interface RepositoryService {
 	 */	
 	public boolean isPropertyRegistered(Ticket ticket, String uri, String propertyName) throws RepositoryException;
 
+    /**
+     * Returns the jLibrary API version.
+     *
+     * @return jLibrary API version
+     * @throws UnknownMethodException throw if the service does not support
+     * this method actually (this is actually for remove implementations which
+     * may communicate with old server)
+     */
+    public String getJLibraryAPIVersion() throws UnknownMethodException;
 		
 }
 
