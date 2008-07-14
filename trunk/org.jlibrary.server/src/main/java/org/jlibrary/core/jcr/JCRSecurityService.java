@@ -48,6 +48,7 @@ import javax.naming.NamingException;
 
 import org.apache.jackrabbit.core.WorkspaceImpl;
 import org.apache.jackrabbit.core.jndi.RegistryHelper;
+import org.jlibrary.core.config.JLibraryProperties;
 import org.jlibrary.core.entities.Author;
 import org.jlibrary.core.entities.Credentials;
 import org.jlibrary.core.entities.Group;
@@ -116,6 +117,8 @@ public class JCRSecurityService implements SecurityService {
 				logger.info(
 					"No jLibrary system session defined. Initializing jLibrary system session");
 	        	checkSystemWorkspace();
+                // reading system session as it has been initialized
+                systemSession = SessionManager.getInstance().getSystemSession();
 			}
 	        
 	        // Now lookup for pending delete operations
@@ -291,7 +294,7 @@ public class JCRSecurityService implements SecurityService {
 		
 		try {
 			SimpleCredentials creds =
-                new SimpleCredentials("admin", "admin".toCharArray());
+                new SimpleCredentials(JLibraryProperties.getProperty(JLibraryProperties.JLIBRARY_SYSTEM_USERNAME, "admin"), JLibraryProperties.getProperty(JLibraryProperties.JLIBRARY_SYSTEM_PASSWORD, "changeme").toCharArray());
 			javax.jcr.Session systemSession = null;
             try {
     			logger.info("Login into system workspace...");

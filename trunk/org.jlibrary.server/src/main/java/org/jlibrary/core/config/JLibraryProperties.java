@@ -41,6 +41,8 @@ public class JLibraryProperties {
 	
 	public static final String JLIBRARY_REPOSITORIES_HOME = "jlibrary.repositories.home";
 	public static final String JLIBRARY_HOME = "jlibrary.home";
+    public static final String JLIBRARY_SYSTEM_USERNAME = "jlibrary.system.username";
+	public static final String JLIBRARY_SYSTEM_PASSWORD = "jlibrary.system.password";
 	
 	private static Properties properties = null;
 	
@@ -82,6 +84,22 @@ public class JLibraryProperties {
 		return properties.getProperty(key);
 		
 	}
+
+    /**
+     * Returns property value or default value if property value is null.
+     *
+     * @param key           property name
+     * @param defaultValue  default value which will be returned if requested
+     * property value is null
+     * @return property value
+     */
+    public synchronized static String getProperty(String key, String defaultValue) {
+        String value = getProperty(key);
+        if (value == null) {
+            value = defaultValue;
+        }
+        return value;
+    }
 
 	private synchronized static void init() {
 		

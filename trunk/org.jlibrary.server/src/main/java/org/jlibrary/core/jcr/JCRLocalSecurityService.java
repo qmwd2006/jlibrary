@@ -84,6 +84,8 @@ public class JCRLocalSecurityService extends JCRSecurityService {
 	        javax.jcr.Session systemSession = SessionManager.getInstance().getSystemSession();
 	        if (systemSession == null) {
 	        	checkSystemWorkspace();
+                // reading system session as it has been initialized
+                systemSession = SessionManager.getInstance().getSystemSession();
 	        }
 	        
 	        new JCRCleanupModule().deletePendingWorkspaces(systemSession);

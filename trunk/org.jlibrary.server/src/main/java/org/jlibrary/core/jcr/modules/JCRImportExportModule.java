@@ -44,6 +44,7 @@ import javax.jcr.SimpleCredentials;
 import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.core.WorkspaceImpl;
 import org.apache.jackrabbit.core.config.ConfigurationException;
+import org.jlibrary.core.config.JLibraryProperties;
 import org.jlibrary.core.entities.Ticket;
 import org.jlibrary.core.jcr.JCRSecurityService;
 import org.jlibrary.core.jcr.JCRUtils;
@@ -253,7 +254,7 @@ public class JCRImportExportModule {
 			
 			javax.jcr.Repository repository = SessionManager.getInstance().getRepository();
 			SimpleCredentials creds =
-			    new SimpleCredentials("username", "password".toCharArray());
+			    new SimpleCredentials(JLibraryProperties.getProperty(JLibraryProperties.JLIBRARY_SYSTEM_USERNAME, "username"), JLibraryProperties.getProperty(JLibraryProperties.JLIBRARY_SYSTEM_PASSWORD, "password").toCharArray());
 			
 			systemSession = repository.login(creds,name);
 			
@@ -350,7 +351,7 @@ public class JCRImportExportModule {
 			
 			javax.jcr.Repository repository = SessionManager.getInstance().getRepository();
 			SimpleCredentials creds =
-			    new SimpleCredentials("username", "password".toCharArray());
+			    new SimpleCredentials(JLibraryProperties.getProperty(JLibraryProperties.JLIBRARY_SYSTEM_USERNAME, "username"), JLibraryProperties.getProperty(JLibraryProperties.JLIBRARY_SYSTEM_PASSWORD, "password").toCharArray());
 			
 			systemSession = repository.login(creds,name);
 			
