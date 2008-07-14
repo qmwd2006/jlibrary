@@ -65,6 +65,8 @@ public class SessionManager {
 	
 	private List<SessionManagerListener> listeners = 
 		new ArrayList<SessionManagerListener>();
+
+    private ScheduledExecutorService executorService;
 	
 	/**
 	 * Singleton
@@ -75,11 +77,11 @@ public class SessionManager {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Starting session manager");
 		}
-		ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
+		executorService = Executors.newScheduledThreadPool(1);
 		if (logger.isDebugEnabled()) {
 			logger.debug("Scheduling session eviction thread");
 		}
-		service.scheduleAtFixedRate(new Runnable() {
+		executorService.scheduleAtFixedRate(new Runnable() {
 			public void run() {
 				if (logger.isDebugEnabled()) {
 					logger.debug("Running session cleaning process. There are " + sessions.size() + " opened sessions");
@@ -253,5 +255,15 @@ public class SessionManager {
 		return instance;
 	}
 	
-	
+    /**
+     * This shuts background tasks (at this time, this is session eviction
+     * task).
+     * Be careful! This should be only called AFTER jLibrary has been stopped.
+     */
+    public static void shutdown() {
+    	if (logger.isDebugEnabled()) {
+			logger.debug("Shutting executor service down");
+		}
+        instance.executorService.shutdownNow();
+    }
 }
