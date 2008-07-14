@@ -81,6 +81,10 @@ public class JCRLocksModule {
 			}
 			
 			checkLockAccess(ticket,node);		
+
+            if (!node.isCheckedOut()) {
+                node.checkout();
+            }
 			
 			javax.jcr.lock.Lock lock = node.lock(false,false);
 			
@@ -122,6 +126,10 @@ public class JCRLocksModule {
 			}
 			
 			checkLockAccess(ticket,node);
+
+            if (!node.isCheckedOut()) {
+                node.checkout();
+            }
 
 			node.unlock();
 			node.setProperty(JCRConstants.JCR_LOCK_TOKEN,(Value)null);
