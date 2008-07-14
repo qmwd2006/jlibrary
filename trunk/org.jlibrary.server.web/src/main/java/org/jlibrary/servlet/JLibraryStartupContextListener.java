@@ -7,6 +7,7 @@ import java.util.Properties;
 import javax.servlet.*;
 
 
+import org.jlibrary.core.jcr.SessionManager;
 import org.jlibrary.core.entities.Credentials;
 import org.jlibrary.core.entities.ServerProfile;
 import org.jlibrary.core.entities.Ticket;
@@ -39,6 +40,7 @@ public class JLibraryStartupContextListener implements ServletContextListener {
 	public void contextDestroyed(ServletContextEvent arg0) {
 		logger.info("Stoping jlibrary...");
 		//TODO stop jlibrary server here
+        SessionManager.shutdown();
 		logger.info("JLibrary stopped!.");
 	}
 
