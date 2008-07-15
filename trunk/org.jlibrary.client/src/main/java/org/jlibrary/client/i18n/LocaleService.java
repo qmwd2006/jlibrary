@@ -1,7 +1,7 @@
 /*
 * jLibrary, Open Source Document Management System
 * 
-* Copyright (c) 2003-2006, Martín Pérez Mariñán, and individual 
+* Copyright (c) 2003-2006, MartÃ­n PÃ©rez MariÃ±Ã¡n, and individual 
 * contributors as indicated by the @authors tag. See copyright.txt in the
 * distribution for a full listing of individual contributors.
 * All rights reserved.
@@ -55,7 +55,7 @@ public class LocaleService {
 	private static final String[] supportedDocumentLanguages = 
 		new String[]{DocumentMetaData.UNKNOWN_LANGUAGE, 
 					 "es","en","ca","eu","gl","va","de","fr","du",
-					 "fi","no","sw","ru","it","po"
+					 "fi","no","sw","pl","ru","it","po"
 					};
 	
 	public static final String LOCALE_PREFERENCE ="locale.preference";
@@ -84,10 +84,11 @@ public class LocaleService {
 		bundleProperties = new Properties();
 		String messagesFile = "/resources/messages/messages.properties";		
 		InputStream urlIs = null;
+		URL url = null;
 		try {
 			Bundle rcpBundle = Platform.getBundle("org.jlibrary.client");
 			Path path = new Path("$nl$" + messagesFile);
-			URL url = FileLocator.find(rcpBundle,path,null);
+			url = FileLocator.find(rcpBundle,path,null);
 			urlIs = url.openStream();
 			bundleProperties.load(urlIs);
 		} catch (IOException e) {
@@ -125,6 +126,12 @@ public class LocaleService {
 		}
 		sortedLanguageDescriptions = new String[languageDescriptions.length];
 		System.arraycopy(languageDescriptions,0,sortedLanguageDescriptions,0,languageDescriptions.length);
+		for (int i = 0; i < sortedLanguageDescriptions.length; i++) {
+			String s = sortedLanguageDescriptions[i];
+			if (s == null) {
+				logger.error("Language [" + i + "]" +" is missing it's translation in the " + url );
+			}
+		}
 		Arrays.sort(sortedLanguageDescriptions);
 		
 		uiDescriptions = new String[supportedUILanguages.length];
