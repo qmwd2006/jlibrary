@@ -53,6 +53,7 @@ import org.jlibrary.core.entities.ServerProfile;
 import org.jlibrary.core.entities.Ticket;
 import org.jlibrary.core.entities.Types;
 import org.jlibrary.core.factory.JLibraryServiceFactory;
+import org.jlibrary.core.jcr.JLibraryConstants;
 import org.jlibrary.core.properties.DocumentProperties;
 import org.jlibrary.core.properties.InvalidPropertyTypeException;
 import org.jlibrary.core.properties.PropertyNotFoundException;
@@ -60,11 +61,13 @@ import org.jlibrary.core.properties.ResourceNodeProperties;
 import org.jlibrary.core.repository.RepositoryService;
 import org.jlibrary.core.repository.exception.AuthorNotFoundException;
 import org.jlibrary.core.repository.exception.RepositoryException;
+import org.jlibrary.core.repository.exception.UnknownMethodException;
 import org.jlibrary.core.search.extraction.ExtractionException;
 import org.jlibrary.core.search.extraction.HTMLExtractor;
 import org.jlibrary.core.search.extraction.HeaderMetaData;
 import org.jlibrary.core.security.SecurityException;
 import org.jlibrary.core.util.FileUtils;
+import org.jlibrary.core.util.JLibraryAPIUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -175,14 +178,34 @@ public class RepositoryHelper {
 			}
 		}		
 				
-		Document document = service.createDocument(ticket,properties);
+		Document document;
+
+        String apiVersion;
+        boolean version1_2;
+        try {
+            apiVersion = service.getJLibraryAPIVersion();
+            version1_2 = JLibraryAPIUtils.equalsOrExceeds(apiVersion,
+                    JLibraryConstants.VERSION_1_2);
+        } catch (UnknownMethodException e) {
+            // the server is old, it does not understand this
+            version1_2 = false;
+        }
 
 		if (file.exists()) {
 			// Stream content
 			FileInputStream fis = null;
 			try {
 				fis = new FileInputStream(file);
-				service.updateContent(ticket, document.getId(), fis);
+                if (version1_2) {
+                    // in this version, a method which allows to save both
+                    // meta-data and data was added
+                    document = service.createDocument(ticket,properties,fis);
+                } else {
+                    // using the old way: saving meta-data and data in the
+                    // separate calls
+                    document = service.createDocument(ticket,properties);
+  				    service.updateContent(ticket, document.getId(), fis);
+                }
 				if (modifiedFile) {
 					file.delete();
 				}
@@ -197,7 +220,10 @@ public class RepositoryHelper {
 					}
 				}
 			}
-		}
+		} else {
+            // only the meta-data has to be created
+            document = service.createDocument(ticket,properties);
+        }
 		
 		EntityRegistry.getInstance().addNode(document);
 
