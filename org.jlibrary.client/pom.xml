@@ -25,19 +25,27 @@
     <dependency>
       <groupId>jlibrary</groupId>
       <artifactId>org.jlibrary.server</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>1.2-SNAPSHOT</version>
       <scope>compile</scope>
+      <!-- Removing junit dependency as it's in the compile dependencies
+          of jackrabbit-spi-commons-1.4 for some reason -->
+      <exclusions>
+        <exclusion>
+          <artifactId>junit</artifactId>
+          <groupId>junit</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>jlibrary</groupId>
       <artifactId>org.jlibrary.server.httpdelegate</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>1.2-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>jlibrary</groupId>
       <artifactId>org.jlibrary.extractors</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>1.2-SNAPSHOT</version>
     </dependency>         
     <dependency>
       <groupId>freemarker</groupId>
