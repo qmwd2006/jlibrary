@@ -12,7 +12,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/freemarker-2.3.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/htmlparser-1.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jackrabbit-api-1.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jackrabbit-core-1.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jackrabbit-core-1.4.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jackrabbit-jcr-commons-1.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jackrabbit-jcr-server-1.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jackrabbit-spi-1.4.jar"/>
@@ -23,9 +23,9 @@
 	<classpathentry exported="true" kind="lib" path="lib/log4j-1.2.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/lucene-core-2.2.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/nekohtml-0.9.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/org.jlibrary.extractors-1.0-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/org.jlibrary.server.httpdelegate-1.0-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/org.jlibrary.server-1.0-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.jlibrary.extractors-1.2-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.jlibrary.server.httpdelegate-1.2-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.jlibrary.server-1.2-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/pdfbox-0.7.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/poi-2.5.1-final-20040804.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/servlet-api-2.4.jar"/>

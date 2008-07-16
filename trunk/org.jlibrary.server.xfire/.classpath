@@ -73,7 +73,7 @@
   <classpathentry kind="var" path="M2_REPO/commons-discovery/commons-discovery/0.2/commons-discovery-0.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/xml-security/xmlsec/1.3.0/xmlsec-1.3.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/jmock/jmock/1.0.1/jmock-1.0.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/jlibrary/org.jlibrary.server/1.0-SNAPSHOT/org.jlibrary.server-1.0-SNAPSHOT.jar"/>
+  <classpathentry kind="var" path="M2_REPO/jlibrary/org.jlibrary.server/1.2-SNAPSHOT/org.jlibrary.server-1.2-SNAPSHOT.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-io/commons-io/1.2/commons-io-1.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/codehaus/xfire/xfire-generator/1.2.3/xfire-generator-1.2.3.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-httpclient/commons-httpclient/3.0/commons-httpclient-3.0.jar"/>
