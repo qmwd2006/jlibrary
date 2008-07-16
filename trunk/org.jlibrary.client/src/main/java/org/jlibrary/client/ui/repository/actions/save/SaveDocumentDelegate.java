@@ -61,10 +61,13 @@ import org.jlibrary.core.entities.ResourceNode;
 import org.jlibrary.core.entities.ServerProfile;
 import org.jlibrary.core.entities.Ticket;
 import org.jlibrary.core.factory.JLibraryServiceFactory;
+import org.jlibrary.core.jcr.JLibraryConstants;
 import org.jlibrary.core.properties.DocumentProperties;
 import org.jlibrary.core.repository.RepositoryService;
 import org.jlibrary.core.repository.exception.RepositoryException;
+import org.jlibrary.core.repository.exception.UnknownMethodException;
 import org.jlibrary.core.security.SecurityException;
+import org.jlibrary.core.util.JLibraryAPIUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,14 +104,34 @@ public class SaveDocumentDelegate extends SavingDelegate {
 		try {
 			DocumentProperties docProperties = document.dumpProperties();
 			boolean dirty = isEditorDirty(editor);			
-			monitor.subTask(Messages.getAndParseValue("job_save_document","%1",document.getName()));		
-			updatedDocument = service.updateDocument(ticket,docProperties);
+			monitor.subTask(Messages.getAndParseValue("job_save_document","%1",document.getName()));
+
+            String apiVersion;
+            boolean version1_2;
+            try {
+                apiVersion = service.getJLibraryAPIVersion();
+                version1_2 = JLibraryAPIUtils.equalsOrExceeds(apiVersion,
+                        JLibraryConstants.VERSION_1_2);
+            } catch (UnknownMethodException e) {
+                // the server is old, it does not understand this
+                version1_2 = false;
+            }
 			
+            updatedDocument = null;
 			if (dirty) {
 				InputStream is = null;
 				try {
 					is = ((FileEditorInput) editor.getEditorInput()).getFile().getContents();
-					service.updateContent(ticket, document.getId(), is);
+                    if (version1_2) {
+                        // in this version, a method which allows to save both
+                        // meta-data and data was added
+    					updatedDocument = service.updateDocument(ticket, docProperties, is);
+                    } else {
+                        // using the old way: saving meta-data and data in the
+                        // separate calls
+                        updatedDocument = service.updateDocument(ticket, docProperties);
+    				    service.updateContent(ticket, document.getId(), is);
+                    }
 				} finally {
 					if (is != null) {
 						try {
@@ -118,7 +141,10 @@ public class SaveDocumentDelegate extends SavingDelegate {
 						}
 					}
 				}
-			}
+			} else {
+                // only the meta-data has to be updated
+                updatedDocument = service.updateDocument(ticket,docProperties);
+            }
 			
 			// With this we update the node tree versions.
 			document.setLastVersionId(updatedDocument.getLastVersionId());
@@ -161,7 +187,10 @@ public class SaveDocumentDelegate extends SavingDelegate {
 	}
 	
 	public void postJobTasks(JLibraryEditor editor, Object object) {
-	
+        if (updatedDocument == null) {
+            // this helps to avoid NPE when something fails during document update
+            return;
+        }
 		Document document = (Document)object;
 		RepositoryView.getInstance().changeNode(document,updatedDocument);
 		
