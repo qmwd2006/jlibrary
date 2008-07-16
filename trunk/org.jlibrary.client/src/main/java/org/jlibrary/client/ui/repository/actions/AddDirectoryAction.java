@@ -49,6 +49,7 @@ import org.jlibrary.client.ui.repository.RepositoryHelper;
 import org.jlibrary.client.ui.repository.RepositoryRegistry;
 import org.jlibrary.client.ui.repository.views.RepositoryView;
 import org.jlibrary.client.ui.tree.FileSystemNode;
+import org.jlibrary.core.config.JLibraryProperties;
 import org.jlibrary.core.entities.Directory;
 import org.jlibrary.core.entities.Document;
 import org.jlibrary.core.entities.Node;
@@ -177,6 +178,9 @@ public class AddDirectoryAction extends SelectionDispatchAction {
 					warning.open();
 				}
 			}
+
+            String usualAutocommitStr = JLibraryProperties.getProperty("jlibrary.client.dont.use.autocommit.false");
+            final boolean usualAutocommit = "true".equalsIgnoreCase(usualAutocommitStr);
 			
 			final Object objects[] = fcsd.getCheckedElements();
 			final boolean extractResources = fcsd.shouldExtractResources();
@@ -191,7 +195,9 @@ public class AddDirectoryAction extends SelectionDispatchAction {
 					int length = loadProcessLength(objects);
 					monitor.beginTask(Messages.getMessage(
 											"add_directories_job_name"),length);
-					repository.getTicket().setAutocommit(false);
+                    if (!usualAutocommit) {
+    					repository.getTicket().setAutocommit(false);
+                    }
 					IStatus status = null;
 					try {
 						status = createStructure(repository,
@@ -200,14 +206,18 @@ public class AddDirectoryAction extends SelectionDispatchAction {
 												 monitor,
 												 extractResources);
 
-						ServerProfile profile = repository.getServerProfile();
-						RepositoryService service = JLibraryServiceFactory.getInstance(profile).getRepositoryService();
+                        if (!usualAutocommit) {
+						    ServerProfile profile = repository.getServerProfile();
+						    RepositoryService service = JLibraryServiceFactory.getInstance(profile).getRepositoryService();
 					
-						service.saveSession(repository.getTicket());						
+						    service.saveSession(repository.getTicket());
+                        }
 					} catch (RepositoryException e) {
 						e.printStackTrace();
 					} finally {
-						repository.getTicket().setAutocommit(true);
+                        if (!usualAutocommit) {
+    						repository.getTicket().setAutocommit(true);
+                        }
 					}
 					return status;
 					
