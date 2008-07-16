@@ -33,9 +33,13 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.jlibrary.client.Messages;
+import org.jlibrary.client.customProperties.CustomPropertiesUtils;
 import org.jlibrary.client.ui.editor.JLibraryFormPage;
 import org.jlibrary.core.entities.Document;
 import org.jlibrary.core.entities.ResourceNode;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author martin
@@ -43,6 +47,8 @@ import org.jlibrary.core.entities.ResourceNode;
  * Reusable form for metadata
  */
 public class DocumentFormMetadata {
+
+    private static final Logger logger = LoggerFactory.getLogger(DocumentFormMetadata.class);
 
 	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
@@ -52,6 +58,7 @@ public class DocumentFormMetadata {
 	private RelationsSection relationsSection;
 	private CategoriesSection categoriesSection;
 	private NotesSection notesSection;
+    private CustomPropertiesSection customPropertiesSection;
 	
 	private boolean init;
 
@@ -122,6 +129,9 @@ public class DocumentFormMetadata {
 		createResourcesSection(body,display,toolkit);
 		createRelationsSection(body,display,toolkit);
 		createNotesSection(body,display,toolkit);
+        if (CustomPropertiesUtils.getEditAllower().isEditable(document)) {
+            createCustomPropertiesSection(body,display,toolkit);
+        }
 		
 		labCreationDate.setText(Messages.getAndParseValue(
 								"metadata_creation_date",
@@ -164,6 +174,10 @@ public class DocumentFormMetadata {
 	private void createNotesSection(Composite body, Display display, FormToolkit toolkit) {
 		
 		notesSection = new NotesSection(toolkit,this, body);
+	}
+
+    private void createCustomPropertiesSection(Composite body, Display display, FormToolkit toolkit) {
+		customPropertiesSection = new CustomPropertiesSection(toolkit,this, body);
 	}
 
 	public void setFocus() {
@@ -224,6 +238,9 @@ public class DocumentFormMetadata {
 	public RelationsSection getRelationsSection() {
 		return relationsSection;
 	}
+    public CustomPropertiesSection getCustomPropertiesSection() {
+        return customPropertiesSection;
+    }
 
 	public void editorUpdated() {
 

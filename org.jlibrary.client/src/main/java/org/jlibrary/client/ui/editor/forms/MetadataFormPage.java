@@ -66,4 +66,13 @@ public abstract class MetadataFormPage extends JLibraryFormPage {
 		return null;
 	}
 
+    /**
+     * Returns the custom properties section.
+     *
+     * @return section with custom properties
+     */
+    public CustomPropertiesSection getCustomPropertiesSection() {
+        return null;
+    }
+
 }

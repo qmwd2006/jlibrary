@@ -109,6 +109,18 @@ public class DocumentMetadataFormPage extends MetadataFormPage {
 		}
 		return null;
 	}
+
+    /**
+     * Returns the custom properties section.
+     *
+     * @return section with custom properties
+     */
+    public CustomPropertiesSection getCustomPropertiesSection() {
+    	if (formMetadata != null) {
+			return formMetadata.getCustomPropertiesSection();
+		}
+        return null;
+    }
 	
 	public void setFocus() {
 		
