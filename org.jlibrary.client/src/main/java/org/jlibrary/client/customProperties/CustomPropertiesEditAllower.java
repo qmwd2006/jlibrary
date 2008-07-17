@@ -1,10 +1,10 @@
 /*
 * jLibrary, Open Source Document Management System
 * 
-* Copyright (c) 2003-2008, Martín Pérez Mariñán, and individual 
-* contributors as indicated by the @authors tag. See copyright.txt in the
-* distribution for a full listing of individual contributors.
-* All rights reserved.
+* Copyright (c) 2003-2006, Martín Pérez Mariñán, Blandware (represented by
+* Andrey Grebnev), and individual contributors as indicated by the
+* @authors tag. See copyright.txt in the distribution for a full listing of
+* individual contributors. All rights reserved.
 * 
 * This is free software; you can redistribute it and/or modify it
 * under the terms of the Modified BSD License as published by the Free 
