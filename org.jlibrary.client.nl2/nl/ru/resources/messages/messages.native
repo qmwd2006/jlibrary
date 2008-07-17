@@ -3,7 +3,7 @@
 # It must be processed with native2ascii:
 # native2ascii -encoding windows-1251 messages.native messages.properties
 #
-about_text=jLibrary\nВерсия: 1.2\n\n(c) Copyright Mart\u00EDn P\u00E9rez Mari\u00F1\u00E1n, Blandware (represented\nby Andrey Grebnev) and individual contributors, 2008.\n All rights reserved. Visit http://jlibrary.sourceforge.net\n\nThis product includes software developed by\nApache Software Foundation http://www.apache.org/ and \nby IBM Corp. and others http://www.eclipse.org/platform
+about_text=jLibrary\nВерсия: 1.2.1\n\n(c) Copyright Mart\u00EDn P\u00E9rez Mari\u00F1\u00E1n, Blandware (represented\nby Andrey Grebnev) and individual contributors, 2008.\n All rights reserved. Visit http://jlibrary.sourceforge.net\n\nThis product includes software developed by\nApache Software Foundation http://www.apache.org/ and \nby IBM Corp. and others http://www.eclipse.org/platform
 about_title=О программе jLibrary
 accept_option=ОК
 action_canceled=Операция отменена пользователем
@@ -331,7 +331,7 @@ item_work_with=Начать работу с (Захватить)
 item_zoomin=Увеличить
 item_zoomout=Уменьшить
 jlibrary_extension=Репозитории jLibrary (*.jlib)
-jlibrary_title=jLibrary 1.2
+jlibrary_title=jLibrary 1.2.1
 job_loading_repositories=Соединение с репозиториями
 job_loading_repository=Загрузка репозитория '%1'
 job_locking=Захват документа %1
@@ -527,7 +527,7 @@ preferences_product=jLibrary
 preferences_repository=Управление репозиториями
 preferences_repository_bidirectional=Создавать двусторонние связи
 preferences_repository_description=Настройка управления репозиториями
-preferences_version=Версия 1.2 основана на Eclipse 3.4
+preferences_version=Версия 1.2.1 основана на Eclipse 3.4
 profile_create=Новый сервер
 profile_local=Внутренний сервер
 profile_localfile=Локальная папка
