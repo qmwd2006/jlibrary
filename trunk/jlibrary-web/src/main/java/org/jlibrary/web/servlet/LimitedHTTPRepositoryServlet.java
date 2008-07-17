@@ -55,7 +55,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  * This servlet extends the regular HTTP repository service available in the 
- * org.jlibrary.war project. The idea is to add some limitations to prevent the 
+ * jlibrary-war project. The idea is to add some limitations to prevent the 
  * web application to be attacked by malicious users. Example of these limitations 
  * can be just to limit the amount of binary data that can be transferred in a 
  * single call or the total amount of binary data. 
