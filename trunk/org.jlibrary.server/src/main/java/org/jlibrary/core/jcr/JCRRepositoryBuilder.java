@@ -1,10 +1,10 @@
 /*
 * jLibrary, Open Source Document Management System
 * 
-* Copyright (c) 2003-2006, Martï¿½n Pï¿½rez Mariï¿½ï¿½n, and individual 
-* contributors as indicated by the @authors tag. See copyright.txt in the
-* distribution for a full listing of individual contributors.
-* All rights reserved.
+* Copyright (c) 2003-2006, Martín Pérez Mariñán, Blandware (represented by
+* Andrey Grebnev), and individual contributors as indicated by the
+* @authors tag. See copyright.txt in the distribution for a full listing of
+* individual contributors. All rights reserved.
 * 
 * This is free software; you can redistribute it and/or modify it
 * under the terms of the Modified BSD License as published by the Free 
@@ -22,25 +22,9 @@
 */
 package org.jlibrary.core.jcr;
 
-import java.util.Calendar;
-import java.util.Date;
-
-import javax.jcr.AccessDeniedException;
-import javax.jcr.InvalidItemStateException;
-import javax.jcr.ItemExistsException;
-import javax.jcr.NodeIterator;
-import javax.jcr.Session;
-import javax.jcr.SimpleCredentials;
-import javax.jcr.Value;
-import javax.jcr.lock.LockException;
-import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.version.VersionException;
-
 import org.apache.jackrabbit.core.WorkspaceImpl;
 import org.apache.jackrabbit.core.config.ConfigurationException;
 import org.apache.jackrabbit.core.nodetype.InvalidNodeTypeDefException;
-import org.apache.jackrabbit.name.QName;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.jlibrary.core.config.JLibraryProperties;
@@ -63,6 +47,20 @@ import org.jlibrary.core.repository.exception.RepositoryException;
 import org.jlibrary.core.security.SecurityException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.AccessDeniedException;
+import javax.jcr.InvalidItemStateException;
+import javax.jcr.ItemExistsException;
+import javax.jcr.NodeIterator;
+import javax.jcr.Session;
+import javax.jcr.SimpleCredentials;
+import javax.jcr.Value;
+import javax.jcr.lock.LockException;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.version.VersionException;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Contains the logic to build a jLibrary repository.
