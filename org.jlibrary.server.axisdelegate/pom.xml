@@ -1,25 +1,25 @@
 <?xml version="1.0"?><project>
   <parent>
-    <artifactId>org.jlibrary</artifactId>
-    <groupId>jlibrary</groupId>
+    <artifactId>jlibrary</artifactId>
+    <groupId>org.jlibrary</groupId>
     <version>1.2-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>jlibrary</groupId>
-  <artifactId>org.jlibrary.server.axisdelegate</artifactId>
-  <name>org.jlibrary.server.axisdelegate</name>
+  <groupId>org.jlibrary</groupId>
+  <artifactId>jlibrary-server-axisdelegate</artifactId>
+  <name>jLibrary Axis Delegate</name>
   <version>1.2-SNAPSHOT</version>
   <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
-      <groupId>jlibrary</groupId>
-      <artifactId>org.jlibrary.server</artifactId>
+      <groupId>org.jlibrary</groupId>
+      <artifactId>jlibrary-server</artifactId>
       <version>1.2-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency> 
     <dependency>
-      <groupId>jlibrary</groupId>
-      <artifactId>org.jlibrary.server</artifactId>
+      <groupId>org.jlibrary</groupId>
+      <artifactId>jlibrary-server</artifactId>
       <version>1.2-SNAPSHOT</version>
       <type>test-jar</type>
     </dependency>             

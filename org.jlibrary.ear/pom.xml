@@ -1,16 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>jlibrary</groupId>
-  <artifactId>org.jlibrary.ear</artifactId>
+  <groupId>org.jlibrary</groupId>
+  <artifactId>jlibrary-ear</artifactId>
   <packaging>ear</packaging>
   <version>1.2-SNAPSHOT</version>
-  <name>org.jlibrary.ear</name>
+  <name>jLibrary EAR</name>
   <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
-      <groupId>jlibrary</groupId>
-      <artifactId>org.jlibrary.war</artifactId>
+      <groupId>org.jlibrary</groupId>
+      <artifactId>jlibrary-war</artifactId>
       <version>1.2-SNAPSHOT</version>
       <scope>runtime</scope>
       <type>war</type>
@@ -31,8 +31,8 @@
            <defaultJavaBundleDir>APP-INF/lib</defaultJavaBundleDir>
            <modules>           
              <webModule>
-               <groupId>jlibrary</groupId>
-               <artifactId>org.jlibrary.war</artifactId>
+               <groupId>org.jlibrary</groupId>
+               <artifactId>jlibrary-war</artifactId>
                <contextRoot>/jlibrary</contextRoot>
                <bundleFileName>jlibrary.war</bundleFileName>
              </webModule>
