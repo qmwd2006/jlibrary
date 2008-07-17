@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <project>
     <parent>
-    <artifactId>org.jlibrary</artifactId>
-    <groupId>jlibrary</groupId>
+    <artifactId>jlibrary</artifactId>
+    <groupId>org.jlibrary</groupId>
     <version>1.2-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>jlibrary</groupId>
-  <artifactId>org.jlibrary.web</artifactId>
-  <name>org.jlibrary.web</name>
+  <groupId>org.jlibrary</groupId>
+  <artifactId>jlibrary-web</artifactId>
+  <name>jLibrary Web</name>
   <packaging>war</packaging>
   <version>1.2-SNAPSHOT</version>
   <url>http://maven.apache.org</url>
@@ -30,14 +30,14 @@
   </repositories>  
   <dependencies>
     <dependency>
-      <groupId>jlibrary</groupId>
-      <artifactId>org.jlibrary.server</artifactId>
+      <groupId>org.jlibrary</groupId>
+      <artifactId>jlibrary-server</artifactId>
       <version>1.2-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency> 
     <dependency>
-      <groupId>jlibrary</groupId>
-      <artifactId>org.jlibrary.extractors</artifactId>
+      <groupId>org.jlibrary</groupId>
+      <artifactId>jlibrary-extractors</artifactId>
       <version>1.2-SNAPSHOT</version>
     </dependency>         
     <dependency>
@@ -79,14 +79,14 @@
       <version>2.3</version>
     </dependency>
     <dependency>
-      <groupId>jlibrary</groupId>
-      <artifactId>org.jlibrary.server.web</artifactId>
+      <groupId>org.jlibrary</groupId>
+      <artifactId>jlibrary-server-web</artifactId>
       <version>1.2-SNAPSHOT</version>
     </dependency> 	
     <!--  Maven 2 WAR overlay -->    
     <dependency>
-      <groupId>jlibrary</groupId>
-      <artifactId>org.jlibrary.war</artifactId>
+      <groupId>org.jlibrary</groupId>
+      <artifactId>jlibrary-war</artifactId>
       <version>1.2-SNAPSHOT</version>
       <type>war</type>
       <scope>runtime</scope>

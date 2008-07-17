@@ -2,8 +2,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>jlibrary</groupId>
-  <artifactId>org.jlibrary.client</artifactId>
+  <groupId>org.jlibrary</groupId>
+  <artifactId>jlibrary-client</artifactId>
   <packaging>zip</packaging>
   <name>jLibrary PDE build</name>
   <version>1.2.1-SNAPSHOT</version>
@@ -23,8 +23,8 @@
   </pluginRepositories>  
   <dependencies>
     <dependency>
-      <groupId>jlibrary</groupId>
-      <artifactId>org.jlibrary.server</artifactId>
+      <groupId>org.jlibrary</groupId>
+      <artifactId>jlibrary-server</artifactId>
       <version>1.2-SNAPSHOT</version>
       <scope>compile</scope>
       <!-- Removing junit dependency as it's in the compile dependencies
@@ -37,14 +37,14 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>jlibrary</groupId>
-      <artifactId>org.jlibrary.server.httpdelegate</artifactId>
+      <groupId>org.jlibrary</groupId>
+      <artifactId>jlibrary-server-httpdelegate</artifactId>
       <version>1.2-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>jlibrary</groupId>
-      <artifactId>org.jlibrary.extractors</artifactId>
+      <groupId>org.jlibrary</groupId>
+      <artifactId>jlibrary-extractors</artifactId>
       <version>1.2-SNAPSHOT</version>
     </dependency>         
     <dependency>
