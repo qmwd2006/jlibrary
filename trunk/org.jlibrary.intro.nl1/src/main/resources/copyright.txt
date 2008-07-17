@@ -1,7 +1,7 @@
-jLibrary, Copyright (c) 2003-2006, Martín Pérez Mariñán, and individual 
-contributors, and is licensed under the New BSD. A summary of the individual
-contributors in alphabetical order is given below. Any omission should be 
-sent to mpermar@gmail.com.
+jLibrary, Copyright (c) 2003-2006, Martín Pérez Mariñán, Blandware (represented
+by Andrey Grebnev), and individual contributors, and is licensed under the
+New BSD. A summary of the individual contributors in alphabetical order is
+given below. Any omission should be sent to mpermar@gmail.com.
 
 CVS Login(s)            Name
 -------------------------------------------------------------------------------
