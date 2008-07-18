@@ -14,20 +14,10 @@
   <url>http://maven.apache.org</url>
   <repositories>
     <repository>
-      <id>ibiblio</id>
-      <name>IBiblio repository</name>
-      <url>http://mirrors.ibiblio.org/pub/mirrors/maven2/</url>
-    </repository>
-    <repository>
       <id>local-repository</id>
       <url>file://${basedir}/../repository</url>
-    </repository>   
-    <repository>
-      <id>codehaus</id>
-      <name>Codehaus maven repository</name>
-      <url>http://repository.codehaus.org/</url>
-    </repository>     
-  </repositories>  
+    </repository>
+  </repositories>
   <dependencies>
     <dependency>
       <groupId>org.jlibrary</groupId>
