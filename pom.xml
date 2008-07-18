@@ -46,7 +46,7 @@
     <!-- Enabling the use of FTP -->
     <distributionManagement>
         <repository>
-            <id>ssh-repository</id>
+            <id>jlibrary-ssh-repository</id>
             <url>scpexe://shell.sourceforge.net/home/groups/j/jl/jlibrary/htdocs/m2repo</url>
         </repository>
     </distributionManagement>
