@@ -10,7 +10,7 @@
   <name>jLibrary Axis Server</name>
   <packaging>war</packaging>
   <version>1.2-SNAPSHOT</version>
-  <url>http://maven.apache.org</url>
+  <description>jLibrary Document Management System Axis-based server</description>
   <dependencies>
     <dependency>
       <groupId>org.jlibrary</groupId>

@@ -9,7 +9,7 @@
   <artifactId>jlibrary-server-httpdelegate</artifactId>
   <name>jLibrary HTTP Delegate</name>
   <version>1.2-SNAPSHOT</version>
-  <url>http://maven.apache.org</url>
+  <description>jLibrary Document Management System HTTP delegate</description>
   <dependencies>
     <dependency>
       <groupId>org.jlibrary</groupId>

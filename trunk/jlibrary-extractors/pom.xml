@@ -9,7 +9,7 @@
   <artifactId>jlibrary-extractors</artifactId>
   <name>jLibrary Extractors</name>
   <version>1.2-SNAPSHOT</version>
-  <url>http://maven.apache.org</url>
+  <description>jLibrary Document Management System extractors</description>
   <dependencies>
     <dependency>
       <groupId>org.jlibrary</groupId>

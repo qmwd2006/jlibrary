@@ -6,7 +6,7 @@
   <packaging>ear</packaging>
   <version>1.2-SNAPSHOT</version>
   <name>jLibrary EAR</name>
-  <url>http://maven.apache.org</url>
+  <description>jLibrary Document Management System EAR</description>
   <dependencies>
     <dependency>
       <groupId>org.jlibrary</groupId>
