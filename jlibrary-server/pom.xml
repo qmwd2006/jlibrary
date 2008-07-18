@@ -11,7 +11,7 @@
   <packaging>jar</packaging>
   <version>1.2-SNAPSHOT</version>
   <name>jlibrary Server Core</name>
-  <url>http://maven.apache.org</url>
+  <description>jLibrary Document Management System server core</description>
   <properties>
   </properties>
   <dependencies>

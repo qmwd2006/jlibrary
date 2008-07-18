@@ -9,7 +9,7 @@
   <artifactId>jlibrary-server-xfiredelegate</artifactId>
   <name>jLibrary XFire Delegate</name>
   <version>1.2-SNAPSHOT</version>
-  <url>http://maven.apache.org</url>
+  <description>jLibrary Document Management System XFire delegate</description>
   <dependencies>
     <dependency>
       <groupId>org.jlibrary</groupId>

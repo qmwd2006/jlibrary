@@ -9,7 +9,7 @@
   <artifactId>jlibrary-server-web</artifactId>
   <name>jLibrary Server (web)</name>
   <version>1.2-SNAPSHOT</version>
-  <url>http://maven.apache.org</url>
+  <description>jLibrary Document Management System web-related classes</description>
   <dependencies>
     <dependency>
       <groupId>org.jlibrary</groupId>
