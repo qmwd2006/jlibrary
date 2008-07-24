@@ -24,6 +24,7 @@ package org.jlibrary.core.jcr;
 
 public class JLibraryConstants {
 
+    // when a new version is added, it should be added to JLibraryAPIUtils too
 	public static final String VERSION_1_0_FINAL = "1.0";
 	public static final String VERSION_1_0_1 = "1.0.1";
 	public static final String VERSION_1_0_2 = "1.0.2";
