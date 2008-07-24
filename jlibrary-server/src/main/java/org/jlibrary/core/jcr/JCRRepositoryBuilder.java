@@ -167,7 +167,7 @@ public class JCRRepositoryBuilder {
 							      JLibraryConstants.INTERNAL_MIXIN);		
 		systemNode.addMixin(JCRConstants.JCR_REFERENCEABLE);
 		systemNode.setProperty(JLibraryConstants.JLIBRARY_VERSION, 
-				 			   JLibraryConstants.VERSION_1_1);
+				 			   JLibraryConstants.VERSION_1_2);
 		systemNode.addNode(JLibraryConstants.JLIBRARY_CONFIG,
 						   JLibraryConstants.INTERNAL_MIXIN);
 		systemNode.addNode(JLibraryConstants.JLIBRARY_CUSTOM_PROPERTIES,
