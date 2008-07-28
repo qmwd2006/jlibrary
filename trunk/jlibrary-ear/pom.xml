@@ -4,14 +4,14 @@
   <groupId>org.jlibrary</groupId>
   <artifactId>jlibrary-ear</artifactId>
   <packaging>ear</packaging>
-  <version>1.2-SNAPSHOT</version>
+  <version>1.2</version>
   <name>jLibrary EAR</name>
   <description>jLibrary Document Management System EAR</description>
   <dependencies>
     <dependency>
       <groupId>org.jlibrary</groupId>
       <artifactId>jlibrary-war</artifactId>
-      <version>1.2-SNAPSHOT</version>
+      <version>1.2</version>
       <scope>runtime</scope>
       <type>war</type>
     </dependency>   
