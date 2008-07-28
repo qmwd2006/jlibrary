@@ -6,7 +6,7 @@
 			<#list directory.nodes as menuitem>
 				<#if menuitem.directory>
   				  <#assign hasDirectories=true/>
-  				  <li class="first"><a href="${repository_url}${menuitem.path}">${menuitem.name}</a></li>
+  				  <li class="first"><a href="${repository_url}${menuitem.path?replace("%", "%25")}">${menuitem.name}</a></li>
 				</#if>	    	
 			</#list>
 			<#if !hasDirectories> 
@@ -25,7 +25,7 @@
 			<#list directory.nodes as menuitem>
 				<#if menuitem.document && menuitem.name != "index.html" && menuitem.name != "index">
   			  <#assign hasDocuments=true/>
-  				<a href="${repository_url}${menuitem.path}">${menuitem.name}</a>
+  				<a href="${repository_url}${menuitem.path?replace("%", "%25")}">${menuitem.name}</a>
 				</#if>
 			</#list>
 			<#if !hasDocuments> 
@@ -116,7 +116,7 @@
 	<ul class="linklist">
 	  <#list directory.nodes as children>
 		  <#if children.document>
-            <li><a href="${repository_url}${children.path}">${children.name}</a></li>
+            <li><a href="${repository_url}${children.path?replace("%", "%25")}">${children.name}</a></li>
 		  </#if>
 	  </#list> 			         
     </ul>

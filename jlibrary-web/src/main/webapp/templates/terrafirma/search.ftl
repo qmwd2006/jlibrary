@@ -17,7 +17,7 @@
 			<div class="content">
 				<#list results.items as hit>
 		  		<h2><a style="text-decoration:none" 
-			  	   href="${repository_url}${hit.path}">${hit.name}</a> ( ${hit.score*100}% )</h2> 
+			  	   href="${repository_url}${hit.path?replace("%", "%25")}">${hit.name}</a> ( ${hit.score*100}% )</h2> 
 					<p>${hit.excerpt}</p>
 				</#list>
 		  </div>

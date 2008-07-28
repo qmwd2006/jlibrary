@@ -9,7 +9,7 @@
   	  <#if !children.directory>
   		  <item>
   		    <title>${children.name}</title>
-  		    <link>${repository_url}${children.path}</link>
+  		    <link>${repository_url}${children.path?replace("%", "%25")}</link>
   		    <guid isPermaLink="false">${children.id}</guid>
   		    <pubDate>${children.date?string("yyyy-MM-dd HH:mm:ss")}</pubDate>
   		    <description>${children.description}</description>
