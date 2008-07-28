@@ -3,7 +3,7 @@
 	  <div class="header">
 		  <h3>${document.name}</h3>
 			<div class="date">${document.date?string("MMMM dd, yyyy")}
-			  <a style="text-decoration:none" href="${repository_url}${document.path}?download=true"><img border="0" src="${root_url}/templates/terrafirma/images/download.png" alt="Download file"/></a>
+			  <a style="text-decoration:none" href="${repository_url}${document.path?replace("%", "%25")}?download=true"><img border="0" src="${root_url}/templates/terrafirma/images/download.png" alt="Download file"/></a>
 			</div>
 		</div>
 		<div class="content">
@@ -15,7 +15,7 @@
 				${document_content}
 			<#else>
 			  <#if document.image>
-				  <img src="${repository_url}${document.path}?download=true"/>
+				  <img src="${repository_url}${document.path?replace("%", "%25")}?download=true"/>
 			  <#else>
 			    <p>This demo does not know how to display this type of document. However you can download it using the download icon just right next to the date.</p>
 			  </#if>
@@ -52,7 +52,7 @@
 		  </#if>
 			<div class="date">
 			  ${directory.date?string("MMMM dd, yyyy")} 
-			  <a href="${repository_url}${directory.path}?rss=true" border=0><img border="0" src="${root_url}/templates/terrafirma/images/rss.png" alt="Suscribe in a reader" /></a>
+			  <a href="${repository_url}${directory.path?replace("%", "%25")}?rss=true" border=0><img border="0" src="${root_url}/templates/terrafirma/images/rss.png" alt="Suscribe in a reader" /></a>
 			</div>
 		</div>
 		<div class="content">
@@ -64,7 +64,7 @@
 	  		<#list directory.nodes as children>
 		  		<#if children.document>
 		  	  		<h2><a style="text-decoration:none" 
-		  	         href="${repository_url}${children.path}">${children.name}</a>&nbsp;<a href="${repository_url}${children.path}?download=true"><img border="0" src="${root_url}/templates/terrafirma/images/download.png" alt="Download file"/></a></h2>
+		  	         href="${repository_url}${children.path?replace("%", "%25")}">${children.name}</a>&nbsp;<a href="${repository_url}${children.path?replace("%", "%25")}?download=true"><img border="0" src="${root_url}/templates/terrafirma/images/download.png" alt="Download file"/></a></h2>
 			  			<p>${children.description}</p>
 		  		</#if>
 	  		</#list>

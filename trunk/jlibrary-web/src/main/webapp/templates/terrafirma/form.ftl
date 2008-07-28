@@ -13,7 +13,7 @@
 					<label for="descriptionText">Description</label>
 					<textarea id="descriptionText" name="description" rows="8" cols="auto">${directory.description}</textarea>						
 					<button type="submit">Update</button>
-					<a href="${repository_url}${directory.path}" class="button">Cancel</a>
+					<a href="${repository_url}${directory.path?replace("%", "%25")}" class="button">Cancel</a>
 					<input type="hidden" name="type" value="node"/>
 					<input type="hidden" name="repository" value="${repository.name}"/>
 					<input type="hidden" name="method" value="update"/>					
@@ -76,7 +76,7 @@
 					<label for="descriptionText">Description</label>
 					<textarea name="description" rows="8" cols="auto" id="descriptionText"></textarea>						
 					<button type="submit">Create</button>
-					<a href="${repository_url}${directory.path}" class="button">Cancel</a>
+					<a href="${repository_url}${directory.path?replace("%", "%25")}" class="button">Cancel</a>
 					<input type="hidden" name="repository" value="${repository.name}"/>
 					<input type="hidden" name="method" value="create"/>					
 					<input type="hidden" name="id" value="${directory.id}"/>
@@ -159,7 +159,7 @@
 					<label for="content">Content</label>
 					<textarea id="content" name="content"></textarea>
 					<button type="submit">Create</button>
-					<a href="${repository_url}${directory.path}" class="button">Cancel</a>
+					<a href="${repository_url}${directory.path?replace("%", "%25")}" class="button">Cancel</a>
 					<input type="hidden" name="repository" value="${repository.name}"/>
 					<input type="hidden" name="method" value="create"/>					
 					<input type="hidden" name="id" value="${directory.id}"/>
@@ -192,7 +192,7 @@
 					<label for="file">File</label>
 					<input type="file" name="file" id="file"/>				
 					<button type="submit">Upload</button>
-					<a href="${repository_url}${directory.path}" class="button">Cancel</a>
+					<a href="${repository_url}${directory.path?replace("%", "%25")}" class="button">Cancel</a>
 					<input type="hidden" name="validation" id="validation" value="documentUpload"/>
 				</fieldset>
 			</form>
@@ -219,7 +219,7 @@
 					<label for="content">Content</label>
 					<textarea id="content" name="content">${document_content}</textarea>
 					<button type="submit">Update</button>
-					<a href="${repository_url}${document.path}" class="button">Cancel</a>
+					<a href="${repository_url}${document.path?replace("%", "%25")}" class="button">Cancel</a>
 					<input type="hidden" name="repository" value="${repository.name}"/>
 					<input type="hidden" name="method" value="update"/>					
 					<input type="hidden" name="id" value="${document.id}"/>
@@ -251,7 +251,7 @@
   				<label for="keywords">Keywords</label>				
 					<input type="text" id="keywords" name="keywords" value="${document.metaData.keywords}"/><br/>
 					<button type="submit">Update</button>
-					<a href="${repository_url}${document.path}" class="button">Cancel</a>
+					<a href="${repository_url}${document.path?replace("%", "%25")}" class="button">Cancel</a>
 					<input type="hidden" name="method" value="update"/>					
 					<input type="hidden" name="id" value="${document.id}"/>
 					<input type="hidden" name="type" value="node"/>
