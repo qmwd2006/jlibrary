@@ -34,7 +34,7 @@
     <property name="configEntries">
       <list>
         <ref bean="default"/>
-        <ref bean="jlibrary"/>
+<!--        <ref bean="jlibrary"/>-->
       </list>
     </property>
   </bean>
