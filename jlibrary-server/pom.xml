@@ -3,13 +3,13 @@
   <parent>
     <artifactId>jlibrary</artifactId>
     <groupId>org.jlibrary</groupId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.2</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.jlibrary</groupId>
   <artifactId>jlibrary-server</artifactId>
   <packaging>jar</packaging>
-  <version>1.2-SNAPSHOT</version>
+  <version>1.2</version>
   <name>jlibrary Server Core</name>
   <description>jLibrary Document Management System server core</description>
   <properties>
