@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>jLibrary demo</title>
+<title>jLibrary repositories</title>
 <link href="templates/terrafirma/static.css" rel="stylesheet" type="text/css" />
 </head>
 
@@ -14,7 +14,7 @@
 	
 	<div id="outer">
 		<div id="inner">
-			<h2>jLibrary demo repositories</h2>
+			<h2>jLibrary repositories</h2>
 			<p>You can find below a list with all the repositories available on this server. Click on each icon to 
 				 be forwarded to the main page of each repository.</p>
 			
